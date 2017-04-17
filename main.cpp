@@ -17,6 +17,8 @@
 #include <algorithm>
 
 #include "Globals.h"
+#include "Object.h"
+#include "Room.h"
 
 #define PI 3.14159265
 #define DEGREES(x) int((x)/360.0*0xFFFFFF)
@@ -43,10 +45,71 @@ int main()
 	double mouseX = 0;
 	double mouseY = 0;
 
+	double cameraXDir = 0;
+	double cameraYDir = 0;
+
+	double cameraXPos = 0;
+	double cameraYPos = 0;
+
+	//matrix for storing coordinates. used to keep track of what's where.
+	char RoomMatrix[3][3][3] = {
+	'A','B','C',
+	'D','E','F',
+	'G','H','I',
+	
+	'J','K','L',
+	'M','_','N',
+	'O','P','Q',
+	
+	'R','S','T',
+	'U','V','W',
+	'X','Y','Z'
+	};
+
 	//==============================================
 	//PROJECT VARIABLES
 	//==============================================
+	ALLEGRO_BITMAP *PlayerImage = NULL;
 	int state = -1;
+
+	//defining 'room'
+	Room *room = new Room();
+	//creation of all rooms. Init() involves/will involve creation of level, objects, etc.
+	room->Init('A', 0, 0, 0);
+	room->Init('B', 1, 0, 0);
+	room->Init('C', 2, 0, 0);
+
+	room->Init('D', 0, 1, 0);
+	room->Init('E', 1, 1, 0);
+	room->Init('F', 2, 1, 0);
+
+	room->Init('G', 0, 2, 0);
+	room->Init('H', 1, 2, 0);
+	room->Init('I', 1, 2, 0);
+
+	room->Init('J', 0, 0, 1);
+	room->Init('K', 1, 0, 1);
+	room->Init('L', 2, 0, 1);
+
+	room->Init('M', 0, 1, 1);
+	room->Init('_', 1, 1, 1);//center of cube
+	room->Init('N', 2, 1, 1);
+
+	room->Init('O', 0, 2, 1);
+	room->Init('P', 1, 2, 1);
+	room->Init('Q', 2, 2, 1);
+
+	room->Init('R', 0, 0, 2);
+	room->Init('S', 1, 0, 2);
+	room->Init('T', 2, 0, 2);
+
+	room->Init('U', 0, 1, 2);
+	room->Init('V', 1, 1, 2);
+	room->Init('W', 2, 1, 2);
+
+	room->Init('X', 0, 2, 2);
+	room->Init('Y', 1, 2, 2);
+	room->Init('Z', 2, 2, 2);
 
 	//==============================================
 	//ALLEGRO VARIABLES
@@ -106,8 +169,6 @@ int main()
 	al_register_event_source(event_queue, al_get_keyboard_event_source());
 	al_register_event_source(event_queue, al_get_mouse_event_source());
 
-	//al_clear_to_color(al_map_rgb(0, 0, 0));
-	//al_flip_display();
 	al_start_timer(timer);
 	gameTime = al_current_time();
 
@@ -116,6 +177,7 @@ int main()
 	{
 		ALLEGRO_EVENT ev;
 		al_wait_for_event(event_queue, &ev);
+
 		//==============================================
 		//INPUT
 		//==============================================
@@ -327,11 +389,11 @@ int main()
 			al_clear_to_color(al_map_rgb(0, 0, 0));
 		}
 	}//end gameloop
+
 	 //==============================================
 	 //DESTROY PROJECT OBJECTS
 	 //==============================================
 
-	al_destroy_bitmap(TerrainImage);
 	al_destroy_bitmap(PlayerImage);
 
 	//SHELL OBJECTS=================================
