@@ -19,12 +19,20 @@
 #include "Globals.h"
 #include "Object.h"
 #include "Room.h"
+#include "Camera.h"
 
 #define PI 3.14159265
 #define DEGREES(x) int((x)/360.0*0xFFFFFF)
 #define RADIANS(x) int((x)/2/M_PI*0xFFFFFF)
 
 using namespace std;
+
+bool compare(Object *L1, Object *L2);
+
+vector<Object *> objects;
+vector<Object *>::iterator iter;
+vector<Object *>::iterator iter2;
+
 
 bool keys[] = { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };
 enum KEYS { UP, DOWN, LEFT, RIGHT, MOUSE_BUTTON, NUM_1, NUM_2, NUM_3, NUM_4, NUM_5, NUM_6, NUM_7, NUM_8, NUM_9, ENTER, SHIFT };
@@ -72,6 +80,8 @@ int main()
 	ALLEGRO_BITMAP *PlayerImage = NULL;
 	int state = -1;
 
+	Camera *camera = new Camera();
+	camera->Init(0, 0);
 	//defining 'room'
 	Room *room = new Room();
 	//creation of all rooms. Init() involves/will involve creation of level, objects, etc.
@@ -106,7 +116,7 @@ int main()
 	room->Init('U', 0, 1, 2);
 	room->Init('V', 1, 1, 2);
 	room->Init('W', 2, 1, 2);
-
+	
 	room->Init('X', 0, 2, 2);
 	room->Init('Y', 1, 2, 2);
 	room->Init('Z', 2, 2, 2);
@@ -118,7 +128,7 @@ int main()
 	ALLEGRO_DISPLAY_MODE   disp_data;
 	ALLEGRO_EVENT_QUEUE *event_queue = NULL;
 	ALLEGRO_TIMER *timer = NULL;
-	ALLEGRO_FONT *font18;
+	//ALLEGRO_FONT *font18;
 
 	//==============================================
 	//ALLEGRO INIT FUNCTIONS
@@ -154,8 +164,8 @@ int main()
 	//PROJECT INIT
 	//==============================================
 	//insert font types, images, sounds, state images, etc
-	font18 = al_load_font("arial.ttf", 18, 0);
-	al_reserve_samples(15);
+	//font18 = al_load_font("arial.ttf", 18, 0);
+	//al_reserve_samples(15);
 
 	srand(time(NULL));
 
@@ -362,9 +372,17 @@ int main()
 				}
 
 				//collisions
+				for (iter = objects.begin(); iter != objects.end(); ++iter)
+				{
 
+				}
 				//update
-
+				
+				//camera->Follow(player);
+				for (iter = objects.begin(); iter != objects.end(); ++iter)
+				{
+					(*iter)->Update(camera->GetCameraXDir(), camera->GetCameraYDir());
+				}
 			}
 			//=====================(PLAYING end)
 			//cull the dead
@@ -397,9 +415,23 @@ int main()
 	al_destroy_bitmap(PlayerImage);
 
 	//SHELL OBJECTS=================================
-	al_destroy_font(font18);
+	//al_destroy_font(font18);
 	al_destroy_timer(timer);
 	al_destroy_event_queue(event_queue);
 	al_destroy_display(display);
 	return 0;
+}
+
+//sorts object list
+bool compare(Object *L1, Object *L2) {
+	if ((*L1).GetY() + (*L1).GetBoundY() < (*L2).GetY() + (*L2).GetBoundY()) return true;
+	if ((*L2).GetY() + (*L2).GetBoundY() < (*L1).GetY() + (*L1).GetBoundY()) return false;
+
+	// a=b for primary condition, go to secondary
+	//if ((*L1).BaseY < (*L2).BaseY) return true;
+	//if ((*L2).BaseY < (*L1).BaseY) return false;
+
+	// ...
+
+	return false;
 }

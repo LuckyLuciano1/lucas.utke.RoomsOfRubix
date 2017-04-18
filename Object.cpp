@@ -9,9 +9,9 @@ Object::Object()
 	y = 0;
 	z = 0;
 
-	velX = 0;
-	velY = 0;
-	velZ = 0;
+	velX = 1;
+	velY = 1;
+	velZ = 1;
 
 	dirX = 0;
 	dirY = 0;
@@ -55,6 +55,12 @@ void Object::Update(double cameraX, double cameraY)
 	x += cameraX;
 	y += cameraY;
 	//no camera update for z because it eventually gets added into y, and is not an actual dimension within the parameters of the game.
+
+	if (curFrame<maxFrame)
+		curFrame++;
+	else
+		curFrame = 0;
+
 }
 
 void Object::Render()

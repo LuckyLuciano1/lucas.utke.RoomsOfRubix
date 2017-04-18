@@ -22,4 +22,13 @@ void Room::Init(char ID, int x, int y, int z)
 	Room::z = z;
 
 	LevelMatrix[LEVELW][LEVELH] = {};
+
+	for (int x = 0; x < LEVELW; x++) {
+		for (int y = 0; y < LEVELH; y++) {
+			if (rand() % 2 == 1)
+				LevelMatrix[x][y] = 1;
+			else
+				LevelMatrix[x][y] = 0;
+		}
+	}
 }

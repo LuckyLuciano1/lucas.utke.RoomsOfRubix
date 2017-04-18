@@ -39,4 +39,5 @@ public:
 	void SetX(int x) { Room::x = x; }
 	void SetY(int y) { Room::y = y; }
 	void SetZ(int z) { Room::z = z; }
+
 };
