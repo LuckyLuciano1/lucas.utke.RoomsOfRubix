@@ -12,6 +12,7 @@ class Object
 private:
 
 	bool collidable;//ability for object to collide.
+	bool collision;//the collision of two objects.
 	bool valid;//determines whether object should be deleted or not.
 
 protected:
@@ -96,4 +97,13 @@ public:
 	//==============================================
 	bool GetValid() { return valid; }
 	void SetValid(bool valid) { Object::valid = valid; }
+
+	//==============================================
+	//COLLISION
+	//==============================================
+	bool GetCollidable() { return collidable; }
+	void SetCollidable(bool collidable) { Object::collidable = collidable; }
+
+	bool CollisionCheck(Object *otherObject);
+	void virtual Collided(Object *otherObject);
 };

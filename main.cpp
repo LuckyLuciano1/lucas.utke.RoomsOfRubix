@@ -64,11 +64,11 @@ int main()
 	'A','B','C',
 	'D','E','F',
 	'G','H','I',
-	
+
 	'J','K','L',
 	'M','_','N',
 	'O','P','Q',
-	
+
 	'R','S','T',
 	'U','V','W',
 	'X','Y','Z'
@@ -116,7 +116,7 @@ int main()
 	room->Init('U', 0, 1, 2);
 	room->Init('V', 1, 1, 2);
 	room->Init('W', 2, 1, 2);
-	
+
 	room->Init('X', 0, 2, 2);
 	room->Init('Y', 1, 2, 2);
 	room->Init('Z', 2, 2, 2);
@@ -374,10 +374,20 @@ int main()
 				//collisions
 				for (iter = objects.begin(); iter != objects.end(); ++iter)
 				{
-
+					if (!(*iter)->GetCollidable()) continue;
+					for (iter2 = iter; iter2 != objects.end(); ++iter2)
+					{
+						if (!(*iter)->GetCollidable()) continue;
+						if ((*iter)->CollisionCheck((*iter2)))
+						{
+							(*iter)->Collided((*iter2));
+							(*iter2)->Collided((*iter));
+						}
+					}
 				}
+
+
 				//update
-				
 				//camera->Follow(player);
 				for (iter = objects.begin(); iter != objects.end(); ++iter)
 				{
