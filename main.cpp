@@ -33,6 +33,9 @@ vector<Object *> objects;
 vector<Object *>::iterator iter;
 vector<Object *>::iterator iter2;
 
+vector<Room *> rooms;
+vector<Room *>::iterator riter;
+
 
 bool keys[] = { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };
 enum KEYS { UP, DOWN, LEFT, RIGHT, MOUSE_BUTTON, NUM_1, NUM_2, NUM_3, NUM_4, NUM_5, NUM_6, NUM_7, NUM_8, NUM_9, ENTER, SHIFT };
@@ -53,11 +56,7 @@ int main()
 	double mouseX = 0;
 	double mouseY = 0;
 
-	double cameraXDir = 0;
-	double cameraYDir = 0;
-
-	double cameraXPos = 0;
-	double cameraYPos = 0;
+	char CurrentRoom = '_';
 
 	//matrix for storing coordinates. used to keep track of what's where.
 	char RoomMatrix[3][3][3] = {
@@ -82,45 +81,105 @@ int main()
 
 	Camera *camera = new Camera();
 	camera->Init(0, 0);
-	//defining 'room'
-	Room *room = new Room();
+	//defining all the rooms
+	Room *roomA = new Room();
+	Room *roomB = new Room();
+	Room *roomC = new Room();
+	Room *roomD = new Room();
+	Room *roomE = new Room();
+	Room *roomF = new Room();
+	Room *roomG = new Room();
+	Room *roomH = new Room();
+	Room *roomI = new Room();
+	Room *roomJ = new Room();
+	Room *roomK = new Room();
+	Room *roomL = new Room();
+	Room *roomM = new Room();
+	Room *room_ = new Room();
+	Room *roomN = new Room();
+	Room *roomO = new Room();
+	Room *roomP = new Room();
+	Room *roomQ = new Room();
+	Room *roomR = new Room();
+	Room *roomS = new Room();
+	Room *roomT = new Room();
+	Room *roomU = new Room();
+	Room *roomV = new Room();
+	Room *roomW = new Room();
+	Room *roomX = new Room();
+	Room *roomY = new Room();
+	Room *roomZ = new Room();
+
 	//creation of all rooms. Init() involves/will involve creation of level, objects, etc.
-	room->Init('A', 0, 0, 0);
-	room->Init('B', 1, 0, 0);
-	room->Init('C', 2, 0, 0);
+	roomA->Init('A', 0, 0, 0);
+	roomB->Init('B', 1, 0, 0);
+	roomC->Init('C', 2, 0, 0);
 
-	room->Init('D', 0, 1, 0);
-	room->Init('E', 1, 1, 0);
-	room->Init('F', 2, 1, 0);
+	roomD->Init('D', 0, 1, 0);
+	roomE->Init('E', 1, 1, 0);
+	roomF->Init('F', 2, 1, 0);
 
-	room->Init('G', 0, 2, 0);
-	room->Init('H', 1, 2, 0);
-	room->Init('I', 1, 2, 0);
+	roomG->Init('G', 0, 2, 0);
+	roomH->Init('H', 1, 2, 0);
+	roomI->Init('I', 1, 2, 0);
 
-	room->Init('J', 0, 0, 1);
-	room->Init('K', 1, 0, 1);
-	room->Init('L', 2, 0, 1);
+	roomJ->Init('J', 0, 0, 1);
+	roomK->Init('K', 1, 0, 1);
+	roomL->Init('L', 2, 0, 1);
 
-	room->Init('M', 0, 1, 1);
-	room->Init('_', 1, 1, 1);//center of cube
-	room->Init('N', 2, 1, 1);
+	roomM->Init('M', 0, 1, 1);
+	room_->Init('_', 1, 1, 1);//center of cube
+	roomN->Init('N', 2, 1, 1);
 
-	room->Init('O', 0, 2, 1);
-	room->Init('P', 1, 2, 1);
-	room->Init('Q', 2, 2, 1);
+	roomO->Init('O', 0, 2, 1);
+	roomP->Init('P', 1, 2, 1);
+	roomQ->Init('Q', 2, 2, 1);
 
-	room->Init('R', 0, 0, 2);
-	room->Init('S', 1, 0, 2);
-	room->Init('T', 2, 0, 2);
+	roomR->Init('R', 0, 0, 2);
+	roomS->Init('S', 1, 0, 2);
+	roomT->Init('T', 2, 0, 2);
 
-	room->Init('U', 0, 1, 2);
-	room->Init('V', 1, 1, 2);
-	room->Init('W', 2, 1, 2);
+	roomU->Init('U', 0, 1, 2);
+	roomV->Init('V', 1, 1, 2);
+	roomW->Init('W', 2, 1, 2);
 
-	room->Init('X', 0, 2, 2);
-	room->Init('Y', 1, 2, 2);
-	room->Init('Z', 2, 2, 2);
+	roomX->Init('X', 0, 2, 2);
+	roomY->Init('Y', 1, 2, 2);
+	roomZ->Init('Z', 2, 2, 2);
 
+	//adding all rooms to 'rooms' vector
+	rooms.push_back(roomA);
+	rooms.push_back(roomB);
+	rooms.push_back(roomC);
+	rooms.push_back(roomD);
+	rooms.push_back(roomE);
+	rooms.push_back(roomF);
+	rooms.push_back(roomG);
+	rooms.push_back(roomH);
+	rooms.push_back(roomI);
+	rooms.push_back(roomJ);
+	rooms.push_back(roomK);
+	rooms.push_back(roomL);
+	rooms.push_back(roomM);
+	rooms.push_back(room_);
+	rooms.push_back(roomN);
+	rooms.push_back(roomO);
+	rooms.push_back(roomP);
+	rooms.push_back(roomQ);
+	rooms.push_back(roomR);
+	rooms.push_back(roomS);
+	rooms.push_back(roomT);
+	rooms.push_back(roomU);
+	rooms.push_back(roomV);
+	rooms.push_back(roomW);
+	rooms.push_back(roomX);
+	rooms.push_back(roomY);
+	rooms.push_back(roomZ);
+
+	for (riter = rooms.begin(); riter != rooms.end(); ++riter)
+	{
+		cout << "ID:" << (*riter)->GetID();
+	}
 	//==============================================
 	//ALLEGRO VARIABLES
 	//==============================================
@@ -333,6 +392,8 @@ int main()
 			//=====================
 			if (state == PLAYING)//if playing, receive movement and other stuff
 			{
+				//Getting object list from Current Room
+
 				//number keys (temporary, for testing purposes- do not plan on incorporating into gameplay)
 				if (keys[NUM_1])
 				{
@@ -396,7 +457,16 @@ int main()
 			}
 			//=====================(PLAYING end)
 			//cull the dead
-
+			for (iter = objects.begin(); iter != objects.end();)
+			{
+				if (!(*iter)->GetValid())
+				{
+					delete (*iter);
+					iter = objects.erase(iter);
+				}
+				else
+					iter++;
+			}
 		}
 
 		//==============================================
@@ -410,7 +480,9 @@ int main()
 
 			}
 			else if (state == PLAYING) {
-
+				for (iter = objects.begin(); iter != objects.end(); ++iter) {
+						(*iter)->Render();
+				}
 			}
 			//FLIP BUFFERS========================
 			al_flip_display();
