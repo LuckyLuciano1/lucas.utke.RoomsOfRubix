@@ -121,7 +121,7 @@ int main()
 
 	roomG->Init('G', 0, 2, 0);
 	roomH->Init('H', 1, 2, 0);
-	roomI->Init('I', 1, 2, 0);
+	roomI->Init('I', 2, 2, 0);
 
 	roomJ->Init('J', 0, 0, 1);
 	roomK->Init('K', 1, 0, 1);
@@ -176,10 +176,6 @@ int main()
 	rooms.push_back(roomY);
 	rooms.push_back(roomZ);
 
-	for (riter = rooms.begin(); riter != rooms.end(); ++riter)
-	{
-		cout << "ID:" << (*riter)->GetID();
-	}
 	//==============================================
 	//ALLEGRO VARIABLES
 	//==============================================
@@ -392,8 +388,16 @@ int main()
 			//=====================
 			if (state == PLAYING)//if playing, receive movement and other stuff
 			{
-				//Getting object list from Current Room
-
+				/*for (riter = rooms.begin(); riter != rooms.end(); ++riter)
+				{
+					if ((*riter)->GetID() == CurrentRoom) {
+						objects.clear();
+						for (iter = objects.begin(); iter != objects.end(); ++iter)
+						{
+							(*iter) = (*riter)->
+						}
+					}
+				}*/
 				//number keys (temporary, for testing purposes- do not plan on incorporating into gameplay)
 				if (keys[NUM_1])
 				{
@@ -481,7 +485,7 @@ int main()
 			}
 			else if (state == PLAYING) {
 				for (iter = objects.begin(); iter != objects.end(); ++iter) {
-						(*iter)->Render();
+					(*iter)->Render();
 				}
 			}
 			//FLIP BUFFERS========================
@@ -516,4 +520,57 @@ bool compare(Object *L1, Object *L2) {
 	// ...
 
 	return false;
+}
+
+void Transition(char CurrentRoom, char RoomMatrix[3][3][3]) {
+
+	int shuffle = rand() % 12 + 1;
+	//Shuffling rooms like a Rubix Cube
+	for (riter = rooms.begin(); riter != rooms.end(); ++riter)
+	{
+		(*riter)->Shuffle(shuffle);
+	}
+	//realigning RoomMatrix according to shuffle
+	for (int x = 0; x < 3; x++) {
+		for (int y = 0; y < 3; y++) {
+			for (int z = 0; z < 3; z++) {
+				for (riter = rooms.begin(); riter != rooms.end(); ++riter)
+				{
+					if ((*riter)->GetX() == x && (*riter)->GetY() == y && (*riter)->GetZ() == z)
+						RoomMatrix[x][y][z] = (*riter)->GetID();
+				}
+			}
+		}
+	}
+	//realigning all rooms adjacent to room in RoomMatrix
+	for (int x = 0; x < 3; x++) {
+		for (int y = 0; y < 3; y++) {
+			for (int z = 0; z < 3; z++) {
+				if (x + 1 < 3)
+					(*riter)->SetXAdj(RoomMatrix[x + 1][y][z]);
+				else
+					(*riter)->SetXAdj('/');
+				if (x - 1 > 0)
+					(*riter)->SetNegXAdj(RoomMatrix[x-1][y][z]);
+				else
+					(*riter)->SetNegXAdj('/');
+				if (y + 1 < 3)
+					(*riter)->SetYAdj(RoomMatrix[x][y+1][z]);
+				else
+					(*riter)->SetYAdj('/');
+				if (y - 1 > 0)
+					(*riter)->SetNegYAdj(RoomMatrix[x][y-1][z]);
+				else
+					(*riter)->SetNegYAdj('/');
+				if (z + 1 < 3)
+					(*riter)->SetZAdj(RoomMatrix[x][y][z+1]);
+				else
+					(*riter)->SetZAdj('/');
+				if (z - 1 > 0)
+					(*riter)->SetNegZAdj(RoomMatrix[x][y][z-1]);
+				else
+					(*riter)->SetNegZAdj('/');
+			}
+		}
+	}
 }
