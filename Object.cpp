@@ -5,6 +5,8 @@ using namespace std;
 
 Object::Object()
 {
+	valid = true;
+
 	x = 0;
 	y = 0;
 	z = 0;
@@ -18,6 +20,7 @@ Object::Object()
 	dirZ = 0;
 
 	angle = 0;
+	transparency = al_map_rgba_f(1, 1, 1, 1);
 
 	boundX = 0;
 	boundY = 0;
@@ -72,7 +75,7 @@ void Object::Update(double cameraX, double cameraY)
 
 void Object::Render()
 {
-	al_draw_tinted_scaled_rotated_bitmap_region(image, imageX, imageY, imageboundX, imageboundY, al_map_rgba_f(1, 1, 1, 1), boundX/2, boundY/2, x, y + z, imageboundX/boundX, imageboundY/boundY, angle, 0);
+	al_draw_tinted_scaled_rotated_bitmap_region(image, imageX, imageY, imageboundX, imageboundY, transparency, boundX/2, boundY/2, x, y + z, imageboundX/boundX, imageboundY/boundY, angle, 0);
 	//cumulative drawing function that should be able to handle all possible drawing commands.
 }
 

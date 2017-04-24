@@ -17,7 +17,7 @@
 #include <algorithm>
 
 #include "Globals.h"
-#include "Object.h"
+#include "Player.h"
 #include "Room.h"
 #include "Camera.h"
 
@@ -28,10 +28,6 @@
 using namespace std;
 
 bool compare(Object *L1, Object *L2);
-
-vector<Object *> objects;
-vector<Object *>::iterator iter;
-vector<Object *>::iterator iter2;
 
 vector<Room *> rooms;
 vector<Room *>::iterator riter;
@@ -76,8 +72,9 @@ int main()
 	//==============================================
 	//PROJECT VARIABLES
 	//==============================================
-	ALLEGRO_BITMAP *PlayerImage = NULL;
-	int state = -1;
+	Player *player = new Player();
+	player->Init(SCREENW/2, SCREENH/2, 0, 0, 0, 50, 100);
+	int state = PLAYING;
 
 	Camera *camera = new Camera();
 	camera->Init(0, 0);
@@ -111,41 +108,41 @@ int main()
 	Room *roomZ = new Room();
 
 	//creation of all rooms. Init() involves/will involve creation of level, objects, etc.
-	roomA->Init('A', 0, 0, 0);
-	roomB->Init('B', 1, 0, 0);
-	roomC->Init('C', 2, 0, 0);
+	roomA->Init('A', 0, 0, 0, player);
+	roomB->Init('B', 1, 0, 0, player);
+	roomC->Init('C', 2, 0, 0, player);
 
-	roomD->Init('D', 0, 1, 0);
-	roomE->Init('E', 1, 1, 0);
-	roomF->Init('F', 2, 1, 0);
+	roomD->Init('D', 0, 1, 0, player);
+	roomE->Init('E', 1, 1, 0, player);
+	roomF->Init('F', 2, 1, 0, player);
 
-	roomG->Init('G', 0, 2, 0);
-	roomH->Init('H', 1, 2, 0);
-	roomI->Init('I', 2, 2, 0);
+	roomG->Init('G', 0, 2, 0, player);
+	roomH->Init('H', 1, 2, 0, player);
+	roomI->Init('I', 2, 2, 0, player);
 
-	roomJ->Init('J', 0, 0, 1);
-	roomK->Init('K', 1, 0, 1);
-	roomL->Init('L', 2, 0, 1);
+	roomJ->Init('J', 0, 0, 1, player);
+	roomK->Init('K', 1, 0, 1, player);
+	roomL->Init('L', 2, 0, 1, player);
 
-	roomM->Init('M', 0, 1, 1);
-	room_->Init('_', 1, 1, 1);//center of cube
-	roomN->Init('N', 2, 1, 1);
+	roomM->Init('M', 0, 1, 1, player);
+	room_->Init('_', 1, 1, 1, player);//center of cube
+	roomN->Init('N', 2, 1, 1, player);
 
-	roomO->Init('O', 0, 2, 1);
-	roomP->Init('P', 1, 2, 1);
-	roomQ->Init('Q', 2, 2, 1);
+	roomO->Init('O', 0, 2, 1, player);
+	roomP->Init('P', 1, 2, 1, player);
+	roomQ->Init('Q', 2, 2, 1, player);
 
-	roomR->Init('R', 0, 0, 2);
-	roomS->Init('S', 1, 0, 2);
-	roomT->Init('T', 2, 0, 2);
+	roomR->Init('R', 0, 0, 2, player);
+	roomS->Init('S', 1, 0, 2, player);
+	roomT->Init('T', 2, 0, 2, player);
 
-	roomU->Init('U', 0, 1, 2);
-	roomV->Init('V', 1, 1, 2);
-	roomW->Init('W', 2, 1, 2);
+	roomU->Init('U', 0, 1, 2, player);
+	roomV->Init('V', 1, 1, 2, player);
+	roomW->Init('W', 2, 1, 2, player);
 
-	roomX->Init('X', 0, 2, 2);
-	roomY->Init('Y', 1, 2, 2);
-	roomZ->Init('Z', 2, 2, 2);
+	roomX->Init('X', 0, 2, 2, player);
+	roomY->Init('Y', 1, 2, 2, player);
+	roomZ->Init('Z', 2, 2, 2, player);
 
 	//adding all rooms to 'rooms' vector
 	rooms.push_back(roomA);
@@ -175,7 +172,11 @@ int main()
 	rooms.push_back(roomX);
 	rooms.push_back(roomY);
 	rooms.push_back(roomZ);
-
+	for (riter = rooms.begin(); riter != rooms.end(); ++riter)
+	{
+		if ((*riter)->GetID() == CurrentRoom)
+			(*riter)->ObjectUpdate(camera->GetCameraXDir(), camera->GetCameraYDir());
+	}
 	//==============================================
 	//ALLEGRO VARIABLES
 	//==============================================
@@ -192,13 +193,13 @@ int main()
 		return -1;
 	al_get_display_mode(al_get_num_display_modes() - 1, &disp_data);
 
-	if (SCREENW == disp_data.width && SCREENH == disp_data.height) {
-		al_set_new_display_flags(ALLEGRO_FULLSCREEN);
-		display = al_create_display(disp_data.width, disp_data.height);
-	}
-	else {
+	//if (SCREENW == disp_data.width && SCREENH == disp_data.height) {
+	//	al_set_new_display_flags(ALLEGRO_FULLSCREEN);
+	//	display = al_create_display(disp_data.width, disp_data.height);
+	//}
+	//else {
 		display = al_create_display(SCREENW - 100, SCREENH - 100);		//create our display object
-	}
+	//}
 
 	if (!display)//test display object
 		return -1;
@@ -388,16 +389,6 @@ int main()
 			//=====================
 			if (state == PLAYING)//if playing, receive movement and other stuff
 			{
-				/*for (riter = rooms.begin(); riter != rooms.end(); ++riter)
-				{
-					if ((*riter)->GetID() == CurrentRoom) {
-						objects.clear();
-						for (iter = objects.begin(); iter != objects.end(); ++iter)
-						{
-							(*iter) = (*riter)->
-						}
-					}
-				}*/
 				//number keys (temporary, for testing purposes- do not plan on incorporating into gameplay)
 				if (keys[NUM_1])
 				{
@@ -437,39 +428,27 @@ int main()
 				}
 
 				//collisions
-				for (iter = objects.begin(); iter != objects.end(); ++iter)
+				for (riter = rooms.begin(); riter != rooms.end(); ++riter)
 				{
-					if (!(*iter)->GetCollidable()) continue;
-					for (iter2 = iter; iter2 != objects.end(); ++iter2)
-					{
-						if (!(*iter)->GetCollidable()) continue;
-						if ((*iter)->CollisionCheck((*iter2)))
-						{
-							(*iter)->Collided((*iter2));
-							(*iter2)->Collided((*iter));
-						}
-					}
+					if ((*riter)->GetID() == CurrentRoom)
+						(*riter)->ObjectCollision();
 				}
-
-
+				
 				//update
-				//camera->Follow(player);
-				for (iter = objects.begin(); iter != objects.end(); ++iter)
+				camera->Follow(player);
+				for (riter = rooms.begin(); riter != rooms.end(); ++riter)
 				{
-					(*iter)->Update(camera->GetCameraXDir(), camera->GetCameraYDir());
+					if ((*riter)->GetID() == CurrentRoom)
+						(*riter)->ObjectUpdate(camera->GetCameraXDir(), camera->GetCameraYDir());
 				}
+
 			}
 			//=====================(PLAYING end)
 			//cull the dead
-			for (iter = objects.begin(); iter != objects.end();)
+			for (riter = rooms.begin(); riter != rooms.end(); ++riter)
 			{
-				if (!(*iter)->GetValid())
-				{
-					delete (*iter);
-					iter = objects.erase(iter);
-				}
-				else
-					iter++;
+				if ((*riter)->GetID() == CurrentRoom)
+					(*riter)->ObjectDeletion();
 			}
 		}
 
@@ -484,8 +463,10 @@ int main()
 
 			}
 			else if (state == PLAYING) {
-				for (iter = objects.begin(); iter != objects.end(); ++iter) {
-					(*iter)->Render();
+				for (riter = rooms.begin(); riter != rooms.end(); ++riter)
+				{
+					if ((*riter)->GetID() == CurrentRoom)
+						(*riter)->ObjectRender();
 				}
 			}
 			//FLIP BUFFERS========================
@@ -497,9 +478,6 @@ int main()
 	 //==============================================
 	 //DESTROY PROJECT OBJECTS
 	 //==============================================
-
-	al_destroy_bitmap(PlayerImage);
-
 	//SHELL OBJECTS=================================
 	//al_destroy_font(font18);
 	al_destroy_timer(timer);

@@ -8,11 +8,10 @@
 #include <vector>
 using namespace std;
 
-class Tile : public Object
+class Player : public Object
 {
+private:
 public:
-	Tile();
+	Player();
 	void Init(double x, double y, double z, int imageX, int imageY, int imageboundX, int imageboundY);
-	void Render();
-	void Update(double cameraX, double cameraY);
 };

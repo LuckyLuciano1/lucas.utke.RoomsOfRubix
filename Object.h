@@ -12,10 +12,11 @@ class Object
 private:
 
 	bool collidable;//ability for object to collide.
-	bool collision;//the collision of two objects.
-	bool valid;//determines whether object should be deleted or not.
+	bool collision;//the collision of two objects.	
 
 protected:
+
+	bool valid;//determines whether object should be deleted or not.
 
 	double x;
 	double y;
@@ -29,7 +30,8 @@ protected:
 	double dirY;
 	double dirZ;
 
-	double angle;//angle of rotation of object
+	double angle;//angle of rotation of object.
+	ALLEGRO_COLOR transparency;//transparency of rendered image.
 
 	int boundX;//width and height of object within game.
 	int boundY;

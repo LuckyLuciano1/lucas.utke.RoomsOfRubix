@@ -1,4 +1,7 @@
+#include "Globals.h"
 #include "Room.h"
+#include "Player.h"
+#include "Tile.h"
 #include <math.h>
 #include <iostream>
 using namespace std;
@@ -14,22 +17,75 @@ Room::Room()
 
 void Room::Destroy() {}
 
-void Room::Init(char ID, int x, int y, int z)
+void Room::Init(char ID, int x, int y, int z, Player *player)
 {
 	Room::ID = ID;
 	Room::x = x;
 	Room::y = y;
 	Room::z = z;
 
+	//ObjectList.push_back(player);
+
 	LevelMatrix[LEVELW][LEVELH] = {};
 
 	for (int x = 0; x < LEVELW; x++) {
 		for (int y = 0; y < LEVELH; y++) {
-			if (rand() % 2 == 1)
 				LevelMatrix[x][y] = 1;
-			else
-				LevelMatrix[x][y] = 0;
 		}
+	}
+	for (int x = 0; x < LEVELW; x++) {
+		for (int y = 0; y < LEVELH; y++) {
+			if (LevelMatrix[x][y] == 1) {
+				Tile *tile = new Tile();
+				tile->Init(x*TILEW, x*TILEH, 0, 0, 0, TILEW, TILEH);
+				ObjectList.push_back(tile);
+			}
+		}
+	}
+}
+
+void Room::ObjectUpdate(int CameraXDir, int CameraYDir) 
+{
+	for (iter = ObjectList.begin(); iter != ObjectList.end(); ++iter)
+	{
+		(*iter)->Update(CameraXDir, CameraYDir);
+	}
+}
+void Room::ObjectRender()
+{
+	for (iter = ObjectList.begin(); iter != ObjectList.end(); ++iter)
+	{
+		(*iter)->Render();
+	}
+}
+void Room::ObjectCollision()
+{
+	for (iter = ObjectList.begin(); iter != ObjectList.end(); ++iter)
+	{
+		if (!(*iter)->GetCollidable()) continue;
+		for (iter2 = iter; iter2 != ObjectList.end(); ++iter2)
+		{
+			if (!(*iter)->GetCollidable()) continue;
+			if ((*iter)->CollisionCheck((*iter2)))
+			{
+				(*iter)->Collided((*iter2));
+				(*iter2)->Collided((*iter));
+			}
+		}
+	}
+}
+
+void Room::ObjectDeletion() 
+{
+	for (iter = ObjectList.begin(); iter != ObjectList.end();)
+	{
+		if (!(*iter)->GetValid())
+		{
+			delete (*iter);
+			iter = ObjectList.erase(iter);
+		}
+		else
+			iter++;
 	}
 }
 
@@ -425,8 +481,8 @@ void Room::YellowCounterClockwise()
 		z = 2;
 	}
 	else if (x == 2 && y == 1 && z == 0) {//F
-		x = 2//Q
-			y = 2;
+		x = 2;//Q
+		y = 2;
 		z = 1;
 	}
 	else if (x == 2 && y == 0 && z == 0) {//C

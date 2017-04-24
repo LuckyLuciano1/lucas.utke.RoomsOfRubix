@@ -3,6 +3,7 @@
 #include <iostream>
 #include "Globals.h"
 #include "Object.h"
+#include "Player.h"
 #include <vector>
 
 using namespace std;
@@ -10,23 +11,22 @@ using namespace std;
 class Room
 {
 protected:
-	char ID;//means of identifying what room it is. will be every letter in the alphabet, plus one (27 rooms, 26 letters).
+	char ID;//means of identifying what room it is. will be every letter in the alphabet, plus '_' (27 rooms, 26 letters).
 
 	int x;//coordinate of room in 3D matrix. Used to identify what room should be connected what.
 	int y;
 	int z;
 	
-	char XAdj;//tracks what other rooms this room is linked to (via ID)
+	char XAdj;//tracks what other rooms this room is linked to (via ID). '/' mark means it is next to nothing on that plane.
 	char NegXAdj;
 	char YAdj;
 	char NegYAdj; 
 	char ZAdj;
 	char NegZAdj;
 
-
-	//proto
-	vector<Object*> ObjectList;
+	vector<Object*> ObjectList;//list that keeps track of all objects within each room. Used for render, updating, collision, etc.
 	vector<Object*>::iterator iter;
+	vector<Object*>::iterator iter2;
 
 	//level map. randomly generated within Init().
 	int LevelMatrix[LEVELW][LEVELH];
@@ -35,7 +35,7 @@ public:
 
 	Room();
 	void virtual Destroy();
-	void Init(char ID, int x, int y, int z);
+	void Init(char ID, int x, int y, int z, Player *player);
 
 	char GetID() { return ID; }
 	void SetID(char ID) { Room::ID = ID; }
@@ -47,6 +47,14 @@ public:
 	void SetX(int x) { Room::x = x; }
 	void SetY(int y) { Room::y = y; }
 	void SetZ(int z) { Room::z = z; }
+
+	//==============================================
+	//OBJECT LIST MANAGEMENT
+	//==============================================
+	void ObjectUpdate(int CameraXDir, int CameraYDir);
+	void ObjectRender();
+	void ObjectCollision();
+	void ObjectDeletion();
 
 	//==============================================
 	//ADJACENT ROOM ACCESS/MODIFICATION
