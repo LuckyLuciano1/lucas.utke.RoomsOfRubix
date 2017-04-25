@@ -1,22 +1,14 @@
 #include "Tile.h"
 Tile::Tile() {}
 
-void Tile::Init(double x, double y, double z, int imageX, int imageY, int imageboundX, int imageboundY) 
+void Tile::Init(ALLEGRO_BITMAP *TileImage, double x, double y, double z, int imageX, int imageY, int imageboundX, int imageboundY) 
 {
-	Object::Init(x, y, z);
-	boundX = TILEW;
-	boundY = TILEH;
+	Object::Init(x, y, z, TILEW, TILEH, imageX, imageY, imageboundX, imageboundY, x, y, TILEW, TILEH);
 
-	Object::imageX = imageX;
-	Object::imageY = imageY;
-	Object::imageboundX = imageboundX;
-	Object::imageboundY = imageboundY;
+	SetAnimating(false);
 
-	Object::image = al_load_bitmap("TerrainImage.png");//currently does not like 'image' (any al command involving 'image' will crash the program).
-
-	if (Object::image == NULL)
-		cout <<" IT'S NULL" << endl;//it is for some reason
-
+	Object::image = TileImage;// al_load_bitmap("TerrainImage.png");//currently does not like 'image' (any allegro command involving 'image' will crash the program).
+	//Object::image = al_load_bitmap("TerrainImage.png");
 	//al_convert_mask_to_alpha(image, al_map_rgb(255, 255, 255));
 }
 

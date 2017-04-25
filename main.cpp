@@ -72,12 +72,11 @@ int main()
 	//==============================================
 	//PROJECT VARIABLES
 	//==============================================
-	Player *player = new Player();
-	player->Init(SCREENW/2, SCREENH/2, 0, 0, 0, 50, 100);
-	int state = PLAYING;
 
+	Player *player = new Player();
 	Camera *camera = new Camera();
-	camera->Init(0, 0);
+
+	ALLEGRO_BITMAP *TileImage = NULL;
 	//defining all the rooms
 	Room *roomA = new Room();
 	Room *roomB = new Room();
@@ -107,76 +106,8 @@ int main()
 	Room *roomY = new Room();
 	Room *roomZ = new Room();
 
-	//creation of all rooms. Init() involves/will involve creation of level, objects, etc.
-	roomA->Init('A', 0, 0, 0, player);
-	roomB->Init('B', 1, 0, 0, player);
-	roomC->Init('C', 2, 0, 0, player);
+	int state = PLAYING;
 
-	roomD->Init('D', 0, 1, 0, player);
-	roomE->Init('E', 1, 1, 0, player);
-	roomF->Init('F', 2, 1, 0, player);
-
-	roomG->Init('G', 0, 2, 0, player);
-	roomH->Init('H', 1, 2, 0, player);
-	roomI->Init('I', 2, 2, 0, player);
-
-	roomJ->Init('J', 0, 0, 1, player);
-	roomK->Init('K', 1, 0, 1, player);
-	roomL->Init('L', 2, 0, 1, player);
-
-	roomM->Init('M', 0, 1, 1, player);
-	room_->Init('_', 1, 1, 1, player);//center of cube
-	roomN->Init('N', 2, 1, 1, player);
-
-	roomO->Init('O', 0, 2, 1, player);
-	roomP->Init('P', 1, 2, 1, player);
-	roomQ->Init('Q', 2, 2, 1, player);
-
-	roomR->Init('R', 0, 0, 2, player);
-	roomS->Init('S', 1, 0, 2, player);
-	roomT->Init('T', 2, 0, 2, player);
-
-	roomU->Init('U', 0, 1, 2, player);
-	roomV->Init('V', 1, 1, 2, player);
-	roomW->Init('W', 2, 1, 2, player);
-
-	roomX->Init('X', 0, 2, 2, player);
-	roomY->Init('Y', 1, 2, 2, player);
-	roomZ->Init('Z', 2, 2, 2, player);
-
-	//adding all rooms to 'rooms' vector
-	rooms.push_back(roomA);
-	rooms.push_back(roomB);
-	rooms.push_back(roomC);
-	rooms.push_back(roomD);
-	rooms.push_back(roomE);
-	rooms.push_back(roomF);
-	rooms.push_back(roomG);
-	rooms.push_back(roomH);
-	rooms.push_back(roomI);
-	rooms.push_back(roomJ);
-	rooms.push_back(roomK);
-	rooms.push_back(roomL);
-	rooms.push_back(roomM);
-	rooms.push_back(room_);
-	rooms.push_back(roomN);
-	rooms.push_back(roomO);
-	rooms.push_back(roomP);
-	rooms.push_back(roomQ);
-	rooms.push_back(roomR);
-	rooms.push_back(roomS);
-	rooms.push_back(roomT);
-	rooms.push_back(roomU);
-	rooms.push_back(roomV);
-	rooms.push_back(roomW);
-	rooms.push_back(roomX);
-	rooms.push_back(roomY);
-	rooms.push_back(roomZ);
-	for (riter = rooms.begin(); riter != rooms.end(); ++riter)
-	{
-		if ((*riter)->GetID() == CurrentRoom)
-			(*riter)->ObjectUpdate(camera->GetCameraXDir(), camera->GetCameraYDir());
-	}
 	//==============================================
 	//ALLEGRO VARIABLES
 	//==============================================
@@ -223,7 +154,81 @@ int main()
 	//font18 = al_load_font("arial.ttf", 18, 0);
 	//al_reserve_samples(15);
 
+	TileImage = al_load_bitmap("TerrainImage.png");
+	al_convert_mask_to_alpha(TileImage, al_map_rgb(255, 255, 255));
+
+	//seeds RNG with computer clock
 	srand(time(NULL));
+
+	//creation of player and camera
+	player->Init(SCREENW / 2, SCREENH / 2, 0, 0, 0, 50, 100);	
+	camera->Init(player->GetX(), player->GetY());
+	
+	//creation of all rooms. Init() involves/will involve creation of levels, objects, etc.
+	roomA->Init('A', 0, 0, 0, player, TileImage);
+	roomB->Init('B', 1, 0, 0, player, TileImage);
+	roomC->Init('C', 2, 0, 0, player, TileImage);
+
+	roomD->Init('D', 0, 1, 0, player, TileImage);
+	roomE->Init('E', 1, 1, 0, player, TileImage);
+	roomF->Init('F', 2, 1, 0, player, TileImage);
+
+	roomG->Init('G', 0, 2, 0, player, TileImage);
+	roomH->Init('H', 1, 2, 0, player, TileImage);
+	roomI->Init('I', 2, 2, 0, player, TileImage);
+
+	roomJ->Init('J', 0, 0, 1, player, TileImage);
+	roomK->Init('K', 1, 0, 1, player, TileImage);
+	roomL->Init('L', 2, 0, 1, player, TileImage);
+
+	roomM->Init('M', 0, 1, 1, player, TileImage);
+	room_->Init('_', 1, 1, 1, player, TileImage);//center of cube
+	roomN->Init('N', 2, 1, 1, player, TileImage);
+
+	roomO->Init('O', 0, 2, 1, player, TileImage);
+	roomP->Init('P', 1, 2, 1, player, TileImage);
+	roomQ->Init('Q', 2, 2, 1, player, TileImage);
+
+	roomR->Init('R', 0, 0, 2, player, TileImage);
+	roomS->Init('S', 1, 0, 2, player, TileImage);
+	roomT->Init('T', 2, 0, 2, player, TileImage);
+
+	roomU->Init('U', 0, 1, 2, player, TileImage);
+	roomV->Init('V', 1, 1, 2, player, TileImage);
+	roomW->Init('W', 2, 1, 2, player, TileImage);
+
+	roomX->Init('X', 0, 2, 2, player, TileImage);
+	roomY->Init('Y', 1, 2, 2, player, TileImage);
+	roomZ->Init('Z', 2, 2, 2, player, TileImage);
+
+	//adding all rooms to 'rooms' vector
+	rooms.push_back(roomA);
+	rooms.push_back(roomB);
+	rooms.push_back(roomC);
+	rooms.push_back(roomD);
+	rooms.push_back(roomE);
+	rooms.push_back(roomF);
+	rooms.push_back(roomG);
+	rooms.push_back(roomH);
+	rooms.push_back(roomI);
+	rooms.push_back(roomJ);
+	rooms.push_back(roomK);
+	rooms.push_back(roomL);
+	rooms.push_back(roomM);
+	rooms.push_back(room_);
+	rooms.push_back(roomN);
+	rooms.push_back(roomO);
+	rooms.push_back(roomP);
+	rooms.push_back(roomQ);
+	rooms.push_back(roomR);
+	rooms.push_back(roomS);
+	rooms.push_back(roomT);
+	rooms.push_back(roomU);
+	rooms.push_back(roomV);
+	rooms.push_back(roomW);
+	rooms.push_back(roomX);
+	rooms.push_back(roomY);
+	rooms.push_back(roomZ);
 
 	//==============================================
 	//TIMER INIT AND STARTUP
@@ -238,9 +243,11 @@ int main()
 	al_start_timer(timer);
 	gameTime = al_current_time();
 
+	cout << "GAMELOOP BEGIN" << endl;
 	//game loop begin
 	while (!doexit)
 	{
+		
 		ALLEGRO_EVENT ev;
 		al_wait_for_event(event_queue, &ev);
 

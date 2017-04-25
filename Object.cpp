@@ -30,6 +30,11 @@ Object::Object()
 	imageboundX = 0;
 	imageboundY = 0;
 
+	colX = 0;
+	colY = 0;
+	colboundX = 0;
+	colboundY = 0;
+
 	maxFrame = 0;
 	curFrame = 0;
 
@@ -37,16 +42,29 @@ Object::Object()
 	curRow = 0;
 
 	image = NULL;
-	collidable = false;
+	//collidable = false;
 }
 
 void Object::Destroy() {}
 
-void Object::Init(double x, double y, double z) 
+void Object::Init(double x, double y, double z, int boundX, int boundY, int imageX, int imageY, int imageboundX, int imageboundY, int colX, int colY, int colboundX, int colboundY)
 {
 	Object::x = x;
 	Object::y = y;
 	Object::z = z;
+
+	Object::boundX = boundX;
+	Object::boundY = boundY;
+
+	Object::imageX = imageX;
+	Object::imageY = imageY;
+	Object::imageboundX = imageboundX;
+	Object::imageboundY = imageboundY;
+
+	Object::colX = colX;
+	Object::colY = colY;
+	Object::colboundX = colboundX;
+	Object::colboundY = colboundY;
 }
 
 void Object::Update(double cameraX, double cameraY) 
@@ -59,33 +77,37 @@ void Object::Update(double cameraX, double cameraY)
 	y += cameraY;
 	//no camera update for z because it eventually gets added into y, and is not an actual dimension within the parameters of the game.
 
-	if (curFrame<maxFrame)
-		curFrame++;
-	else
-		curFrame = 0;
+	colX += velX*dirX;
+	colY += velY*dirY;
+	if (animating) {
+		if (curFrame < maxFrame)//creates movement of frames
+			curFrame++;
+		else
+			curFrame = 0;
+	}
 
-	if (x > cameraX &&
+	/*if (x > cameraX &&//sets collision to false when outside of frame
 		x + boundX < cameraX + SCREENW &&
 		y > cameraY &&
 		y + boundY > cameraY + SCREENH)
 		collidable = true;
 	else
-		collidable = false;
+		collidable = false;*/
 }
 
 void Object::Render()
 {
-	al_draw_tinted_scaled_rotated_bitmap_region(image, imageX, imageY, imageboundX, imageboundY, transparency, boundX/2, boundY/2, x, y + z, imageboundX/boundX, imageboundY/boundY, angle, 0);
+	al_draw_tinted_scaled_rotated_bitmap_region(image, imageX, imageY, imageboundX, imageboundY, transparency, boundX/2, boundY/2, x, y + z, boundX/imageboundX, boundY/imageboundY, angle, 0);
 	//cumulative drawing function that should be able to handle all possible drawing commands.
 }
 
 bool Object::CollisionCheck(Object *otherObject) {
 	collision = false;
-	double oX = otherObject->GetX();
-	double oY = otherObject->GetY();
+	double oX = otherObject->GetColX();
+	double oY = otherObject->GetColY();
 
-	int obX = otherObject->GetBoundX();
-	int obY = otherObject->GetBoundY();
+	int obX = otherObject->GetColBoundX();
+	int obY = otherObject->GetColBoundY();
 
 	double onewX = (otherObject->GetVelX()*otherObject->GetDirX());
 	double onewY = (otherObject->GetVelY()*otherObject->GetDirY());

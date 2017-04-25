@@ -26,7 +26,10 @@ protected:
 
 	vector<Object*> ObjectList;//list that keeps track of all objects within each room. Used for render, updating, collision, etc.
 	vector<Object*>::iterator iter;
-	vector<Object*>::iterator iter2;
+
+	vector<Object *> ObjectCollisionList;//list that keeps track of all objects that must collide with each other. 
+	vector<Object*>::iterator citer;
+	vector<Object*>::iterator citer2;
 
 	//level map. randomly generated within Init().
 	int LevelMatrix[LEVELW][LEVELH];
@@ -35,7 +38,7 @@ public:
 
 	Room();
 	void virtual Destroy();
-	void Init(char ID, int x, int y, int z, Player *player);
+	void Init(char ID, int x, int y, int z, Player *player, ALLEGRO_BITMAP *TileImage);
 
 	char GetID() { return ID; }
 	void SetID(char ID) { Room::ID = ID; }

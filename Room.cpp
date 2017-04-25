@@ -17,7 +17,7 @@ Room::Room()
 
 void Room::Destroy() {}
 
-void Room::Init(char ID, int x, int y, int z, Player *player)
+void Room::Init(char ID, int x, int y, int z, Player *player, ALLEGRO_BITMAP *TileImage)
 {
 	Room::ID = ID;
 	Room::x = x;
@@ -30,18 +30,20 @@ void Room::Init(char ID, int x, int y, int z, Player *player)
 
 	for (int x = 0; x < LEVELW; x++) {
 		for (int y = 0; y < LEVELH; y++) {
-				LevelMatrix[x][y] = 1;
+			LevelMatrix[x][y] = rand()%2+1;
 		}
 	}
 	for (int x = 0; x < LEVELW; x++) {
 		for (int y = 0; y < LEVELH; y++) {
 			if (LevelMatrix[x][y] == 1) {
 				Tile *tile = new Tile();
-				tile->Init(x*TILEW, x*TILEH, 0, 0, 0, TILEW, TILEH);
+				tile->Init(TileImage, x*TILEW, y*TILEH, 0, 0, 0, TILEW, TILEH);//position and dimensions/position of image
 				ObjectList.push_back(tile);
+				//cout << "created tile (" <<x<<", "<<y<<")"<< endl;
 			}
 		}
 	}
+	cout << "created room "<<ID<< "with "<<ObjectList.size()<<" objects"<< endl;
 }
 
 void Room::ObjectUpdate(int CameraXDir, int CameraYDir) 
@@ -60,16 +62,16 @@ void Room::ObjectRender()
 }
 void Room::ObjectCollision()
 {
-	for (iter = ObjectList.begin(); iter != ObjectList.end(); ++iter)
+	for (citer = ObjectCollisionList.begin(); citer != ObjectCollisionList.end(); ++citer)
 	{
-		if (!(*iter)->GetCollidable()) continue;
-		for (iter2 = iter; iter2 != ObjectList.end(); ++iter2)
+		//if (!(*iter)->GetCollidable()) continue;
+		for (citer2 = citer; citer2 != ObjectCollisionList.end(); ++citer2)
 		{
-			if (!(*iter)->GetCollidable()) continue;
-			if ((*iter)->CollisionCheck((*iter2)))
+			//if (!(*citer)->GetCollidable()) continue;
+			if ((*citer)->CollisionCheck((*citer2)))
 			{
-				(*iter)->Collided((*iter2));
-				(*iter2)->Collided((*iter));
+				(*citer)->Collided((*citer2));
+				(*citer2)->Collided((*citer));
 			}
 		}
 	}

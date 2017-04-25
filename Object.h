@@ -11,8 +11,8 @@ class Object
 {
 private:
 
-	bool collidable;//ability for object to collide.
 	bool collision;//the collision of two objects.	
+	bool animating;
 
 protected:
 
@@ -41,6 +41,11 @@ protected:
 	int imageboundX;//width and height of image region being used.
 	int imageboundY;
 
+	int colX;//position and size of object that is collidable.
+	int colY;
+	int colboundX;
+	int colboundY;
+
 	int maxFrame;//number of frames to row currently being used.
 	int curFrame;//current frame the class is on.
 
@@ -53,7 +58,7 @@ public:
 
 	Object();
 	void virtual Destroy();
-	void Init(double x, double y, double z);
+	void Init(double x, double y, double z, int boundX, int boundY, int imageX, int imageY, int imageboundX, int imageboundY, int colX, int colY, int colboundX, int colboundY);
 
 	//==============================================
 	//CLASS MANAGEMENT
@@ -88,12 +93,26 @@ public:
 	void SetVelY(double velY) { Object::velY = velY; }
 	void SetVelZ(double velZ) { Object::velZ = velZ; }
 
+	double GetColX() { return colX; }
+	double GetColY() { return colY; }
+
+	void SetColX(double colx) { Object::colX = colX; }
+	void SetColY(double coly) { Object::colY = colY; }
+
 	//==============================================
 	//SIZE ACCESS
 	//==============================================
 	int GetBoundX() { return boundX; }
 	int GetBoundY() { return boundY; }
 
+	void SetBoundX(int boundX) { Object::boundX = boundX; }
+	void SetBoundY( int boundY) { Object::boundY = boundY; }
+
+	int GetColBoundX() { return colboundX; }
+	int GetColBoundY() { return colboundY; }
+
+	void SetColBoundX(int colboundX) { Object::colboundX = colboundX; }
+	void SetColBoundY(int colboundY) { Object::colboundY = colboundY; }
 	//==============================================
 	//DELETION ACCESS/MODIFICATION
 	//==============================================
@@ -103,9 +122,16 @@ public:
 	//==============================================
 	//COLLISION
 	//==============================================
-	bool GetCollidable() { return collidable; }
-	void SetCollidable(bool collidable) { Object::collidable = collidable; }
+	//bool GetCollidable() { return collidable; }
+	//void SetCollidable(bool collidable) { Object::collidable = collidable; }
 
 	bool CollisionCheck(Object *otherObject);
 	void virtual Collided(Object *otherObject);
+
+	//==============================================
+	//OTHER
+	//==============================================
+	bool GetAnimating() { return animating; }
+	void SetAnimating(bool animating) { Object::animating = animating; }
+
 };
