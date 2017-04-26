@@ -20,14 +20,13 @@
 #include "Player.h"
 #include "Room.h"
 #include "Camera.h"
+#include "ImageStorage.h"
 
 #define PI 3.14159265
 #define DEGREES(x) int((x)/360.0*0xFFFFFF)
 #define RADIANS(x) int((x)/2/M_PI*0xFFFFFF)
 
 using namespace std;
-
-bool compare(Object *L1, Object *L2);
 
 vector<Room *> rooms;
 vector<Room *>::iterator riter;
@@ -75,8 +74,8 @@ int main()
 
 	Player *player = new Player();
 	Camera *camera = new Camera();
+	ImageStorage *imagestorage = new ImageStorage();
 
-	ALLEGRO_BITMAP *TileImage = NULL;
 	//defining all the rooms
 	Room *roomA = new Room();
 	Room *roomB = new Room();
@@ -115,7 +114,7 @@ int main()
 	ALLEGRO_DISPLAY_MODE   disp_data;
 	ALLEGRO_EVENT_QUEUE *event_queue = NULL;
 	ALLEGRO_TIMER *timer = NULL;
-	//ALLEGRO_FONT *font18;
+	ALLEGRO_FONT *font18;
 
 	//==============================================
 	//ALLEGRO INIT FUNCTIONS
@@ -151,55 +150,55 @@ int main()
 	//PROJECT INIT
 	//==============================================
 	//insert font types, images, sounds, state images, etc
-	//font18 = al_load_font("arial.ttf", 18, 0);
-	//al_reserve_samples(15);
-
-	TileImage = al_load_bitmap("TerrainImage.png");
-	al_convert_mask_to_alpha(TileImage, al_map_rgb(255, 255, 255));
+	font18 = al_load_font("arial.ttf", 18, 0);
+	al_reserve_samples(15);
 
 	//seeds RNG with computer clock
 	srand(time(NULL));
 
+	//creation of all images
+	imagestorage->Init();
+
 	//creation of player and camera
-	player->Init(SCREENW / 2, SCREENH / 2, 0, 0, 0, 50, 100);	
+	player->Init(50, 50, 1, 0, 0, 176, 361, imagestorage->GetPlayerImage());	
 	camera->Init(player->GetX(), player->GetY());
 	
 	//creation of all rooms. Init() involves/will involve creation of levels, objects, etc.
-	roomA->Init('A', 0, 0, 0, player, TileImage);
-	roomB->Init('B', 1, 0, 0, player, TileImage);
-	roomC->Init('C', 2, 0, 0, player, TileImage);
+	roomA->Init('A', 0, 0, 0, player, imagestorage->GetTerrainImage());
+	roomB->Init('B', 1, 0, 0, player, imagestorage->GetTerrainImage());
+	roomC->Init('C', 2, 0, 0, player, imagestorage->GetTerrainImage());
 
-	roomD->Init('D', 0, 1, 0, player, TileImage);
-	roomE->Init('E', 1, 1, 0, player, TileImage);
-	roomF->Init('F', 2, 1, 0, player, TileImage);
+	roomD->Init('D', 0, 1, 0, player, imagestorage->GetTerrainImage());
+	roomE->Init('E', 1, 1, 0, player, imagestorage->GetTerrainImage());
+	roomF->Init('F', 2, 1, 0, player, imagestorage->GetTerrainImage());
 
-	roomG->Init('G', 0, 2, 0, player, TileImage);
-	roomH->Init('H', 1, 2, 0, player, TileImage);
-	roomI->Init('I', 2, 2, 0, player, TileImage);
+	roomG->Init('G', 0, 2, 0, player, imagestorage->GetTerrainImage());
+	roomH->Init('H', 1, 2, 0, player, imagestorage->GetTerrainImage());
+	roomI->Init('I', 2, 2, 0, player, imagestorage->GetTerrainImage());
 
-	roomJ->Init('J', 0, 0, 1, player, TileImage);
-	roomK->Init('K', 1, 0, 1, player, TileImage);
-	roomL->Init('L', 2, 0, 1, player, TileImage);
+	roomJ->Init('J', 0, 0, 1, player, imagestorage->GetTerrainImage());
+	roomK->Init('K', 1, 0, 1, player, imagestorage->GetTerrainImage());
+	roomL->Init('L', 2, 0, 1, player, imagestorage->GetTerrainImage());
 
-	roomM->Init('M', 0, 1, 1, player, TileImage);
-	room_->Init('_', 1, 1, 1, player, TileImage);//center of cube
-	roomN->Init('N', 2, 1, 1, player, TileImage);
+	roomM->Init('M', 0, 1, 1, player, imagestorage->GetTerrainImage());
+	room_->Init('_', 1, 1, 1, player, imagestorage->GetTerrainImage());//center of cube
+	roomN->Init('N', 2, 1, 1, player, imagestorage->GetTerrainImage());
 
-	roomO->Init('O', 0, 2, 1, player, TileImage);
-	roomP->Init('P', 1, 2, 1, player, TileImage);
-	roomQ->Init('Q', 2, 2, 1, player, TileImage);
+	roomO->Init('O', 0, 2, 1, player, imagestorage->GetTerrainImage());
+	roomP->Init('P', 1, 2, 1, player, imagestorage->GetTerrainImage());
+	roomQ->Init('Q', 2, 2, 1, player, imagestorage->GetTerrainImage());
 
-	roomR->Init('R', 0, 0, 2, player, TileImage);
-	roomS->Init('S', 1, 0, 2, player, TileImage);
-	roomT->Init('T', 2, 0, 2, player, TileImage);
+	roomR->Init('R', 0, 0, 2, player, imagestorage->GetTerrainImage());
+	roomS->Init('S', 1, 0, 2, player, imagestorage->GetTerrainImage());
+	roomT->Init('T', 2, 0, 2, player, imagestorage->GetTerrainImage());
 
-	roomU->Init('U', 0, 1, 2, player, TileImage);
-	roomV->Init('V', 1, 1, 2, player, TileImage);
-	roomW->Init('W', 2, 1, 2, player, TileImage);
+	roomU->Init('U', 0, 1, 2, player, imagestorage->GetTerrainImage());
+	roomV->Init('V', 1, 1, 2, player, imagestorage->GetTerrainImage());
+	roomW->Init('W', 2, 1, 2, player, imagestorage->GetTerrainImage());
 
-	roomX->Init('X', 0, 2, 2, player, TileImage);
-	roomY->Init('Y', 1, 2, 2, player, TileImage);
-	roomZ->Init('Z', 2, 2, 2, player, TileImage);
+	roomX->Init('X', 0, 2, 2, player, imagestorage->GetTerrainImage());
+	roomY->Init('Y', 1, 2, 2, player, imagestorage->GetTerrainImage());
+	roomZ->Init('Z', 2, 2, 2, player, imagestorage->GetTerrainImage());
 
 	//adding all rooms to 'rooms' vector
 	rooms.push_back(roomA);
@@ -486,25 +485,11 @@ int main()
 	 //DESTROY PROJECT OBJECTS
 	 //==============================================
 	//SHELL OBJECTS=================================
-	//al_destroy_font(font18);
+	al_destroy_font(font18);
 	al_destroy_timer(timer);
 	al_destroy_event_queue(event_queue);
 	al_destroy_display(display);
 	return 0;
-}
-
-//sorts object list
-bool compare(Object *L1, Object *L2) {
-	if ((*L1).GetY() + (*L1).GetBoundY() < (*L2).GetY() + (*L2).GetBoundY()) return true;
-	if ((*L2).GetY() + (*L2).GetBoundY() < (*L1).GetY() + (*L1).GetBoundY()) return false;
-
-	// a=b for primary condition, go to secondary
-	//if ((*L1).BaseY < (*L2).BaseY) return true;
-	//if ((*L2).BaseY < (*L1).BaseY) return false;
-
-	// ...
-
-	return false;
 }
 
 void Transition(char CurrentRoom, char RoomMatrix[3][3][3]) {

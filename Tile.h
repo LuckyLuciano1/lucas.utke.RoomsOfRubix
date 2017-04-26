@@ -10,7 +10,7 @@ class Tile : public Object
 {
 public:
 	Tile();
-	void Init(ALLEGRO_BITMAP *TileImage, double x, double y, double z, int imageX, int imageY, int imageboundX, int imageboundY);
+	void Init(ALLEGRO_BITMAP *TileImage, double x, double y, double z, int imageX, int imageY, double imageboundX, double imageboundY);
 	void Render();
 	void Update(double cameraX, double cameraY);
 };

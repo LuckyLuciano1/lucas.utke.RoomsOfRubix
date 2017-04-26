@@ -4,47 +4,47 @@
 #include "Tile.h"
 #include <math.h>
 #include <iostream>
+#include <algorithm>
+
 using namespace std;
 
-Room::Room()
-{
-	ID = 0;
+bool compare(Object *L1, Object *L2);//function for sorting values. not part of the room class, merely inhabits same file
 
-	x = 0;
-	y = 0;
-	z = 0;
-}
+Room::Room(){}
 
 void Room::Destroy() {}
 
-void Room::Init(char ID, int x, int y, int z, Player *player, ALLEGRO_BITMAP *TileImage)
+void Room::Init(char ID, int x, int y, int z, Player *player, ALLEGRO_BITMAP *TerrainImage)
 {
 	Room::ID = ID;
 	Room::x = x;
 	Room::y = y;
 	Room::z = z;
 
-	//ObjectList.push_back(player);
+	ObjectList.push_back(player);
+	ObjectCollisionList.push_back(player);
 
 	LevelMatrix[LEVELW][LEVELH] = {};
 
 	for (int x = 0; x < LEVELW; x++) {
 		for (int y = 0; y < LEVELH; y++) {
-			LevelMatrix[x][y] = rand()%2+1;
+			LevelMatrix[x][y] = 1;// rand() % 2 + 1;
 		}
 	}
 	for (int x = 0; x < LEVELW; x++) {
 		for (int y = 0; y < LEVELH; y++) {
 			if (LevelMatrix[x][y] == 1) {
 				Tile *tile = new Tile();
-				tile->Init(TileImage, x*TILEW, y*TILEH, 0, 0, 0, TILEW, TILEH);//position and dimensions/position of image
+				tile->Init(TerrainImage, x*TILEW, y*TILEH, TILEW*x*rand() % 5, 0, 0, 200, 200);//position and dimensions/position of image
 				ObjectList.push_back(tile);
-				//cout << "created tile (" <<x<<", "<<y<<")"<< endl;
 			}
 		}
 	}
-	cout << "created room "<<ID<< "with "<<ObjectList.size()<<" objects"<< endl;
 }
+
+//===========================================================================================================================================================================================================================
+//OBJECT LIST MANAGEMENT
+//===========================================================================================================================================================================================================================
 
 void Room::ObjectUpdate(int CameraXDir, int CameraYDir) 
 {
@@ -53,21 +53,22 @@ void Room::ObjectUpdate(int CameraXDir, int CameraYDir)
 		(*iter)->Update(CameraXDir, CameraYDir);
 	}
 }
+
 void Room::ObjectRender()
 {
+	sort(ObjectList.begin(), ObjectList.end(), compare);
 	for (iter = ObjectList.begin(); iter != ObjectList.end(); ++iter)
 	{
 		(*iter)->Render();
 	}
 }
+
 void Room::ObjectCollision()
 {
 	for (citer = ObjectCollisionList.begin(); citer != ObjectCollisionList.end(); ++citer)
 	{
-		//if (!(*iter)->GetCollidable()) continue;
 		for (citer2 = citer; citer2 != ObjectCollisionList.end(); ++citer2)
 		{
-			//if (!(*citer)->GetCollidable()) continue;
 			if ((*citer)->CollisionCheck((*citer2)))
 			{
 				(*citer)->Collided((*citer2));
@@ -90,6 +91,23 @@ void Room::ObjectDeletion()
 			iter++;
 	}
 }
+
+bool compare(Object *L1, Object *L2) {
+
+	//primary condition
+	if ((*L1).GetZ() < (*L2).GetZ()) return true;
+	if ((*L2).GetZ() < (*L1).GetZ()) return false;
+
+	//secondary condition
+	if ((*L1).GetY() + (*L1).GetBoundY() < (*L2).GetY() + (*L2).GetBoundY()) return true;
+	if ((*L2).GetY() + (*L2).GetBoundY() < (*L1).GetY() + (*L1).GetBoundY()) return false;
+
+	return false;
+}
+
+//===========================================================================================================================================================================================================================
+//SHUFFLING
+//===========================================================================================================================================================================================================================
 
 void Room::Shuffle(int shuffletype)
 {

@@ -33,13 +33,13 @@ protected:
 	double angle;//angle of rotation of object.
 	ALLEGRO_COLOR transparency;//transparency of rendered image.
 
-	int boundX;//width and height of object within game.
-	int boundY;
+	double boundX;//width and height of object within game.
+	double boundY;
 
 	int imageX;//position of image region being used.
 	int imageY;
-	int imageboundX;//width and height of image region being used.
-	int imageboundY;
+	double imageboundX;//width and height of image region being used.
+	double imageboundY;
 
 	int colX;//position and size of object that is collidable.
 	int colY;
@@ -52,18 +52,20 @@ protected:
 	int maxRow;//number of rows within image (should not change).
 	int curRow;//current row class is on.
 
+	bool FlipHorizontal;//tracks whether or not to flip image. Default faces left.
+
 	ALLEGRO_BITMAP *image;
 
 public:
 
 	Object();
 	void virtual Destroy();
-	void Init(double x, double y, double z, int boundX, int boundY, int imageX, int imageY, int imageboundX, int imageboundY, int colX, int colY, int colboundX, int colboundY);
+	void Init(double x, double y, double z, double boundX, double boundY, int imageX, int imageY, double imageboundX, double imageboundY, int colX, int colY, int colboundX, int colboundY);
 
 	//==============================================
 	//CLASS MANAGEMENT
 	//==============================================
-	void virtual Update(double cameraX, double cameraY);
+	void virtual Update(double cameraXDir, double cameraYDir);
 	void virtual Render();
 
 	//==============================================
@@ -102,11 +104,11 @@ public:
 	//==============================================
 	//SIZE ACCESS
 	//==============================================
-	int GetBoundX() { return boundX; }
-	int GetBoundY() { return boundY; }
+	double GetBoundX() { return boundX; }
+	double GetBoundY() { return boundY; }
 
-	void SetBoundX(int boundX) { Object::boundX = boundX; }
-	void SetBoundY( int boundY) { Object::boundY = boundY; }
+	void SetBoundX(double boundX) { Object::boundX = boundX; }
+	void SetBoundY(double boundY) { Object::boundY = boundY; }
 
 	int GetColBoundX() { return colboundX; }
 	int GetColBoundY() { return colboundY; }

@@ -47,7 +47,7 @@ Object::Object()
 
 void Object::Destroy() {}
 
-void Object::Init(double x, double y, double z, int boundX, int boundY, int imageX, int imageY, int imageboundX, int imageboundY, int colX, int colY, int colboundX, int colboundY)
+void Object::Init(double x, double y, double z, double boundX, double boundY, int imageX, int imageY, double imageboundX, double imageboundY, int colX, int colY, int colboundX, int colboundY)
 {
 	Object::x = x;
 	Object::y = y;
@@ -67,37 +67,36 @@ void Object::Init(double x, double y, double z, int boundX, int boundY, int imag
 	Object::colboundY = colboundY;
 }
 
-void Object::Update(double cameraX, double cameraY) 
+void Object::Update(double cameraXDir, double cameraYDir) 
 {	
 	x += velX*dirX;
 	y += velY*dirY;
 	z += velZ*dirZ;
 
-	x += cameraX;
-	y += cameraY;
+	x += cameraXDir;
+	y += cameraYDir;
 	//no camera update for z because it eventually gets added into y, and is not an actual dimension within the parameters of the game.
 
-	colX += velX*dirX;
+	colX += velX*dirX;//updates collision position
 	colY += velY*dirY;
-	if (animating) {
-		if (curFrame < maxFrame)//creates movement of frames
+
+	if (animating) {//creates movement of frames
+		if (curFrame < maxFrame)
 			curFrame++;
 		else
 			curFrame = 0;
 	}
 
-	/*if (x > cameraX &&//sets collision to false when outside of frame
-		x + boundX < cameraX + SCREENW &&
-		y > cameraY &&
-		y + boundY > cameraY + SCREENH)
-		collidable = true;
+	if (FlipHorizontal)//flips image
+		FlipHorizontal = ALLEGRO_FLIP_HORIZONTAL;
 	else
-		collidable = false;*/
+		FlipHorizontal = 0;
 }
 
 void Object::Render()
 {
-	al_draw_tinted_scaled_rotated_bitmap_region(image, imageX, imageY, imageboundX, imageboundY, transparency, boundX/2, boundY/2, x, y + z, boundX/imageboundX, boundY/imageboundY, angle, 0);
+	cout << "( " << boundX / imageboundX << ", " << boundY / imageboundY << ")" << endl;
+	al_draw_tinted_scaled_rotated_bitmap_region(image, imageX, imageY, imageboundX, imageboundY, transparency, boundX/2, boundY/2, x, y + z, boundX/imageboundX, boundY/imageboundY, angle, FlipHorizontal);
 	//cumulative drawing function that should be able to handle all possible drawing commands.
 }
 

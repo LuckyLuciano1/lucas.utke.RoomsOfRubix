@@ -4,6 +4,8 @@
 #include "Globals.h"
 #include "Object.h"
 #include "Player.h"
+#include <allegro5/allegro.h>
+#include <allegro5/allegro_image.h>
 #include <vector>
 
 using namespace std;
@@ -38,7 +40,7 @@ public:
 
 	Room();
 	void virtual Destroy();
-	void Init(char ID, int x, int y, int z, Player *player, ALLEGRO_BITMAP *TileImage);
+	void Init(char ID, int x, int y, int z, Player *player, ALLEGRO_BITMAP *TerrainImage);
 
 	char GetID() { return ID; }
 	void SetID(char ID) { Room::ID = ID; }
@@ -58,6 +60,8 @@ public:
 	void ObjectRender();
 	void ObjectCollision();
 	void ObjectDeletion();
+
+	//bool compare(Object *L1, Object *L2);//sorts ObjectList based on y position (isometric view of sorts)
 
 	//==============================================
 	//ADJACENT ROOM ACCESS/MODIFICATION
