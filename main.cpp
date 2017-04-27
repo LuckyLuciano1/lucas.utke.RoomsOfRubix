@@ -31,9 +31,9 @@ using namespace std;
 vector<Room *> rooms;
 vector<Room *>::iterator riter;
 
+void Transition(char RoomMatrix[3][3][3]);
 
 bool keys[] = { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };
-enum KEYS { UP, DOWN, LEFT, RIGHT, MOUSE_BUTTON, NUM_1, NUM_2, NUM_3, NUM_4, NUM_5, NUM_6, NUM_7, NUM_8, NUM_9, ENTER, SHIFT };
 
 int main()
 {
@@ -50,6 +50,7 @@ int main()
 
 	double mouseX = 0;
 	double mouseY = 0;
+	double MouseAngleRadians = 0;
 
 	char CurrentRoom = '_';
 
@@ -242,6 +243,19 @@ int main()
 	al_start_timer(timer);
 	gameTime = al_current_time();
 
+	Transition(RoomMatrix);//sets up all adjacent rooms
+
+	for (riter = rooms.begin(); riter != rooms.end(); ++riter)
+	{
+		if ((*riter)->GetID() == CurrentRoom) {
+			cout << "XAdj = " << (*riter)->GetXAdj() << endl;
+			cout << "NegXAdj = " << (*riter)->GetNegXAdj() << endl;
+			cout << "YAdj = " << (*riter)->GetYAdj() << endl;
+			cout << "NegYAdj = " << (*riter)->GetNegYAdj() << endl;
+			cout << "ZAdj = " << (*riter)->GetZAdj() << endl;
+			cout << "NegZAdj = " << (*riter)->GetNegZAdj() << endl;
+		}
+	}
 	cout << "GAMELOOP BEGIN" << endl;
 	//game loop begin
 	while (!doexit)
@@ -395,29 +409,83 @@ int main()
 			//=====================
 			if (state == PLAYING)//if playing, receive movement and other stuff
 			{
+				//calculating MouseAngleRadians
+				MouseAngleRadians = atan2(mouseY - (player->GetY() + player->GetBoundY() / 2), mouseX - (player->GetX() + player->GetBoundX() / 2)) * 180 / PI;
+				if (MouseAngleRadians < 0)
+					MouseAngleRadians *= -1;
+				else if (MouseAngleRadians > 0) {
+					MouseAngleRadians = 360 - MouseAngleRadians;
+				}
+				MouseAngleRadians = MouseAngleRadians / 180 * PI;
+
+				//player movement & attacking
+				player->SetMouseAngleRadians(MouseAngleRadians);
+				player->PlayerKeyboard(keys[UP], keys[DOWN], keys[LEFT], keys[RIGHT], keys[SHIFT]);
 				//number keys (temporary, for testing purposes- do not plan on incorporating into gameplay)
 				if (keys[NUM_1])
 				{
+					for (riter = rooms.begin(); riter != rooms.end(); ++riter)
+					{
+						if ((*riter)->GetID() == CurrentRoom) {
+							if ((*riter)->GetXAdj() != '/')
+								CurrentRoom = (*riter)->GetXAdj();
+						}
+					}
 					keys[NUM_1] = false;
 				}
 				if (keys[NUM_2])
 				{
+					for (riter = rooms.begin(); riter != rooms.end(); ++riter)
+					{
+						if ((*riter)->GetID() == CurrentRoom) {
+							if ((*riter)->GetNegXAdj() != '/')
+								CurrentRoom = (*riter)->GetNegXAdj();
+						}
+					}
 					keys[NUM_2] = false;
 				}
 				if (keys[NUM_3])
 				{
+					for (riter = rooms.begin(); riter != rooms.end(); ++riter)
+					{
+						if ((*riter)->GetID() == CurrentRoom) {
+							if ((*riter)->GetYAdj() != '/')
+								CurrentRoom = (*riter)->GetYAdj();
+						}
+					}
 					keys[NUM_3] = false;
 				}
 				if (keys[NUM_4])
 				{
+					for (riter = rooms.begin(); riter != rooms.end(); ++riter)
+					{
+						if ((*riter)->GetID() == CurrentRoom) {
+							if ((*riter)->GetNegYAdj() != '/')
+								CurrentRoom = (*riter)->GetNegYAdj();
+						}
+					}
 					keys[NUM_4] = false;
 				}
 				if (keys[NUM_5])
 				{
+					for (riter = rooms.begin(); riter != rooms.end(); ++riter)
+					{
+						if ((*riter)->GetID() == CurrentRoom) {
+							if ((*riter)->GetZAdj() != '/')
+								CurrentRoom = (*riter)->GetZAdj();
+						}
+					}
 					keys[NUM_5] = false;
 				}
 				if (keys[NUM_6])
 				{
+					for (riter = rooms.begin(); riter != rooms.end(); ++riter)
+					{
+						if ((*riter)->GetID() == CurrentRoom) {
+							if ((*riter)->GetNegZAdj() != '/')
+								CurrentRoom = (*riter)->GetNegZAdj();
+						}
+					}
 					keys[NUM_6] = false;
 				}
 				if (keys[NUM_7])
@@ -471,6 +539,7 @@ int main()
 			else if (state == PLAYING) {
 				for (riter = rooms.begin(); riter != rooms.end(); ++riter)
 				{
+					al_draw_textf(font18, al_map_rgb(255, 255, 255), 5, 5, 0, "ROOM: %c", CurrentRoom);
 					if ((*riter)->GetID() == CurrentRoom)
 						(*riter)->ObjectRender();
 				}
@@ -492,14 +561,14 @@ int main()
 	return 0;
 }
 
-void Transition(char CurrentRoom, char RoomMatrix[3][3][3]) {
+void Transition(char RoomMatrix[3][3][3]) {
 
-	int shuffle = rand() % 12 + 1;
+	//int shuffle = rand() % 12 + 1;
 	//Shuffling rooms like a Rubix Cube
-	for (riter = rooms.begin(); riter != rooms.end(); ++riter)
+	/*for (riter = rooms.begin(); riter != rooms.end(); ++riter)
 	{
 		(*riter)->Shuffle(shuffle);
-	}
+	}*/
 	//realigning RoomMatrix according to shuffle
 	for (int x = 0; x < 3; x++) {
 		for (int y = 0; y < 3; y++) {
@@ -517,29 +586,65 @@ void Transition(char CurrentRoom, char RoomMatrix[3][3][3]) {
 		for (int y = 0; y < 3; y++) {
 			for (int z = 0; z < 3; z++) {
 				if (x + 1 < 3)
-					(*riter)->SetXAdj(RoomMatrix[x + 1][y][z]);
+					for (riter = rooms.begin(); riter != rooms.end(); ++riter) {
+						if ((*riter)->GetX() == x && (*riter)->GetY() == y && (*riter)->GetZ() == z)
+							(*riter)->SetXAdj(RoomMatrix[x + 1][y][z]);
+					}
 				else
-					(*riter)->SetXAdj('/');
+					for (riter = rooms.begin(); riter != rooms.end(); ++riter) {
+						if ((*riter)->GetX() == x && (*riter)->GetY() == y && (*riter)->GetZ() == z)
+							(*riter)->SetXAdj('/');
+					}
 				if (x - 1 > 0)
-					(*riter)->SetNegXAdj(RoomMatrix[x-1][y][z]);
+					for (riter = rooms.begin(); riter != rooms.end(); ++riter) {
+						if ((*riter)->GetX() == x && (*riter)->GetY() == y && (*riter)->GetZ() == z)
+							(*riter)->SetNegXAdj(RoomMatrix[x - 1][y][z]);
+					}
 				else
-					(*riter)->SetNegXAdj('/');
+					for (riter = rooms.begin(); riter != rooms.end(); ++riter) {
+						if ((*riter)->GetX() == x && (*riter)->GetY() == y && (*riter)->GetZ() == z)
+							(*riter)->SetNegXAdj('/');
+					}
 				if (y + 1 < 3)
-					(*riter)->SetYAdj(RoomMatrix[x][y+1][z]);
+					for (riter = rooms.begin(); riter != rooms.end(); ++riter) {
+						if ((*riter)->GetX() == x && (*riter)->GetY() == y && (*riter)->GetZ() == z)
+							(*riter)->SetYAdj(RoomMatrix[x][y + 1][z]);
+					}
 				else
-					(*riter)->SetYAdj('/');
+					for (riter = rooms.begin(); riter != rooms.end(); ++riter) {
+						if ((*riter)->GetX() == x && (*riter)->GetY() == y && (*riter)->GetZ() == z)
+							(*riter)->SetYAdj('/');
+					}
 				if (y - 1 > 0)
-					(*riter)->SetNegYAdj(RoomMatrix[x][y-1][z]);
+					for (riter = rooms.begin(); riter != rooms.end(); ++riter) {
+						if ((*riter)->GetX() == x && (*riter)->GetY() == y && (*riter)->GetZ() == z)
+							(*riter)->SetNegYAdj(RoomMatrix[x][y - 1][z]);
+					}
 				else
-					(*riter)->SetNegYAdj('/');
+					for (riter = rooms.begin(); riter != rooms.end(); ++riter) {
+						if ((*riter)->GetX() == x && (*riter)->GetY() == y && (*riter)->GetZ() == z)
+							(*riter)->SetNegYAdj('/');
+					}
 				if (z + 1 < 3)
-					(*riter)->SetZAdj(RoomMatrix[x][y][z+1]);
+					for (riter = rooms.begin(); riter != rooms.end(); ++riter) {
+						if ((*riter)->GetX() == x && (*riter)->GetY() == y && (*riter)->GetZ() == z)
+							(*riter)->SetZAdj(RoomMatrix[x][y][z + 1]);
+					}
 				else
-					(*riter)->SetZAdj('/');
+					for (riter = rooms.begin(); riter != rooms.end(); ++riter) {
+						if ((*riter)->GetX() == x && (*riter)->GetY() == y && (*riter)->GetZ() == z)
+							(*riter)->SetZAdj('/');
+					}
 				if (z - 1 > 0)
-					(*riter)->SetNegZAdj(RoomMatrix[x][y][z-1]);
+					for (riter = rooms.begin(); riter != rooms.end(); ++riter) {
+						if ((*riter)->GetX() == x && (*riter)->GetY() == y && (*riter)->GetZ() == z)
+							(*riter)->SetNegZAdj(RoomMatrix[x][y][z - 1]);
+					}
 				else
-					(*riter)->SetNegZAdj('/');
+					for (riter = rooms.begin(); riter != rooms.end(); ++riter) {
+						if ((*riter)->GetX() == x && (*riter)->GetY() == y && (*riter)->GetZ() == z)
+							(*riter)->SetNegZAdj('/');
+					}
 			}
 		}
 	}

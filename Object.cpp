@@ -95,7 +95,6 @@ void Object::Update(double cameraXDir, double cameraYDir)
 
 void Object::Render()
 {
-	cout << "( " << boundX / imageboundX << ", " << boundY / imageboundY << ")" << endl;
 	al_draw_tinted_scaled_rotated_bitmap_region(image, imageX, imageY, imageboundX, imageboundY, transparency, boundX/2, boundY/2, x, y + z, boundX/imageboundX, boundY/imageboundY, angle, FlipHorizontal);
 	//cumulative drawing function that should be able to handle all possible drawing commands.
 }

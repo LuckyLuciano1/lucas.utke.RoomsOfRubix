@@ -18,7 +18,7 @@ private:
 		CHARGE,
 		LUNGE
 	};//list of all the various animations that the player has
-	int Animation;//tracks which animation is being performed by the main character
+	int Action;//tracks which action is being performed by the main character
 	double MouseAngleRadians;//angle of mouse in radians. Used to track which direction the player faces (check flags)
 public:
 	Player();
@@ -28,11 +28,12 @@ public:
 	//==============================================
 	//MOVEMENT
 	//==============================================
-	void MoveUp();
-	void MoveDown();
-	void MoveLeft();
-	void MoveRight();
-	void ResetAnimation(int position);
+	void PlayerKeyboard(bool UP, bool DOWN, bool LEFT, bool RIGHT, bool SHIFT);
+	void AnimationHandler();//stores what row of animations corresponds to what animation. Can also be expanded to modify specific player characteristics (size, position, velocity, etc).
 
-	void AnimationHandler();
+	//==============================================
+	//MOUSEANGLE
+	//==============================================
+	double GetMouseAngleRadians() { return MouseAngleRadians; }
+	void SetMouseAngleRadians(double MouseAngleRadians) { Player::MouseAngleRadians = MouseAngleRadians; }
 };

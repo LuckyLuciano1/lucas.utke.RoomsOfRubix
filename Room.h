@@ -45,14 +45,7 @@ public:
 	char GetID() { return ID; }
 	void SetID(char ID) { Room::ID = ID; }
 
-	int GetX() { return x; }
-	int GetY() { return y; }
-	int GetZ() { return z; }
-
-	void SetX(int x) { Room::x = x; }
-	void SetY(int y) { Room::y = y; }
-	void SetZ(int z) { Room::z = z; }
-
+	
 	//==============================================
 	//OBJECT LIST MANAGEMENT
 	//==============================================
@@ -61,7 +54,16 @@ public:
 	void ObjectCollision();
 	void ObjectDeletion();
 
-	//bool compare(Object *L1, Object *L2);//sorts ObjectList based on y position (isometric view of sorts)
+	//==============================================
+	//COORDINATE ACCESS/MODIFICATION
+	//==============================================
+	int GetX() { return x; }
+	int GetY() { return y; }
+	int GetZ() { return z; }
+
+	void SetX(int x) { Room::x = x; }
+	void SetY(int y) { Room::y = y; }
+	void SetZ(int z) { Room::z = z; }
 
 	//==============================================
 	//ADJACENT ROOM ACCESS/MODIFICATION
@@ -77,8 +79,9 @@ public:
 	void SetNegXAdj(char NegXAdj) { Room::NegXAdj = NegXAdj; }
 	void SetYAdj(char YAdj) { Room::YAdj = YAdj; }
 	void SetNegYAdj(char NegYAdj) { Room::NegYAdj = NegYAdj; }
-	void SetZAdj(char Zadj) { Room::ZAdj = ZAdj; }
-	void SetNegZAdj(char NegZadj) { Room::NegZAdj = NegZAdj; }
+	void SetZAdj(char ZAdj) { Room::ZAdj = ZAdj; }
+	void SetNegZAdj(char NegZAdj) { Room::NegZAdj = NegZAdj; }
+
 	//==============================================
 	//SHUFFLING GUIDELINES
 	//==============================================

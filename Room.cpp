@@ -28,7 +28,7 @@ void Room::Init(char ID, int x, int y, int z, Player *player, ALLEGRO_BITMAP *Te
 
 	for (int x = 0; x < LEVELW; x++) {
 		for (int y = 0; y < LEVELH; y++) {
-			LevelMatrix[x][y] = 1;// rand() % 2 + 1;
+			LevelMatrix[x][y] = rand() % 2 + 1;
 		}
 	}
 	for (int x = 0; x < LEVELW; x++) {
@@ -745,3 +745,4 @@ void Room::OrangeCounterClockwise()
 	else
 		cout << "ERROR - ORANGECOUNTERCLOCKWISE" << endl;
 }
+

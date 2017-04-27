@@ -14,6 +14,7 @@ Camera::Camera()
 }
 
 void Camera::Destroy() {}
+
 void Camera::Init(double cameraXPos, double cameraYPos) {
 	Camera::cameraXPos = cameraXPos;
 	Camera::cameraYPos = cameraYPos;
@@ -21,6 +22,7 @@ void Camera::Init(double cameraXPos, double cameraYPos) {
 
 void Camera::Follow (Object *object)
 {
+	/*
 	if ((cameraXPos - -(object->GetVelX())*(object->GetX() - (SCREENW / 2)) / 100) > 0 && (cameraXPos + SCREENW - -(object->GetVelX())*(object->GetX() - (SCREENW / 2)) / 100) < LEVELW*TILEW)//to stop camera from exceeding mapsize
 		cameraXDir = -(object->GetVelX())*(object->GetX() - (SCREENW / 2)) / 100;//velocity of camera is dependent on distance from object
 	else
@@ -30,6 +32,9 @@ void Camera::Follow (Object *object)
 		cameraYDir = -(object->GetVelY())*(object->GetY() - (SCREENH / 2)) / 100;
 	else
 		cameraYDir = 0;
+	*/
+	cameraXDir = -(object->GetVelX())*(object->GetX() - (SCREENW / 2)) / 100;//velocity of camera is dependent on distance from object
+	cameraYDir = -(object->GetVelY())*(object->GetY() - (SCREENH / 2)) / 100;
 
 	cameraXPos -= cameraXDir;
 	cameraYPos -= cameraYDir;
