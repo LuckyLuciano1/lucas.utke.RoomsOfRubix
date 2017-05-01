@@ -7,7 +7,7 @@ Player::Player() {}
 
 void Player::Init(double x, double y, double z, int imageX, int imageY, double imageboundX, double imageboundY, ALLEGRO_BITMAP *PlayerImage)
 {
-	Object::Init(x, y, z, imageboundX / 2, imageboundY / 2, imageX, imageY, imageboundX, imageboundY, x, y, 30, 90);
+	Object::Init(x, y, z, imageboundX / 2.5, imageboundY / 2.5, imageX, imageY, imageboundX, imageboundY, x, y, 30, 90);
 
 	Object::image = PlayerImage;
 
@@ -86,70 +86,3 @@ void Player::AnimationHandler()
 		curFrame = 0;
 	}
 }
-/*
-//updating angle of playerspear
-if (playerspear->GetSpearState() == 2) {//idle state
-	playerspear->SetAngle(atan2(mousey - (player->GetY() + player->GetBoundY() / 2), mousex - (player->GetX() + player->GetBoundX() / 2)) - sqrt(2) / 2);
-}
-//updating player angle
-player->SetMouseAngleRadians(P_M_AngleRadians);
-
-//player movement/attacks
-if (PlayerLunge == true) {//lunge, only true when Mouse Button is released
-
-	player->Lunge(StoredP_M_AngleRadians);
-
-	if (player->GetLungeTime() >= 20) {//runs at beginning of lunge
-		playerspear->SetSpearState(1);//lunging state
-		playerspear->SetAngle(atan2(mousey - (player->GetY() + player->GetBoundY() / 2), mousex - (player->GetX() + player->GetBoundX() / 2)) - sqrt(2) / 2);
-	}
-	else if (player->GetLungeTime() <= 0) {//runs at end of lunge
-		PlayerLunge = false;
-		player->ResetAnimation(0);
-		player->ResetAnimation(1);
-	}
-}
-else if (keys[MOUSE_BUTTON]) {//charging
-
-	if (player->GetChargeTime() == 0) {//runs at beginning of charge
-
-		player->SetChargeTime(10);//begins with small ChargeTime to make some flame regardless of amount charged
-		player->SetLungeTime(21);//setup for later lunge
-	}
-	if (player->GetChargeTime() == 20) {//runs when into  charge (1/3 sec)
-		playerspear->SetSpearState(0);//spinning state. delayed slightly to allow for fast without making the spear twitch.
-
-		player->SetDirX(0);//makes player stationary
-		player->SetDirY(0);//delayed slightly for aesthetic purposes (no mathematic or structural reason).
-	}
-	playerspear->SetChargeTime(player->GetChargeTime());
-	StoredP_M_AngleRadians = P_M_AngleRadians;
-
-	player->Charge(mousex);
-}
-else {//basic movement
-
-	player->SetChargeTime(0);//chargeTime set to 0
-	playerspear->SetChargeTime(0);
-	playerspear->SetSpearState(2);//idle state
-
-	if (keys[UP]) {//player movement
-		player->MoveUp();
-	}
-	else if (keys[DOWN]) {
-		player->MoveDown();
-	}
-	else {
-		player->ResetAnimation(1);
-	}
-
-	if (keys[LEFT]) {
-		player->MoveLeft();
-	}
-	else if (keys[RIGHT]) {
-		player->MoveRight();
-	}
-	else {
-		player->ResetAnimation(0);
-	}
-}*/

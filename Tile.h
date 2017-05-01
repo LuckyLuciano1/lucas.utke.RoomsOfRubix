@@ -8,6 +8,8 @@ using namespace std;
 
 class Tile : public Object
 {
+private:
+	int zdest;//temp
 public:
 	Tile();
 	void Init(ALLEGRO_BITMAP *TileImage, double x, double y, double z, int imageX, int imageY, double imageboundX, double imageboundY);

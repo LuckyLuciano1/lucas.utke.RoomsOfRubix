@@ -28,14 +28,14 @@ void Room::Init(char ID, int x, int y, int z, Player *player, ALLEGRO_BITMAP *Te
 
 	for (int x = 0; x < LEVELW; x++) {
 		for (int y = 0; y < LEVELH; y++) {
-			LevelMatrix[x][y] = rand() % 2 + 1;
+			LevelMatrix[x][y] = 1;// rand() % 2 + 1;
 		}
 	}
 	for (int x = 0; x < LEVELW; x++) {
 		for (int y = 0; y < LEVELH; y++) {
 			if (LevelMatrix[x][y] == 1) {
 				Tile *tile = new Tile();
-				tile->Init(TerrainImage, x*TILEW, y*TILEH, TILEW*x*rand() % 5, 0, 0, 200, 200);//position and dimensions/position of image
+				tile->Init(TerrainImage, x*TILEW, y*TILEH, 0, 200*(rand()%4), 0, 200, 200);//position and dimensions/position of image
 				ObjectList.push_back(tile);
 			}
 		}
@@ -56,7 +56,8 @@ void Room::ObjectUpdate(int CameraXDir, int CameraYDir)
 
 void Room::ObjectRender()
 {
-	sort(ObjectList.begin(), ObjectList.end(), compare);
+	//sort(ObjectList.begin(), ObjectList.end(), compare);
+
 	for (iter = ObjectList.begin(); iter != ObjectList.end(); ++iter)
 	{
 		(*iter)->Render();
@@ -99,8 +100,8 @@ bool compare(Object *L1, Object *L2) {
 	if ((*L2).GetZ() < (*L1).GetZ()) return false;
 
 	//secondary condition
-	if ((*L1).GetY() + (*L1).GetBoundY() < (*L2).GetY() + (*L2).GetBoundY()) return true;
-	if ((*L2).GetY() + (*L2).GetBoundY() < (*L1).GetY() + (*L1).GetBoundY()) return false;
+	//if ((*L1).GetY() + (*L1).GetBoundY() < (*L2).GetY() + (*L2).GetBoundY()) return true;
+	//if ((*L2).GetY() + (*L2).GetBoundY() < (*L1).GetY() + (*L1).GetBoundY()) return false;
 
 	return false;
 }

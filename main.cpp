@@ -30,8 +30,9 @@ using namespace std;
 
 vector<Room *> rooms;
 vector<Room *>::iterator riter;
+vector<Room *>::iterator riter2;
 
-void Transition(char RoomMatrix[3][3][3]);
+void Transition(char RoomMatrix[3][3][3], int CurrentRoom);
 
 bool keys[] = { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };
 
@@ -161,7 +162,7 @@ int main()
 	imagestorage->Init();
 
 	//creation of player and camera
-	player->Init(50, 50, 1, 0, 0, 176, 361, imagestorage->GetPlayerImage());	
+	player->Init(SCREENW/2, SCREENH/2, 1, 0, 0, 183, 381, imagestorage->GetPlayerImage());	
 	camera->Init(player->GetX(), player->GetY());
 	
 	//creation of all rooms. Init() involves/will involve creation of levels, objects, etc.
@@ -243,19 +244,8 @@ int main()
 	al_start_timer(timer);
 	gameTime = al_current_time();
 
-	Transition(RoomMatrix);//sets up all adjacent rooms
+	Transition(RoomMatrix, CurrentRoom);//sets up all adjacent rooms
 
-	for (riter = rooms.begin(); riter != rooms.end(); ++riter)
-	{
-		if ((*riter)->GetID() == CurrentRoom) {
-			cout << "XAdj = " << (*riter)->GetXAdj() << endl;
-			cout << "NegXAdj = " << (*riter)->GetNegXAdj() << endl;
-			cout << "YAdj = " << (*riter)->GetYAdj() << endl;
-			cout << "NegYAdj = " << (*riter)->GetNegYAdj() << endl;
-			cout << "ZAdj = " << (*riter)->GetZAdj() << endl;
-			cout << "NegZAdj = " << (*riter)->GetNegZAdj() << endl;
-		}
-	}
 	cout << "GAMELOOP BEGIN" << endl;
 	//game loop begin
 	while (!doexit)
@@ -431,6 +421,7 @@ int main()
 								CurrentRoom = (*riter)->GetXAdj();
 						}
 					}
+					Transition(RoomMatrix, CurrentRoom);
 					keys[NUM_1] = false;
 				}
 				if (keys[NUM_2])
@@ -442,6 +433,7 @@ int main()
 								CurrentRoom = (*riter)->GetNegXAdj();
 						}
 					}
+					Transition(RoomMatrix, CurrentRoom);
 					keys[NUM_2] = false;
 				}
 				if (keys[NUM_3])
@@ -453,6 +445,7 @@ int main()
 								CurrentRoom = (*riter)->GetYAdj();
 						}
 					}
+					Transition(RoomMatrix, CurrentRoom);
 					keys[NUM_3] = false;
 				}
 				if (keys[NUM_4])
@@ -464,6 +457,7 @@ int main()
 								CurrentRoom = (*riter)->GetNegYAdj();
 						}
 					}
+					Transition(RoomMatrix, CurrentRoom);
 					keys[NUM_4] = false;
 				}
 				if (keys[NUM_5])
@@ -475,6 +469,7 @@ int main()
 								CurrentRoom = (*riter)->GetZAdj();
 						}
 					}
+					Transition(RoomMatrix, CurrentRoom);
 					keys[NUM_5] = false;
 				}
 				if (keys[NUM_6])
@@ -486,6 +481,7 @@ int main()
 								CurrentRoom = (*riter)->GetNegZAdj();
 						}
 					}
+					Transition(RoomMatrix, CurrentRoom);
 					keys[NUM_6] = false;
 				}
 				if (keys[NUM_7])
@@ -561,14 +557,14 @@ int main()
 	return 0;
 }
 
-void Transition(char RoomMatrix[3][3][3]) {
+void Transition(char RoomMatrix[3][3][3], int CurrentRoom) {
 
 	//int shuffle = rand() % 12 + 1;
 	//Shuffling rooms like a Rubix Cube
-	/*for (riter = rooms.begin(); riter != rooms.end(); ++riter)
-	{
-		(*riter)->Shuffle(shuffle);
-	}*/
+	//for (riter = rooms.begin(); riter != rooms.end(); ++riter)
+	//{
+	//	(*riter)->Shuffle(shuffle);
+	//}
 	//realigning RoomMatrix according to shuffle
 	for (int x = 0; x < 3; x++) {
 		for (int y = 0; y < 3; y++) {
@@ -581,71 +577,67 @@ void Transition(char RoomMatrix[3][3][3]) {
 			}
 		}
 	}
-	//realigning all rooms adjacent to room in RoomMatrix
-	for (int x = 0; x < 3; x++) {
+
+	for (int z = 0; z < 3; z++) {
 		for (int y = 0; y < 3; y++) {
-			for (int z = 0; z < 3; z++) {
-				if (x + 1 < 3)
-					for (riter = rooms.begin(); riter != rooms.end(); ++riter) {
-						if ((*riter)->GetX() == x && (*riter)->GetY() == y && (*riter)->GetZ() == z)
+		
+				for (int x = 0; x < 3; x++) {
+				for (riter = rooms.begin(); riter != rooms.end(); ++riter) {
+					if (RoomMatrix[x][y][z] == (*riter)->GetID()){
+						if (x + 1 < 3)
 							(*riter)->SetXAdj(RoomMatrix[x + 1][y][z]);
-					}
-				else
-					for (riter = rooms.begin(); riter != rooms.end(); ++riter) {
-						if ((*riter)->GetX() == x && (*riter)->GetY() == y && (*riter)->GetZ() == z)
+						else
 							(*riter)->SetXAdj('/');
-					}
-				if (x - 1 > 0)
-					for (riter = rooms.begin(); riter != rooms.end(); ++riter) {
-						if ((*riter)->GetX() == x && (*riter)->GetY() == y && (*riter)->GetZ() == z)
+
+						if (x - 1 > -1)
 							(*riter)->SetNegXAdj(RoomMatrix[x - 1][y][z]);
-					}
-				else
-					for (riter = rooms.begin(); riter != rooms.end(); ++riter) {
-						if ((*riter)->GetX() == x && (*riter)->GetY() == y && (*riter)->GetZ() == z)
+						else
 							(*riter)->SetNegXAdj('/');
-					}
-				if (y + 1 < 3)
-					for (riter = rooms.begin(); riter != rooms.end(); ++riter) {
-						if ((*riter)->GetX() == x && (*riter)->GetY() == y && (*riter)->GetZ() == z)
+
+						if (y + 1 < 3)
 							(*riter)->SetYAdj(RoomMatrix[x][y + 1][z]);
-					}
-				else
-					for (riter = rooms.begin(); riter != rooms.end(); ++riter) {
-						if ((*riter)->GetX() == x && (*riter)->GetY() == y && (*riter)->GetZ() == z)
+						else
 							(*riter)->SetYAdj('/');
-					}
-				if (y - 1 > 0)
-					for (riter = rooms.begin(); riter != rooms.end(); ++riter) {
-						if ((*riter)->GetX() == x && (*riter)->GetY() == y && (*riter)->GetZ() == z)
+
+						if (y - 1 > -1)
 							(*riter)->SetNegYAdj(RoomMatrix[x][y - 1][z]);
-					}
-				else
-					for (riter = rooms.begin(); riter != rooms.end(); ++riter) {
-						if ((*riter)->GetX() == x && (*riter)->GetY() == y && (*riter)->GetZ() == z)
+						else
 							(*riter)->SetNegYAdj('/');
-					}
-				if (z + 1 < 3)
-					for (riter = rooms.begin(); riter != rooms.end(); ++riter) {
-						if ((*riter)->GetX() == x && (*riter)->GetY() == y && (*riter)->GetZ() == z)
+
+						if (z + 1 < 3)
 							(*riter)->SetZAdj(RoomMatrix[x][y][z + 1]);
-					}
-				else
-					for (riter = rooms.begin(); riter != rooms.end(); ++riter) {
-						if ((*riter)->GetX() == x && (*riter)->GetY() == y && (*riter)->GetZ() == z)
+						else
 							(*riter)->SetZAdj('/');
-					}
-				if (z - 1 > 0)
-					for (riter = rooms.begin(); riter != rooms.end(); ++riter) {
-						if ((*riter)->GetX() == x && (*riter)->GetY() == y && (*riter)->GetZ() == z)
+
+						if (z - 1 > -1)
 							(*riter)->SetNegZAdj(RoomMatrix[x][y][z - 1]);
-					}
-				else
-					for (riter = rooms.begin(); riter != rooms.end(); ++riter) {
-						if ((*riter)->GetX() == x && (*riter)->GetY() == y && (*riter)->GetZ() == z)
+						else
 							(*riter)->SetNegZAdj('/');
 					}
+				}
 			}
 		}
+	}
+	for (riter = rooms.begin(); riter != rooms.end(); ++riter)
+	{
+		if ((*riter)->GetID() == CurrentRoom) {
+			cout << "CURRENT ROOM: " << (*riter)->GetID() << endl << endl;
+			cout << "XAdj = " << (*riter)->GetXAdj() << endl;
+			cout << "NegXAdj = " << (*riter)->GetNegXAdj() << endl;
+			cout << "YAdj = " << (*riter)->GetYAdj() << endl;
+			cout << "NegYAdj = " << (*riter)->GetNegYAdj() << endl;
+			cout << "ZAdj = " << (*riter)->GetZAdj() << endl;
+			cout << "NegZAdj = " << (*riter)->GetNegZAdj() << endl;
+		}
+	}
+	for (int z = 0; z < 3; z++) {
+
+		for (int y = 0; y < 3; y++) {
+			for (int x = 0; x < 3; x++) {
+				cout << RoomMatrix[x][y][z] << ", ";
+			}
+			cout << endl;
+		}
+		cout << endl;
 	}
 }
