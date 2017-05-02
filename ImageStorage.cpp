@@ -12,9 +12,6 @@ void ImageStorage::Destroy() {}
 
 void ImageStorage::Init()
 {
-	PlayerImage = al_load_bitmap("PlayerImage.png");
-	al_convert_mask_to_alpha(PlayerImage, al_map_rgb(255, 255, 255));
-	
+	PlayerImage = al_load_bitmap("PlayerImage.png");	
 	TerrainImage = al_load_bitmap("TerrainImage.png");
-	al_convert_mask_to_alpha(TerrainImage, al_map_rgb(255, 255, 255));
 }

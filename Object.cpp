@@ -84,6 +84,9 @@ void Object::Update(double cameraXDir, double cameraYDir)
 		if (curFrame < maxFrame)
 			curFrame++;
 		else
+		{
+
+		}
 			curFrame = 0;
 	}
 

@@ -56,7 +56,7 @@ void Room::ObjectUpdate(int CameraXDir, int CameraYDir)
 
 void Room::ObjectRender()
 {
-	//sort(ObjectList.begin(), ObjectList.end(), compare);
+	sort(ObjectList.begin(), ObjectList.end(), compare);
 
 	for (iter = ObjectList.begin(); iter != ObjectList.end(); ++iter)
 	{
@@ -96,12 +96,12 @@ void Room::ObjectDeletion()
 bool compare(Object *L1, Object *L2) {
 
 	//primary condition
-	if ((*L1).GetZ() < (*L2).GetZ()) return true;
-	if ((*L2).GetZ() < (*L1).GetZ()) return false;
-
+	if ((*L1).GetY() + (*L1).GetBoundY() < (*L2).GetY() + (*L2).GetBoundY()) return true;
+	if ((*L2).GetY() + (*L2).GetBoundY() < (*L1).GetY() + (*L1).GetBoundY()) return false;
+	
 	//secondary condition
-	//if ((*L1).GetY() + (*L1).GetBoundY() < (*L2).GetY() + (*L2).GetBoundY()) return true;
-	//if ((*L2).GetY() + (*L2).GetBoundY() < (*L1).GetY() + (*L1).GetBoundY()) return false;
+	if ((*L1).GetZ() > (*L2).GetZ()) return true;
+	if ((*L2).GetZ() > (*L1).GetZ()) return false;
 
 	return false;
 }

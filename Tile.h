@@ -9,7 +9,12 @@ using namespace std;
 class Tile : public Object
 {
 private:
-	int zdest;//temp
+	enum STATE {
+	SINKING,
+	RISING,
+	STABLE
+	};
+	int state;
 public:
 	Tile();
 	void Init(ALLEGRO_BITMAP *TileImage, double x, double y, double z, int imageX, int imageY, double imageboundX, double imageboundY);

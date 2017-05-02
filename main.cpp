@@ -162,7 +162,7 @@ int main()
 	imagestorage->Init();
 
 	//creation of player and camera
-	player->Init(SCREENW/2, SCREENH/2, 1, 0, 0, 183, 381, imagestorage->GetPlayerImage());	
+	player->Init(SCREENW/2, SCREENH/2, 0, 0, 0, 183, 381, imagestorage->GetPlayerImage());	
 	camera->Init(player->GetX(), player->GetY());
 	
 	//creation of all rooms. Init() involves/will involve creation of levels, objects, etc.
