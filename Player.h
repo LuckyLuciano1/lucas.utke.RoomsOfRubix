@@ -23,7 +23,7 @@ private:
 public:
 	Player();
 	void Init(double x, double y, double z, int imageX, int imageY, double imageboundX, double imageboundY, ALLEGRO_BITMAP *PlayerImage);
-	void Update(double cameraXDir, double cameraYDir);
+	void Update();
 
 	//==============================================
 	//MOVEMENT

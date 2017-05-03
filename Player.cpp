@@ -16,9 +16,9 @@ void Player::Init(double x, double y, double z, int imageX, int imageY, double i
 	velY = 6;
 }
 
-void Player::Update(double cameraXDir, double cameraYDir)
+void Player::Update()
 {
-	Object::Update(cameraXDir, cameraYDir);
+	Object::Update();
 }
 
 void Player::PlayerKeyboard(bool UP, bool DOWN, bool LEFT, bool RIGHT, bool SHIFT)

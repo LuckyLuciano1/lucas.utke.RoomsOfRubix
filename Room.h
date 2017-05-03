@@ -4,6 +4,7 @@
 #include "Globals.h"
 #include "Object.h"
 #include "Player.h"
+#include "Tile.h"
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_image.h>
 #include <vector>
@@ -12,6 +13,9 @@ using namespace std;
 
 class Room
 {
+private:
+	int counter;//temp
+	int counter2;
 protected:
 	char ID;//means of identifying what room it is. will be every letter in the alphabet, plus '_' (27 rooms, 26 letters).
 
@@ -33,8 +37,12 @@ protected:
 	vector<Object*>::iterator citer;
 	vector<Object*>::iterator citer2;
 
+	vector<Tile*> TileList;//list that keeps track of all tiles in room. Used for changes in height, receding/rising all tiles, etc.
+	vector<Tile*>::iterator titer;
+
 	//level map. randomly generated within Init().
 	int LevelMatrix[LEVELW][LEVELH];
+	int DepthMatrix[LEVELW][LEVELH];
 
 public:
 
@@ -49,8 +57,8 @@ public:
 	//==============================================
 	//OBJECT LIST MANAGEMENT
 	//==============================================
-	void ObjectUpdate(int CameraXDir, int CameraYDir);
-	void ObjectRender();
+	void ObjectUpdate();
+	void ObjectRender(double cameraXPos, double cameraYPos);
 	void ObjectCollision();
 	void ObjectDeletion();
 

@@ -10,7 +10,7 @@ using namespace std;
 
 bool compare(Object *L1, Object *L2);//function for sorting values. not part of the room class, merely inhabits same file
 
-Room::Room(){}
+Room::Room() {}
 
 void Room::Destroy() {}
 
@@ -25,6 +25,7 @@ void Room::Init(char ID, int x, int y, int z, Player *player, ALLEGRO_BITMAP *Te
 	ObjectCollisionList.push_back(player);
 
 	LevelMatrix[LEVELW][LEVELH] = {};
+	DepthMatrix[LEVELW][LEVELH] = {};
 
 	for (int x = 0; x < LEVELW; x++) {
 		for (int y = 0; y < LEVELH; y++) {
@@ -35,32 +36,83 @@ void Room::Init(char ID, int x, int y, int z, Player *player, ALLEGRO_BITMAP *Te
 		for (int y = 0; y < LEVELH; y++) {
 			if (LevelMatrix[x][y] == 1) {
 				Tile *tile = new Tile();
-				tile->Init(TerrainImage, x*TILEW, y*TILEH, 0, 200*(rand()%4), 0, 200, 200);//position and dimensions/position of image
+				tile->Init(TerrainImage, x*TILEW, y*TILEH, 0, 200 * (rand() % 4), 0, 200, 200);//position and dimensions/position of image
 				ObjectList.push_back(tile);
+				TileList.push_back(tile);
 			}
 		}
 	}
+	counter = 0;
+	counter2 = 0;
 }
 
 //===========================================================================================================================================================================================================================
 //OBJECT LIST MANAGEMENT
 //===========================================================================================================================================================================================================================
 
-void Room::ObjectUpdate(int CameraXDir, int CameraYDir) 
+void Room::ObjectUpdate()
 {
 	for (iter = ObjectList.begin(); iter != ObjectList.end(); ++iter)
 	{
-		(*iter)->Update(CameraXDir, CameraYDir);
+		(*iter)->Update();
 	}
+	
+
+	counter2++;
+	if (counter2 == 10) {
+		counter++;
+		counter2 = 0;
+	}
+
+	for (titer = TileList.begin(); titer != TileList.end(); ++titer)//creates wave effect
+	{
+			if ((*titer)->GetX() == counter*TILEW || (*titer)->GetY() < 5 * TILEH) {
+				(*titer)->SetState(1);//rising
+		}
+	}
+
+	if (counter >= LEVELW)
+		counter = 0;
+	
+	for (titer = TileList.begin(); titer != TileList.end(); ++titer)//tracks depth of all tiles
+	{
+		int tempx = (*titer)->GetX() / TILEW;
+		int tempy = (*titer)->GetY() / TILEH;
+		if ((*titer)->GetZ() != 0 && (*titer)->GetZ() != DepthMatrix[tempx][tempy]) {
+			DepthMatrix[tempx][tempy] = (*titer)->GetZ();
+		}
+	}
+
+	for (citer = ObjectCollisionList.begin(); citer != ObjectCollisionList.end(); ++citer)//sets collidable objects depth to that of tiles underneath them.
+	{
+		int tempx = (*citer)->GetX() / TILEW;
+		int tempy = (*citer)->GetY() / TILEH;
+		(*citer)->SetZ(DepthMatrix[tempx][tempy]);
+	}
+
+	/*for (citer = ObjectCollisionList.begin(); citer != ObjectCollisionList.end(); ++citer)//experimental means of making tiles rise in all colliding object positions.
+	{
+	for (titer = TileList.begin(); titer != TileList.end(); ++titer)
+	{
+	if ((((*titer)->GetX() + (*titer)->GetBoundX()/2) - ((*citer)->GetX() + (*citer)->GetBoundX() / 2) < 50) &&
+	(((*citer)->GetX() + (*citer)->GetBoundX() / 2) - ((*titer)->GetX() + (*titer)->GetBoundX() / 2) < 50) &&
+	(((*titer)->GetY() + (*titer)->GetBoundY() / 2) - ((*citer)->GetY() + (*citer)->GetBoundY() / 2) < 50) &&
+	(((*citer)->GetY() + (*citer)->GetBoundY() / 2) - ((*titer)->GetY() + (*titer)->GetBoundY() / 2) < 50)) {
+
+	(*titer)->SetState(1);//rising
+	}
+	}
+	}*/
+
 }
 
-void Room::ObjectRender()
+void Room::ObjectRender(double cameraXPos, double cameraYPos)
 {
 	sort(ObjectList.begin(), ObjectList.end(), compare);
 
 	for (iter = ObjectList.begin(); iter != ObjectList.end(); ++iter)
 	{
-		(*iter)->Render();
+		(*iter)->Render(cameraXPos, cameraYPos);
 	}
 }
 
@@ -79,7 +131,7 @@ void Room::ObjectCollision()
 	}
 }
 
-void Room::ObjectDeletion() 
+void Room::ObjectDeletion()
 {
 	for (iter = ObjectList.begin(); iter != ObjectList.end();)
 	{
@@ -98,7 +150,7 @@ bool compare(Object *L1, Object *L2) {
 	//primary condition
 	if ((*L1).GetY() + (*L1).GetBoundY() < (*L2).GetY() + (*L2).GetBoundY()) return true;
 	if ((*L2).GetY() + (*L2).GetBoundY() < (*L1).GetY() + (*L1).GetBoundY()) return false;
-	
+
 	//secondary condition
 	if ((*L1).GetZ() > (*L2).GetZ()) return true;
 	if ((*L2).GetZ() > (*L1).GetZ()) return false;

@@ -65,8 +65,8 @@ public:
 	//==============================================
 	//CLASS MANAGEMENT
 	//==============================================
-	void virtual Update(double cameraXDir, double cameraYDir);
-	void virtual Render();
+	void virtual Update();
+	void virtual Render(double cameraXPos, double cameraYPos);
 
 	//==============================================
 	//COORDINATE ACCESS/MODIFICATION

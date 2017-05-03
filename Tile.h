@@ -18,6 +18,9 @@ private:
 public:
 	Tile();
 	void Init(ALLEGRO_BITMAP *TileImage, double x, double y, double z, int imageX, int imageY, double imageboundX, double imageboundY);
-	void Render();
-	void Update(double cameraX, double cameraY);
+	void Render(double cameraXPos, double cameraYPos);
+	void Update();
+
+	int GetState() { return state; }
+	void SetState(int state) { Tile::state = state; }
 };

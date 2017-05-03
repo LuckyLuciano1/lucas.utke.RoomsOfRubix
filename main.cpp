@@ -509,7 +509,7 @@ int main()
 				for (riter = rooms.begin(); riter != rooms.end(); ++riter)
 				{
 					if ((*riter)->GetID() == CurrentRoom)
-						(*riter)->ObjectUpdate(camera->GetCameraXDir(), camera->GetCameraYDir());
+						(*riter)->ObjectUpdate();
 				}
 
 			}
@@ -521,7 +521,6 @@ int main()
 					(*riter)->ObjectDeletion();
 			}
 		}
-
 		//==============================================
 		//RENDER
 		//==============================================
@@ -537,7 +536,7 @@ int main()
 				{
 					al_draw_textf(font18, al_map_rgb(255, 255, 255), 5, 5, 0, "ROOM: %c", CurrentRoom);
 					if ((*riter)->GetID() == CurrentRoom)
-						(*riter)->ObjectRender();
+						(*riter)->ObjectRender(camera-> GetCameraXPos(), camera->GetCameraYPos());
 				}
 			}
 			//FLIP BUFFERS========================

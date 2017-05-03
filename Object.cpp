@@ -67,14 +67,14 @@ void Object::Init(double x, double y, double z, double boundX, double boundY, in
 	Object::colboundY = colboundY;
 }
 
-void Object::Update(double cameraXDir, double cameraYDir) 
+void Object::Update() 
 {	
 	x += velX*dirX;
 	y += velY*dirY;
 	z += velZ*dirZ;
 
-	x += cameraXDir;
-	y += cameraYDir;
+	//x += cameraXDir;
+	//y += cameraYDir;
 	//no camera update for z because it eventually gets added into y, and is not an actual dimension within the parameters of the game.
 
 	colX += velX*dirX;//updates collision position
@@ -85,9 +85,8 @@ void Object::Update(double cameraXDir, double cameraYDir)
 			curFrame++;
 		else
 		{
-
-		}
 			curFrame = 0;
+		}
 	}
 
 	if (FlipHorizontal)//flips image
@@ -96,9 +95,9 @@ void Object::Update(double cameraXDir, double cameraYDir)
 		FlipHorizontal = 0;
 }
 
-void Object::Render()
+void Object::Render(double cameraXPos, double cameraYPos)
 {
-	al_draw_tinted_scaled_rotated_bitmap_region(image, imageX, imageY, imageboundX, imageboundY, transparency, boundX/2, boundY/2, x, y + z, boundX/imageboundX, boundY/imageboundY, angle, FlipHorizontal);
+	al_draw_tinted_scaled_rotated_bitmap_region(image, imageX, imageY, imageboundX, imageboundY, transparency, boundX/2, boundY/2, x + cameraXPos, y + z + cameraYPos, boundX/imageboundX, boundY/imageboundY, angle, FlipHorizontal);
 	//cumulative drawing function that should be able to handle all possible drawing commands.
 }
 
