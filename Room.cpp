@@ -21,29 +21,36 @@ void Room::Init(char ID, int x, int y, int z, Player *player, ALLEGRO_BITMAP *Te
 	Room::y = y;
 	Room::z = z;
 
-	ObjectList.push_back(player);
+	AllObjects.push_back(player);
 	ObjectCollisionList.push_back(player);
 
 	LevelMatrix[LEVELW][LEVELH] = {};
 	DepthMatrix[LEVELW][LEVELH] = {};
 
-	for (int x = 0; x < LEVELW; x++) {
-		for (int y = 0; y < LEVELH; y++) {
+	for (int x = 0; x <= LEVELW; x++) {
+		for (int y = 0; y <= LEVELH; y++) {
 			LevelMatrix[x][y] = 1;// rand() % 2 + 1;
 		}
 	}
-	for (int x = 0; x < LEVELW; x++) {
-		for (int y = 0; y < LEVELH; y++) {
+	for (int x = 0; x <= LEVELW; x++) {
+		for (int y = 0; y <= LEVELH; y++) {
+			LevelMatrix[x][LEVELH] = 0;
+			LevelMatrix[x][0] = 0;
+			LevelMatrix[LEVELW][y] = 0;
+			LevelMatrix[0][y] = 0;
+		}
+	}
+
+	for (int x = 0; x <= LEVELW; x++) {
+		for (int y = 0; y <= LEVELH; y++) {
 			if (LevelMatrix[x][y] == 1) {
 				Tile *tile = new Tile();
 				tile->Init(TerrainImage, x*TILEW, y*TILEH, 0, 200 * (rand() % 4), 0, 200, 200);//position and dimensions/position of image
-				ObjectList.push_back(tile);
+				AllObjects.push_back(tile);
 				TileList.push_back(tile);
 			}
 		}
 	}
-	counter = 0;
-	counter2 = 0;
 }
 
 //===========================================================================================================================================================================================================================
@@ -52,33 +59,26 @@ void Room::Init(char ID, int x, int y, int z, Player *player, ALLEGRO_BITMAP *Te
 
 void Room::ObjectUpdate()
 {
-	for (iter = ObjectList.begin(); iter != ObjectList.end(); ++iter)
-	{
-		(*iter)->Update();
-	}
-	
-
 	counter2++;
-	if (counter2 == 10) {
-		counter++;
+	if (counter2 == 2)
+	{
 		counter2 = 0;
+		counter++;
 	}
-
 	for (titer = TileList.begin(); titer != TileList.end(); ++titer)//creates wave effect
 	{
-			if ((*titer)->GetX() == counter*TILEW || (*titer)->GetY() < 5 * TILEH) {
-				(*titer)->SetState(1);//rising
+		if ((*titer)->GetX() == counter*TILEW && (*titer)->GetY() < counter * TILEH) {
+			(*titer)->RiseTo(2);
 		}
 	}
-
 	if (counter >= LEVELW)
 		counter = 0;
-	
+
 	for (titer = TileList.begin(); titer != TileList.end(); ++titer)//tracks depth of all tiles
 	{
 		int tempx = (*titer)->GetX() / TILEW;
 		int tempy = (*titer)->GetY() / TILEH;
-		if ((*titer)->GetZ() != 0 && (*titer)->GetZ() != DepthMatrix[tempx][tempy]) {
+		if ((*titer)->GetZ() != DepthMatrix[tempx][tempy]) {
 			DepthMatrix[tempx][tempy] = (*titer)->GetZ();
 		}
 	}
@@ -90,27 +90,46 @@ void Room::ObjectUpdate()
 		(*citer)->SetZ(DepthMatrix[tempx][tempy]);
 	}
 
+	for (citer = ObjectCollisionList.begin(); citer != ObjectCollisionList.end(); ++citer)//stops collidable objects from passing over tiles of different depth.
+	{
+		int tempxv = ((*citer)->GetX() + (*citer)->GetVelX()*(*citer)->GetDirX()) / TILEW;
+		int tempyv = ((*citer)->GetY() + (*citer)->GetVelY()*(*citer)->GetDirY()) / TILEH;
+		int tempx = (*citer)->GetX() / TILEW;
+		int tempy = (*citer)->GetY() / TILEH;
+
+		if (DepthMatrix[tempxv][tempy] != (*citer)->GetZ())
+			(*citer)->SetDirX(0);
+
+		if (DepthMatrix[tempx][tempyv] != (*citer)->GetZ())
+			(*citer)->SetDirY(0);
+	}
+
 	/*for (citer = ObjectCollisionList.begin(); citer != ObjectCollisionList.end(); ++citer)//experimental means of making tiles rise in all colliding object positions.
 	{
-	for (titer = TileList.begin(); titer != TileList.end(); ++titer)
-	{
-	if ((((*titer)->GetX() + (*titer)->GetBoundX()/2) - ((*citer)->GetX() + (*citer)->GetBoundX() / 2) < 50) &&
-	(((*citer)->GetX() + (*citer)->GetBoundX() / 2) - ((*titer)->GetX() + (*titer)->GetBoundX() / 2) < 50) &&
-	(((*titer)->GetY() + (*titer)->GetBoundY() / 2) - ((*citer)->GetY() + (*citer)->GetBoundY() / 2) < 50) &&
-	(((*citer)->GetY() + (*citer)->GetBoundY() / 2) - ((*titer)->GetY() + (*titer)->GetBoundY() / 2) < 50)) {
+		for (titer = TileList.begin(); titer != TileList.end(); ++titer)
+		{
+			if ((((*titer)->GetX() + (*titer)->GetBoundX() / 2) - ((*citer)->GetX() + (*citer)->GetBoundX() / 2) < 50) &&
+				(((*citer)->GetX() + (*citer)->GetBoundX() / 2) - ((*titer)->GetX() + (*titer)->GetBoundX() / 2) < 50) &&
+				(((*titer)->GetY() + (*titer)->GetBoundY() / 2) - ((*citer)->GetY() + (*citer)->GetBoundY() / 2) < 50) &&
+				(((*citer)->GetY() + (*citer)->GetBoundY() / 2) - ((*titer)->GetY() + (*titer)->GetBoundY() / 2) < 50)) {
 
-	(*titer)->SetState(1);//rising
-	}
-	}
+				(*titer)->SetState(1);//rising
+			}
+		}
 	}*/
+
+	for (iter = AllObjects.begin(); iter != AllObjects.end(); ++iter)
+	{
+		(*iter)->Update();
+	}
 
 }
 
 void Room::ObjectRender(double cameraXPos, double cameraYPos)
 {
-	sort(ObjectList.begin(), ObjectList.end(), compare);
+	sort(AllObjects.begin(), AllObjects.end(), compare);
 
-	for (iter = ObjectList.begin(); iter != ObjectList.end(); ++iter)
+	for (iter = AllObjects.begin(); iter != AllObjects.end(); ++iter)
 	{
 		(*iter)->Render(cameraXPos, cameraYPos);
 	}
@@ -133,12 +152,12 @@ void Room::ObjectCollision()
 
 void Room::ObjectDeletion()
 {
-	for (iter = ObjectList.begin(); iter != ObjectList.end();)
+	for (iter = AllObjects.begin(); iter != AllObjects.end();)
 	{
 		if (!(*iter)->GetValid())
 		{
 			delete (*iter);
-			iter = ObjectList.erase(iter);
+			iter = AllObjects.erase(iter);
 		}
 		else
 			iter++;

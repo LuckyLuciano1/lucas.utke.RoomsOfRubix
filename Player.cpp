@@ -18,6 +18,7 @@ void Player::Init(double x, double y, double z, int imageX, int imageY, double i
 
 void Player::Update()
 {
+	//cout << dirX << ", " << dirY << " - " << z << endl;
 	Object::Update();
 }
 

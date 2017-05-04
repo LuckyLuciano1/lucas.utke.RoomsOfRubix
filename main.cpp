@@ -486,6 +486,8 @@ int main()
 				}
 				if (keys[NUM_7])
 				{
+					player->SetX(mouseX);
+					player->SetY(mouseY);
 					keys[NUM_7] = false;
 				}
 				if (keys[NUM_8])

@@ -14,23 +14,10 @@ using namespace std;
 class Room
 {
 private:
-	int counter;//temp
+	int counter;
 	int counter2;
-protected:
-	char ID;//means of identifying what room it is. will be every letter in the alphabet, plus '_' (27 rooms, 26 letters).
 
-	int x;//coordinate of room in 3D matrix. Used to identify what room should be connected what.
-	int y;
-	int z;
-	
-	char XAdj;//tracks what other rooms this room is linked to (via ID). '/' mark means it is next to nothing on that plane.
-	char NegXAdj;
-	char YAdj;
-	char NegYAdj; 
-	char ZAdj;
-	char NegZAdj;
-
-	vector<Object*> ObjectList;//list that keeps track of all objects within each room. Used for render, updating, collision, etc.
+	vector<Object*> AllObjects;//list that keeps track of all objects within each room. Used for render, updating, collision, etc.
 	vector<Object*>::iterator iter;
 
 	vector<Object *> ObjectCollisionList;//list that keeps track of all objects that must collide with each other. 
@@ -40,9 +27,22 @@ protected:
 	vector<Tile*> TileList;//list that keeps track of all tiles in room. Used for changes in height, receding/rising all tiles, etc.
 	vector<Tile*>::iterator titer;
 
-	//level map. randomly generated within Init().
-	int LevelMatrix[LEVELW][LEVELH];
-	int DepthMatrix[LEVELW][LEVELH];
+	int LevelMatrix[LEVELW][LEVELH];//tracks type of tiles in map.
+	int DepthMatrix[LEVELW][LEVELH];//tracks depth of tiles in map.
+
+protected:
+	char ID;//means of identifying what room it is. Every letter in the alphabet, plus '_' (27 rooms, 26 letters).
+
+	int x;//coordinate of room in 3D matrix. Used to identify what room should be connected to what.
+	int y;
+	int z;
+	
+	char XAdj;//tracks what other rooms this room is linked to (via ID). '/' mark means it is next to nothing on that plane.
+	char NegXAdj;
+	char YAdj;
+	char NegYAdj; 
+	char ZAdj;
+	char NegZAdj;
 
 public:
 
