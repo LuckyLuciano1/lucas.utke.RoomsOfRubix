@@ -29,28 +29,55 @@ void Room::Init(char ID, int x, int y, int z, Player *player, ALLEGRO_BITMAP *Te
 
 	for (int x = 0; x <= LEVELW; x++) {
 		for (int y = 0; y <= LEVELH; y++) {
-			LevelMatrix[x][y] = 1;// rand() % 2 + 1;
+			LevelMatrix[x][y] = 3;// rand() % 2 + 1;
 		}
 	}
-	for (int x = 0; x <= LEVELW; x++) {
+
+	int count = 0;//temp
+	int HYP = 0;
+	int RAD = 5;//area that tiles extend from 
+	for (int x = RAD*2; x <= LEVELW - RAD*2; x++) {
+		for (int y = RAD*2; y <= LEVELH - RAD*2; y++) {
+
+			if(rand()%200 == 1){//small chance of creating tile circle
+
+				LevelMatrix[x][y] = 0;//sets center as full tile
+
+				for (int a = -RAD; a <= RAD; a++) {//running through all coordinates within radius
+					for (int b = -RAD; b <= RAD; b++) {			
+
+						if ((sqrt((a*a) + (b*b))) < RAD) {//checking tiles with TILEAREA diameter circle.
+							if (!(a == 0 && b == 0)) {//a and b cannot both equal 0 for some reason.
+								HYP = abs(sqrt((a*a) + (b*b)));//finding hypotenuse created by a and b
+								LevelMatrix[x + a][y + b] = rand()%HYP+1;
+							}
+						}
+
+					}
+				}
+
+			}
+
+		}
+	}
+
+	for (int x = 1; x <= LEVELW - 1; x++) {
+		for (int y = 1; y <= LEVELH - 1; y++) {
+				Tile *tile = new Tile();
+				tile->Init(TerrainImage, x*TILEW, y*TILEH, 0, 200*LevelMatrix[x][y], 200*(rand()%2), 200, 200);//position and dimensions/position of image
+				AllObjects.push_back(tile);
+				TileList.push_back(tile);
+		}
+	}
+
+	/*for (int x = 0; x <= LEVELW; x++) {
 		for (int y = 0; y <= LEVELH; y++) {
 			LevelMatrix[x][LEVELH] = 0;
 			LevelMatrix[x][0] = 0;
 			LevelMatrix[LEVELW][y] = 0;
 			LevelMatrix[0][y] = 0;
 		}
-	}
-
-	for (int x = 0; x <= LEVELW; x++) {
-		for (int y = 0; y <= LEVELH; y++) {
-			if (LevelMatrix[x][y] == 1) {
-				Tile *tile = new Tile();
-				tile->Init(TerrainImage, x*TILEW, y*TILEH, 0, 200 * (rand() % 4), 0, 200, 200);//position and dimensions/position of image
-				AllObjects.push_back(tile);
-				TileList.push_back(tile);
-			}
-		}
-	}
+	}*/
 }
 
 //===========================================================================================================================================================================================================================
@@ -73,7 +100,7 @@ void Room::ObjectUpdate()
 	}
 	if (counter >= LEVELW)
 		counter = 0;
-
+	
 	for (titer = TileList.begin(); titer != TileList.end(); ++titer)//tracks depth of all tiles
 	{
 		int tempx = (*titer)->GetX() / TILEW;
@@ -90,19 +117,19 @@ void Room::ObjectUpdate()
 		(*citer)->SetZ(DepthMatrix[tempx][tempy]);
 	}
 
-	for (citer = ObjectCollisionList.begin(); citer != ObjectCollisionList.end(); ++citer)//stops collidable objects from passing over tiles of different depth.
+	/*for (citer = ObjectCollisionList.begin(); citer != ObjectCollisionList.end(); ++citer)//stops collidable objects from passing over tiles of different depth.
 	{
 		int tempxv = ((*citer)->GetX() + (*citer)->GetVelX()*(*citer)->GetDirX()) / TILEW;
 		int tempyv = ((*citer)->GetY() + (*citer)->GetVelY()*(*citer)->GetDirY()) / TILEH;
 		int tempx = (*citer)->GetX() / TILEW;
 		int tempy = (*citer)->GetY() / TILEH;
 
-		if (DepthMatrix[tempxv][tempy] != (*citer)->GetZ())
+		if (abs(DepthMatrix[tempxv][tempy]) - abs((*citer)->GetZ()) > 10)
 			(*citer)->SetDirX(0);
 
-		if (DepthMatrix[tempx][tempyv] != (*citer)->GetZ())
+		if (abs(DepthMatrix[tempx][tempyv]) - abs((*citer)->GetZ()) > 10)
 			(*citer)->SetDirY(0);
-	}
+	}*/
 
 	/*for (citer = ObjectCollisionList.begin(); citer != ObjectCollisionList.end(); ++citer)//experimental means of making tiles rise in all colliding object positions.
 	{
@@ -113,7 +140,7 @@ void Room::ObjectUpdate()
 				(((*titer)->GetY() + (*titer)->GetBoundY() / 2) - ((*citer)->GetY() + (*citer)->GetBoundY() / 2) < 50) &&
 				(((*citer)->GetY() + (*citer)->GetBoundY() / 2) - ((*titer)->GetY() + (*titer)->GetBoundY() / 2) < 50)) {
 
-				(*titer)->SetState(1);//rising
+				(*titer)->RiseTo(2);//rising
 			}
 		}
 	}*/

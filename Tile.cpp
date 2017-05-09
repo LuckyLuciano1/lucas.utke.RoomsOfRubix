@@ -8,20 +8,27 @@ void Tile::Init(ALLEGRO_BITMAP *TileImage, double x, double y, double z, int ima
 	SetAnimating(false);
 	Object::image = TileImage;
 	state = STABLE;
-	MaxHeight = 2;
+	MaxHeight = 3;
 	Vel = 10;
+	gradient = al_map_rgba_f(0, rand()%(255/16) + (255/16)*15, 0, .01);//temp
 }
 
 void Tile::Render(double cameraXPos, double cameraYPos)
 {
 	if (z != 0) {
 		for (int a = 0; a > (z - boundY); a -= boundY) {
-			al_draw_tinted_scaled_rotated_bitmap_region(image, 0, 200, imageboundX, imageboundY, transparency, boundX / 2, boundY / 2, x + cameraXPos, y + z - a + cameraYPos, boundX / imageboundX, boundY / imageboundY, angle, FlipHorizontal);
+			if(a == -boundY)
+				al_draw_tinted_scaled_rotated_bitmap_region(image, 0, 400, imageboundX, imageboundY, transparency, boundX / 2, boundY / 2, x + cameraXPos, y + z - a + cameraYPos, boundX / imageboundX, boundY / imageboundY, angle, FlipHorizontal);
+			else
+				al_draw_tinted_scaled_rotated_bitmap_region(image, 200, 400, imageboundX, imageboundY, transparency, boundX / 2, boundY / 2, x + cameraXPos, y + z - a + cameraYPos, boundX / imageboundX, boundY / imageboundY, angle, FlipHorizontal);
+
 		}
-		al_draw_tinted_scaled_rotated_bitmap_region(image, 200, 200, imageboundX, imageboundY, al_map_rgba_f(255 / 2, 255 / 2, 255 / 2, .5), boundX / 2, 0, x + cameraXPos, y + z + boundY - (boundY / 2) + cameraYPos, boundX / imageboundX, (boundY - z) / imageboundY, angle, FlipHorizontal);
+		al_draw_tinted_scaled_rotated_bitmap_region(image, 400, 400, imageboundX, imageboundY, al_map_rgba_f(255 / 2, 255 / 2, 255 / 2, .5), boundX / 2, 0, x + cameraXPos, y + z + boundY - (boundY / 2) + cameraYPos, boundX / imageboundX, (boundY - z) / imageboundY, angle, FlipHorizontal);
 	}
 
 	Object::Render(cameraXPos, cameraYPos);
+	//gradient above tile to vary terrain color
+	al_draw_tinted_scaled_rotated_bitmap_region(image, 800, 0, imageboundX, imageboundY, gradient, (boundX - (boundX / 25)) / 2, (boundY - (boundY/25)) / 2, x + (boundY/(25/2))+cameraXPos, y + z+(boundY/(25/2)) + cameraYPos, (boundX - (boundX / 25)) / imageboundX, (boundY - (boundY/25)) / imageboundY, angle, FlipHorizontal);
 }
 
 void Tile::Update()
