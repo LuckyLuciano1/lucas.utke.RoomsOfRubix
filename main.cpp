@@ -20,6 +20,7 @@
 #include "Player.h"
 #include "Room.h"
 #include "Camera.h"
+#include "Map.h"
 #include "ImageStorage.h"
 
 #define PI 3.14159265
@@ -34,7 +35,7 @@ vector<Room *>::iterator riter2;
 
 void Transition(char RoomMatrix[3][3][3], int CurrentRoom);
 
-bool keys[] = { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };
+bool keys[] = { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };
 
 int main()
 {
@@ -54,6 +55,8 @@ int main()
 	double MouseAngleRadians = 0;
 
 	char CurrentRoom = '_';
+
+	bool DisplayMap = false;//tracks whether or not map needs to be displayed. Used in render section and activated by F_MAP key.
 
 	//matrix for storing coordinates. used to keep track of what's where.
 	char RoomMatrix[3][3][3] = {
@@ -77,6 +80,7 @@ int main()
 	Player *player = new Player();
 	Camera *camera = new Camera();
 	ImageStorage *imagestorage = new ImageStorage();
+	Map *map = new Map();
 
 	//defining all the rooms
 	Room *roomA = new Room();
@@ -130,8 +134,8 @@ int main()
 	//	display = al_create_display(disp_data.width, disp_data.height);
 	//}
 	//else {
-		display = al_create_display(SCREENW - 100, SCREENH - 100);		//create our display object
-	//}
+	display = al_create_display(SCREENW - 100, SCREENH - 100);		//create our display object
+//}
 
 	if (!display)//test display object
 		return -1;
@@ -162,41 +166,42 @@ int main()
 	imagestorage->Init();
 
 	//creation of player and camera
-	player->Init(SCREENW/2, SCREENH/2, 0, 0, 0, 183, 381, imagestorage->GetPlayerImage());	
+	player->Init(SCREENW / 2, SCREENH / 2, 0, 0, 0, 183, 381, imagestorage->GetPlayerImage());
 	camera->Init(player->GetX(), player->GetY());
-	
+	map->Init(imagestorage->GetMapImage(), font18);
+
 	//creation of all rooms. Init() involves/will involve creation of levels, objects, etc.
 	roomA->Init('A', 0, 0, 0, player, imagestorage->GetTerrainImage());
 	roomB->Init('B', 1, 0, 0, player, imagestorage->GetTerrainImage());
 	roomC->Init('C', 2, 0, 0, player, imagestorage->GetTerrainImage());
 
-	roomD->Init('D', 0, 1, 0, player, imagestorage->GetTerrainImage());
-	roomE->Init('E', 1, 1, 0, player, imagestorage->GetTerrainImage());
-	roomF->Init('F', 2, 1, 0, player, imagestorage->GetTerrainImage());
+	roomD->Init('D', 0, 0, 1, player, imagestorage->GetTerrainImage());
+	roomE->Init('E', 1, 0, 1, player, imagestorage->GetTerrainImage());
+	roomF->Init('F', 2, 0, 1, player, imagestorage->GetTerrainImage());
 
-	roomG->Init('G', 0, 2, 0, player, imagestorage->GetTerrainImage());
-	roomH->Init('H', 1, 2, 0, player, imagestorage->GetTerrainImage());
-	roomI->Init('I', 2, 2, 0, player, imagestorage->GetTerrainImage());
+	roomG->Init('G', 0, 0, 2, player, imagestorage->GetTerrainImage());
+	roomH->Init('H', 1, 0, 2, player, imagestorage->GetTerrainImage());
+	roomI->Init('I', 2, 0, 2, player, imagestorage->GetTerrainImage());
 
-	roomJ->Init('J', 0, 0, 1, player, imagestorage->GetTerrainImage());
-	roomK->Init('K', 1, 0, 1, player, imagestorage->GetTerrainImage());
-	roomL->Init('L', 2, 0, 1, player, imagestorage->GetTerrainImage());
+	roomJ->Init('J', 0, 1, 0, player, imagestorage->GetTerrainImage());
+	roomK->Init('K', 1, 1, 0, player, imagestorage->GetTerrainImage());
+	roomL->Init('L', 2, 1, 0, player, imagestorage->GetTerrainImage());
 
 	roomM->Init('M', 0, 1, 1, player, imagestorage->GetTerrainImage());
 	room_->Init('_', 1, 1, 1, player, imagestorage->GetTerrainImage());//center of cube
 	roomN->Init('N', 2, 1, 1, player, imagestorage->GetTerrainImage());
 
-	roomO->Init('O', 0, 2, 1, player, imagestorage->GetTerrainImage());
-	roomP->Init('P', 1, 2, 1, player, imagestorage->GetTerrainImage());
-	roomQ->Init('Q', 2, 2, 1, player, imagestorage->GetTerrainImage());
+	roomO->Init('O', 0, 1, 2, player, imagestorage->GetTerrainImage());
+	roomP->Init('P', 1, 1, 2, player, imagestorage->GetTerrainImage());
+	roomQ->Init('Q', 2, 1, 2, player, imagestorage->GetTerrainImage());
 
-	roomR->Init('R', 0, 0, 2, player, imagestorage->GetTerrainImage());
-	roomS->Init('S', 1, 0, 2, player, imagestorage->GetTerrainImage());
-	roomT->Init('T', 2, 0, 2, player, imagestorage->GetTerrainImage());
+	roomR->Init('R', 0, 2, 0, player, imagestorage->GetTerrainImage());
+	roomS->Init('S', 1, 2, 0, player, imagestorage->GetTerrainImage());
+	roomT->Init('T', 2, 2, 0, player, imagestorage->GetTerrainImage());
 
-	roomU->Init('U', 0, 1, 2, player, imagestorage->GetTerrainImage());
-	roomV->Init('V', 1, 1, 2, player, imagestorage->GetTerrainImage());
-	roomW->Init('W', 2, 1, 2, player, imagestorage->GetTerrainImage());
+	roomU->Init('U', 0, 2, 1, player, imagestorage->GetTerrainImage());
+	roomV->Init('V', 1, 2, 1, player, imagestorage->GetTerrainImage());
+	roomW->Init('W', 2, 2, 1, player, imagestorage->GetTerrainImage());
 
 	roomX->Init('X', 0, 2, 2, player, imagestorage->GetTerrainImage());
 	roomY->Init('Y', 1, 2, 2, player, imagestorage->GetTerrainImage());
@@ -250,7 +255,7 @@ int main()
 	//game loop begin
 	while (!doexit)
 	{
-		
+
 		ALLEGRO_EVENT ev;
 		al_wait_for_event(event_queue, &ev);
 
@@ -281,6 +286,9 @@ int main()
 				break;
 			case ALLEGRO_KEY_D:
 				keys[RIGHT] = true;
+				break;
+			case ALLEGRO_KEY_F:
+				keys[F_MAP] = true;
 				break;
 			case ALLEGRO_KEY_1:
 				keys[NUM_1] = true;
@@ -341,6 +349,9 @@ int main()
 				break;
 			case ALLEGRO_KEY_D:
 				keys[RIGHT] = false;
+				break;
+			case ALLEGRO_KEY_F:
+				keys[F_MAP] = false;
 				break;
 			case ALLEGRO_KEY_1:
 				keys[NUM_1] = false;
@@ -412,82 +423,46 @@ int main()
 				player->SetMouseAngleRadians(MouseAngleRadians);
 				player->PlayerKeyboard(keys[UP], keys[DOWN], keys[LEFT], keys[RIGHT], keys[SHIFT]);
 				//number keys (temporary, for testing purposes- do not plan on incorporating into gameplay)
+
+				if (keys[F_MAP]) //trigger for displaying map
+				{
+					if (DisplayMap)
+						DisplayMap = false;
+					else {
+						DisplayMap = true;
+						map->ResetLayers();
+					}
+					keys[F_MAP] = false;
+				}
+
 				if (keys[NUM_1])
 				{
-					for (riter = rooms.begin(); riter != rooms.end(); ++riter)
-					{
-						if ((*riter)->GetID() == CurrentRoom) {
-							if ((*riter)->GetXAdj() != '/')
-								CurrentRoom = (*riter)->GetXAdj();
-						}
-					}
-					Transition(RoomMatrix, CurrentRoom);
+					player->SetX(mouseX);
+					player->SetY(mouseY);
 					keys[NUM_1] = false;
 				}
 				if (keys[NUM_2])
 				{
-					for (riter = rooms.begin(); riter != rooms.end(); ++riter)
-					{
-						if ((*riter)->GetID() == CurrentRoom) {
-							if ((*riter)->GetNegXAdj() != '/')
-								CurrentRoom = (*riter)->GetNegXAdj();
-						}
-					}
-					Transition(RoomMatrix, CurrentRoom);
 					keys[NUM_2] = false;
 				}
 				if (keys[NUM_3])
 				{
-					for (riter = rooms.begin(); riter != rooms.end(); ++riter)
-					{
-						if ((*riter)->GetID() == CurrentRoom) {
-							if ((*riter)->GetYAdj() != '/')
-								CurrentRoom = (*riter)->GetYAdj();
-						}
-					}
-					Transition(RoomMatrix, CurrentRoom);
 					keys[NUM_3] = false;
 				}
 				if (keys[NUM_4])
 				{
-					for (riter = rooms.begin(); riter != rooms.end(); ++riter)
-					{
-						if ((*riter)->GetID() == CurrentRoom) {
-							if ((*riter)->GetNegYAdj() != '/')
-								CurrentRoom = (*riter)->GetNegYAdj();
-						}
-					}
-					Transition(RoomMatrix, CurrentRoom);
 					keys[NUM_4] = false;
 				}
 				if (keys[NUM_5])
 				{
-					for (riter = rooms.begin(); riter != rooms.end(); ++riter)
-					{
-						if ((*riter)->GetID() == CurrentRoom) {
-							if ((*riter)->GetZAdj() != '/')
-								CurrentRoom = (*riter)->GetZAdj();
-						}
-					}
-					Transition(RoomMatrix, CurrentRoom);
 					keys[NUM_5] = false;
 				}
 				if (keys[NUM_6])
 				{
-					for (riter = rooms.begin(); riter != rooms.end(); ++riter)
-					{
-						if ((*riter)->GetID() == CurrentRoom) {
-							if ((*riter)->GetNegZAdj() != '/')
-								CurrentRoom = (*riter)->GetNegZAdj();
-						}
-					}
-					Transition(RoomMatrix, CurrentRoom);
 					keys[NUM_6] = false;
 				}
 				if (keys[NUM_7])
 				{
-					player->SetX(mouseX);
-					player->SetY(mouseY);
 					keys[NUM_7] = false;
 				}
 				if (keys[NUM_8])
@@ -505,13 +480,16 @@ int main()
 					if ((*riter)->GetID() == CurrentRoom)
 						(*riter)->ObjectCollision();
 				}
-				
+
 				//update
 				camera->Follow(player);
 				for (riter = rooms.begin(); riter != rooms.end(); ++riter)
 				{
 					if ((*riter)->GetID() == CurrentRoom)
 						(*riter)->ObjectUpdate();
+				}
+				if (DisplayMap) {
+					map->Update();
 				}
 
 			}
@@ -536,9 +514,12 @@ int main()
 			else if (state == PLAYING) {
 				for (riter = rooms.begin(); riter != rooms.end(); ++riter)
 				{
-					al_draw_textf(font18, al_map_rgb(255, 255, 255), 5, 5, 0, "ROOM: %c", CurrentRoom);
+					//al_draw_textf(font18, al_map_rgb(255, 255, 255), 5, 5, 0, "ROOM: %c", CurrentRoom);
 					if ((*riter)->GetID() == CurrentRoom)
-						(*riter)->ObjectRender(camera-> GetCameraXPos(), camera->GetCameraYPos());
+						(*riter)->ObjectRender(camera->GetCameraXPos(), camera->GetCameraYPos());
+				}
+				if (DisplayMap) {
+					map->Render(RoomMatrix);
 				}
 			}
 			//FLIP BUFFERS========================
@@ -567,9 +548,13 @@ void Transition(char RoomMatrix[3][3][3], int CurrentRoom) {
 	//	(*riter)->Shuffle(shuffle);
 	//}
 	//realigning RoomMatrix according to shuffle
-	for (int x = 0; x < 3; x++) {
-		for (int y = 0; y < 3; y++) {
-			for (int z = 0; z < 3; z++) {
+
+
+
+	
+			for (int x = 0; x < 3; x++) {
+				for (int y = 0; y < 3; y++) {
+					for (int z = 0; z < 3; z++) {
 				for (riter = rooms.begin(); riter != rooms.end(); ++riter)
 				{
 					if ((*riter)->GetX() == x && (*riter)->GetY() == y && (*riter)->GetZ() == z)
@@ -579,12 +564,16 @@ void Transition(char RoomMatrix[3][3][3], int CurrentRoom) {
 		}
 	}
 
-	for (int z = 0; z < 3; z++) {
-		for (int y = 0; y < 3; y++) {
-		
-				for (int x = 0; x < 3; x++) {
+
+
+	
+
+
+			for (int x = 0; x < 3; x++) {
+				for (int y = 0; y < 3; y++) {
+					for (int z = 0; z < 3; z++) {
 				for (riter = rooms.begin(); riter != rooms.end(); ++riter) {
-					if (RoomMatrix[x][y][z] == (*riter)->GetID()){
+					if (RoomMatrix[x][y][z] == (*riter)->GetID()) {
 						if (x + 1 < 3)
 							(*riter)->SetXAdj(RoomMatrix[x + 1][y][z]);
 						else
@@ -631,9 +620,11 @@ void Transition(char RoomMatrix[3][3][3], int CurrentRoom) {
 			cout << "NegZAdj = " << (*riter)->GetNegZAdj() << endl;
 		}
 	}
-	for (int z = 0; z < 3; z++) {
 
-		for (int y = 0; y < 3; y++) {
+
+	
+	for (int y = 0; y < 3; y++) {
+		for (int z = 0; z < 3; z++) {
 			for (int x = 0; x < 3; x++) {
 				cout << RoomMatrix[x][y][z] << ", ";
 			}

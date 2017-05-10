@@ -12,6 +12,7 @@ void ImageStorage::Destroy() {}
 
 void ImageStorage::Init()
 {
-	PlayerImage = al_load_bitmap("PlayerImage.png");	
+	PlayerImage = al_load_bitmap("PlayerImage.png");
 	TerrainImage = al_load_bitmap("TerrainImage.png");
+	MapImage = al_load_bitmap("MapImage.png");
 }

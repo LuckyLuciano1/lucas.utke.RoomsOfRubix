@@ -13,6 +13,7 @@ class ImageStorage
 protected:
 	ALLEGRO_BITMAP *PlayerImage;
 	ALLEGRO_BITMAP *TerrainImage;
+	ALLEGRO_BITMAP *MapImage;
 public:
 
 	ImageStorage();
@@ -24,4 +25,5 @@ public:
 	//==============================================
 	ALLEGRO_BITMAP *GetPlayerImage() { return PlayerImage; }
 	ALLEGRO_BITMAP *GetTerrainImage() { return TerrainImage; }
+	ALLEGRO_BITMAP *GetMapImage() { return MapImage; }
 };
