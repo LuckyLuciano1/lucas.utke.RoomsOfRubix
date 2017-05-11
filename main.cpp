@@ -50,8 +50,8 @@ int main()
 	double frames = 0;
 	double gameFPS = 0;
 
-	double mouseX = 0;
-	double mouseY = 0;
+	double MouseX = 0;
+	double MouseY = 0;
 	double MouseAngleRadians = 0;
 
 	char CurrentRoom = '_';
@@ -166,7 +166,7 @@ int main()
 	imagestorage->Init();
 
 	//creation of player and camera
-	player->Init(SCREENW / 2, SCREENH / 2, 0, 0, 0, 183, 381, imagestorage->GetPlayerImage());
+	player->Init(1, SCREENW / 2, SCREENH / 2, 5, 0, 0, 183, 381, imagestorage->GetPlayerImage());
 	camera->Init(player->GetX(), player->GetY());
 	map->Init(imagestorage->GetMapImage(), font18);
 
@@ -264,8 +264,8 @@ int main()
 		//==============================================
 		if (ev.type == ALLEGRO_EVENT_MOUSE_AXES)//update mouse position
 		{
-			mouseX = ev.mouse.x;
-			mouseY = ev.mouse.y;
+			MouseX = ev.mouse.x;
+			MouseY = ev.mouse.y;
 		}
 
 		if (ev.type == ALLEGRO_EVENT_KEY_DOWN)
@@ -411,7 +411,7 @@ int main()
 			if (state == PLAYING)//if playing, receive movement and other stuff
 			{
 				//calculating MouseAngleRadians
-				MouseAngleRadians = atan2(mouseY - (player->GetY() + player->GetBoundY() / 2), mouseX - (player->GetX() + player->GetBoundX() / 2)) * 180 / PI;
+				MouseAngleRadians = atan2(MouseY - (player->GetY() + player->GetBoundY() / 2), MouseX - (player->GetX() + player->GetBoundX() / 2)) * 180 / PI;
 				if (MouseAngleRadians < 0)
 					MouseAngleRadians *= -1;
 				else if (MouseAngleRadians > 0) {
@@ -434,11 +434,15 @@ int main()
 					}
 					keys[F_MAP] = false;
 				}
+				if (keys[MOUSE_BUTTON] && DisplayMap)//trigger for checking if mouse is modifying map screen when displayed
+				{
+					map->MouseInteraction(MouseX, MouseY);
+				}
 
 				if (keys[NUM_1])
 				{
-					player->SetX(mouseX);
-					player->SetY(mouseY);
+					player->SetX(MouseX);
+					player->SetY(MouseY);
 					keys[NUM_1] = false;
 				}
 				if (keys[NUM_2])
@@ -519,7 +523,7 @@ int main()
 						(*riter)->ObjectRender(camera->GetCameraXPos(), camera->GetCameraYPos());
 				}
 				if (DisplayMap) {
-					map->Render(RoomMatrix);
+					map->Render(RoomMatrix, CurrentRoom);
 				}
 			}
 			//FLIP BUFFERS========================

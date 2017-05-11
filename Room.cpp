@@ -64,7 +64,7 @@ void Room::Init(char ID, int x, int y, int z, Player *player, ALLEGRO_BITMAP *Te
 	for (int x = 1; x <= LEVELW - 1; x++) {
 		for (int y = 1; y <= LEVELH - 1; y++) {
 				Tile *tile = new Tile();
-				tile->Init(TerrainImage, x*TILEW, y*TILEH, 0, 200*LevelMatrix[x][y], 200*(rand()%2), 200, 200);//position and dimensions/position of image
+				tile->Init(TerrainImage, 0, x*TILEW, y*TILEH, 0, 200*LevelMatrix[x][y], 200*(rand()%2), 200, 200);//position and dimensions/position of image
 				AllObjects.push_back(tile);
 				TileList.push_back(tile);
 		}
@@ -86,7 +86,7 @@ void Room::Init(char ID, int x, int y, int z, Player *player, ALLEGRO_BITMAP *Te
 
 void Room::ObjectUpdate()
 {
-	/*
+	
 	counter2++;
 	if (counter2 == 2)
 	{
@@ -101,7 +101,7 @@ void Room::ObjectUpdate()
 	}
 	if (counter >= LEVELW)
 		counter = 0;
-	*/
+	
 	for (titer = TileList.begin(); titer != TileList.end(); ++titer)//tracks depth of all tiles
 	{
 		int tempx = (*titer)->GetX() / TILEW;
@@ -198,6 +198,8 @@ bool compare(Object *L1, Object *L2) {
 	if ((*L1).GetY() + (*L1).GetBoundY() < (*L2).GetY() + (*L2).GetBoundY()) return true;
 	if ((*L2).GetY() + (*L2).GetBoundY() < (*L1).GetY() + (*L1).GetBoundY()) return false;
 
+	//if ((*L1).GetLayer() < (*L2).GetLayer()) return true;
+	//if ((*L2).GetLayer() < (*L1).GetLayer()) return false;
 	//secondary condition
 	if ((*L1).GetZ() > (*L2).GetZ()) return true;
 	if ((*L2).GetZ() > (*L1).GetZ()) return false;

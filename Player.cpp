@@ -5,9 +5,9 @@
 
 Player::Player() {}
 
-void Player::Init(double x, double y, double z, int imageX, int imageY, double imageboundX, double imageboundY, ALLEGRO_BITMAP *PlayerImage)
+void Player::Init(int layer, double x, double y, double z, int imageX, int imageY, double imageboundX, double imageboundY, ALLEGRO_BITMAP *PlayerImage)
 {
-	Object::Init(x, y, z, imageboundX / 2.5, imageboundY / 2.5, imageX, imageY, imageboundX, imageboundY, x, y, imageboundX / 2.5, imageboundY / 2.5);
+	Object::Init(layer, x, y, z, imageboundX / 2.5, imageboundY / 2.5, imageX, imageY, imageboundX, imageboundY, x, y, imageboundX / 2.5, imageboundY / 2.5);
 
 	Object::image = PlayerImage;
 
