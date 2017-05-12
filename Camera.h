@@ -15,6 +15,8 @@ protected:
 
 	double cameraXPos;
 	double cameraYPos;
+
+	bool paused;
 public:
 	Camera();
 	void virtual Destroy();
@@ -32,4 +34,7 @@ public:
 	void SetCameraYPos(double cameraYPos) { Camera::cameraYPos = cameraYPos; }
 	void SetCameraXDir(double cameraXDir) { Camera::cameraXDir = cameraXDir; }
 	void SetCameraYDir(double cameraYDir) { Camera::cameraYDir = cameraYDir; }
+
+	void Pause() { paused = true; }
+	void Resume() { paused = false; }
 };

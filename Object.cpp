@@ -6,7 +6,7 @@ using namespace std;
 Object::Object()
 {
 	valid = true;
-	layer = 0;
+	verticality = VERTICAL;
 
 	x = 0;
 	y = 0;
@@ -48,10 +48,8 @@ Object::Object()
 
 void Object::Destroy() {}
 
-void Object::Init(int layer, double x, double y, double z, double boundX, double boundY, int imageX, int imageY, double imageboundX, double imageboundY, int colX, int colY, int colboundX, int colboundY)
+void Object::Init(double x, double y, double z, double boundX, double boundY, int imageX, int imageY, double imageboundX, double imageboundY, int colX, int colY, int colboundX, int colboundY)
 {
-	Object::layer = layer;
-
 	Object::x = x;
 	Object::y = y;
 	Object::z = z;

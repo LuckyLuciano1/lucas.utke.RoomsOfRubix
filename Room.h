@@ -17,6 +17,8 @@ private:
 	int counter;
 	int counter2;
 
+	bool paused;//tracks whether level is paused or not from opening of menu/map. when paused, stops objets from updating.
+
 	vector<Object*> AllObjects;//list that keeps track of all objects within each room. Used for render, updating, collision, etc.
 	vector<Object*>::iterator iter;
 
@@ -61,6 +63,9 @@ public:
 	void ObjectRender(double cameraXPos, double cameraYPos);
 	void ObjectCollision();
 	void ObjectDeletion();
+
+	void Pause() { paused = true; }
+	void Resume() { paused = false; }
 
 	//==============================================
 	//COORDINATE ACCESS/MODIFICATION

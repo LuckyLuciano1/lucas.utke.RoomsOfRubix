@@ -34,9 +34,9 @@ void Map::Init(ALLEGRO_BITMAP *MapImage, ALLEGRO_FONT *font) {
 
 	TileBoundX = 50;
 	TileBoundY = 50;
-	TileTransparency = .7;
+	TileTransparency = 1;
 
-	TileSpacing = (TileBoundX + TileBoundY) / 2;
+	TileSpacing = 50;
 	LayerSpacing = 25;
 
 	MapRadius = TileSpacing * 3;
@@ -55,15 +55,15 @@ void Map::Render(char(&RoomMatrix)[3][3][3], char CurrentRoom) {
 
 				if (z == 0) {
 					al_draw_tinted_scaled_rotated_bitmap_region(MapImage, 0, 0, TileBoundX, TileBoundY, TileGradient, TileBoundX / 2, TileBoundY / 2, x + BackLayerX, y + BackLayerY, 1, 1, 0, 0);
-					al_draw_textf(font, al_map_rgb(255, 255, 255), x + BackLayerX, y + BackLayerY, 0, "%c", RoomMatrix[x / TileSpacing][y / TileSpacing][z / TileSpacing]);
+					al_draw_textf(font, al_map_rgb(150, 150, 150), x + BackLayerX - TileSpacing/3, y + BackLayerY, 0, "%c", RoomMatrix[x / TileSpacing][y / TileSpacing][z / TileSpacing]);
 				}
 				else if (z == TileSpacing) {
 					al_draw_tinted_scaled_rotated_bitmap_region(MapImage, 0, 0, TileBoundX, TileBoundY, TileGradient, TileBoundX / 2, TileBoundY / 2, x + MidLayerX, y + MidLayerY, 1, 1, 0, 0);
-					al_draw_textf(font, al_map_rgb(255, 255, 255), x + MidLayerX, y + MidLayerY, 0, "%c", RoomMatrix[x / TileSpacing][y / TileSpacing][z / TileSpacing]);
+					al_draw_textf(font, al_map_rgb(150, 150, 150), x + MidLayerX - TileSpacing / 3, y + MidLayerY, 0, "%c", RoomMatrix[x / TileSpacing][y / TileSpacing][z / TileSpacing]);
 				}
 				else if (z == TileSpacing * 2) {
 					al_draw_tinted_scaled_rotated_bitmap_region(MapImage, 0, 0, TileBoundX, TileBoundY, TileGradient, TileBoundX / 2, TileBoundY / 2, x + ForeLayerX, y + ForeLayerY, 1, 1, 0, 0);
-					al_draw_textf(font, al_map_rgb(255, 255, 255), x + ForeLayerX, y + ForeLayerY, 0, "%c", RoomMatrix[x / TileSpacing][y / TileSpacing][z / TileSpacing]);
+					al_draw_textf(font, al_map_rgb(150, 150, 150), x + ForeLayerX - TileSpacing / 3, y + ForeLayerY, 0, "%c", RoomMatrix[x / TileSpacing][y / TileSpacing][z / TileSpacing]);
 				}
 				else
 					cout << "LETTER DISPLAY ERROR FOR MAP" << endl;
@@ -75,13 +75,13 @@ void Map::Render(char(&RoomMatrix)[3][3][3], char CurrentRoom) {
 void Map::Update() {
 	//MidLayer will not move. Fore and Back layers will mirror each other.
 
-	//map startup
+	//map startup and reset
 	if (MidLayerX - ForeLayerX < LayerSpacing)
 		ForeLayerX--;
 
 	if (ForeLayerY - MidLayerY < LayerSpacing)
 		ForeLayerY++;
-
+	
 	//Backlayer mirror of ForeLayer
 	BackLayerX = MidLayerX + (MidLayerX - ForeLayerX);
 	BackLayerY = MidLayerY + (MidLayerY - ForeLayerY);

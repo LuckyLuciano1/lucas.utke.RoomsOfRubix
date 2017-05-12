@@ -21,6 +21,8 @@ void Room::Init(char ID, int x, int y, int z, Player *player, ALLEGRO_BITMAP *Te
 	Room::y = y;
 	Room::z = z;
 
+	paused = false;
+
 	AllObjects.push_back(player);
 	ObjectCollisionList.push_back(player);
 
@@ -34,6 +36,7 @@ void Room::Init(char ID, int x, int y, int z, Player *player, ALLEGRO_BITMAP *Te
 	}
 
 	int count = 0;//temp
+	
 	int HYP = 0;
 	int RAD = 5;//area that tiles extend from 
 	for (int x = RAD*2; x <= LEVELW - RAD*2; x++) {
@@ -60,11 +63,11 @@ void Room::Init(char ID, int x, int y, int z, Player *player, ALLEGRO_BITMAP *Te
 
 		}
 	}
-
+	
 	for (int x = 1; x <= LEVELW - 1; x++) {
 		for (int y = 1; y <= LEVELH - 1; y++) {
 				Tile *tile = new Tile();
-				tile->Init(TerrainImage, 0, x*TILEW, y*TILEH, 0, 200*LevelMatrix[x][y], 200*(rand()%2), 200, 200);//position and dimensions/position of image
+				tile->Init(TerrainImage, x*TILEW, y*TILEH, 0, 200*LevelMatrix[x][y], 200*(rand()%2), 200, 200);//position and dimensions/position of image
 				AllObjects.push_back(tile);
 				TileList.push_back(tile);
 		}
@@ -86,71 +89,72 @@ void Room::Init(char ID, int x, int y, int z, Player *player, ALLEGRO_BITMAP *Te
 
 void Room::ObjectUpdate()
 {
+	if (!paused) {
 	
-	counter2++;
-	if (counter2 == 2)
-	{
-		counter2 = 0;
-		counter++;
-	}
-	for (titer = TileList.begin(); titer != TileList.end(); ++titer)//creates wave effect
-	{
-		if ((*titer)->GetX() == counter*TILEW && (*titer)->GetY() < counter * TILEH) {
-			(*titer)->RiseTo(2);
-		}
-	}
-	if (counter >= LEVELW)
-		counter = 0;
-	
-	for (titer = TileList.begin(); titer != TileList.end(); ++titer)//tracks depth of all tiles
-	{
-		int tempx = (*titer)->GetX() / TILEW;
-		int tempy = (*titer)->GetY() / TILEH;
-		if ((*titer)->GetZ() != DepthMatrix[tempx][tempy]) {
-			DepthMatrix[tempx][tempy] = (*titer)->GetZ();
-		}
-	}
-
-	for (citer = ObjectCollisionList.begin(); citer != ObjectCollisionList.end(); ++citer)//sets collidable objects depth to that of tiles underneath them.
-	{
-		int tempx = (*citer)->GetX() / TILEW;
-		int tempy = (*citer)->GetY() / TILEH;
-		(*citer)->SetZ(DepthMatrix[tempx][tempy]);
-	}
-
-	/*for (citer = ObjectCollisionList.begin(); citer != ObjectCollisionList.end(); ++citer)//stops collidable objects from passing over tiles of different depth.
-	{
-		int tempxv = ((*citer)->GetX() + (*citer)->GetVelX()*(*citer)->GetDirX()) / TILEW;
-		int tempyv = ((*citer)->GetY() + (*citer)->GetVelY()*(*citer)->GetDirY()) / TILEH;
-		int tempx = (*citer)->GetX() / TILEW;
-		int tempy = (*citer)->GetY() / TILEH;
-
-		if (abs(DepthMatrix[tempxv][tempy]) - abs((*citer)->GetZ()) > 10)
-			(*citer)->SetDirX(0);
-
-		if (abs(DepthMatrix[tempx][tempyv]) - abs((*citer)->GetZ()) > 10)
-			(*citer)->SetDirY(0);
-	}*/
-
-	/*for (citer = ObjectCollisionList.begin(); citer != ObjectCollisionList.end(); ++citer)//experimental means of making tiles rise in all colliding object positions.
-	{
-		for (titer = TileList.begin(); titer != TileList.end(); ++titer)
+		counter2++;
+		if (counter2 == 2)
 		{
-			if ((((*titer)->GetX() + (*titer)->GetBoundX() / 2) - ((*citer)->GetX() + (*citer)->GetBoundX() / 2) < 50) &&
-				(((*citer)->GetX() + (*citer)->GetBoundX() / 2) - ((*titer)->GetX() + (*titer)->GetBoundX() / 2) < 50) &&
-				(((*titer)->GetY() + (*titer)->GetBoundY() / 2) - ((*citer)->GetY() + (*citer)->GetBoundY() / 2) < 50) &&
-				(((*citer)->GetY() + (*citer)->GetBoundY() / 2) - ((*titer)->GetY() + (*titer)->GetBoundY() / 2) < 50)) {
-
-				(*titer)->RiseTo(2);//rising
+			counter2 = 0;
+			counter++;
+		}
+		for (titer = TileList.begin(); titer != TileList.end(); ++titer)//creates wave effect
+		{
+			if ((*titer)->GetX() == counter*TILEW && (*titer)->GetY() < counter * TILEH) {
+				(*titer)->RiseTo(2);
 			}
 		}
-	}*/
+		if (counter >= LEVELW)
+			counter = 0;
+		
+		for (titer = TileList.begin(); titer != TileList.end(); ++titer)//tracks depth of all tiles
+		{
+			int tempx = (*titer)->GetX() / TILEW;
+			int tempy = (*titer)->GetY() / TILEH;
+			if ((*titer)->GetZ() != DepthMatrix[tempx][tempy]) {
+				DepthMatrix[tempx][tempy] = (*titer)->GetZ();
+			}
+		}
 
-	for (iter = AllObjects.begin(); iter != AllObjects.end(); ++iter)
-	{
-		(*iter)->Update();
+		for (citer = ObjectCollisionList.begin(); citer != ObjectCollisionList.end(); ++citer)//sets collidable objects depth to that of tiles underneath them.
+		{
+			int tempx = (*citer)->GetX() / TILEW;
+			int tempy = (*citer)->GetY() / TILEH;
+			(*citer)->SetZ(DepthMatrix[tempx][tempy]);
+		}
+
+		/*for (citer = ObjectCollisionList.begin(); citer != ObjectCollisionList.end(); ++citer)//stops collidable objects from passing over tiles of different depth.
+		{
+			int tempxv = ((*citer)->GetX() + (*citer)->GetVelX()*(*citer)->GetDirX()) / TILEW;
+			int tempyv = ((*citer)->GetY() + (*citer)->GetVelY()*(*citer)->GetDirY()) / TILEH;
+			int tempx = (*citer)->GetX() / TILEW;
+			int tempy = (*citer)->GetY() / TILEH;
+
+			if (abs(DepthMatrix[tempxv][tempy]) - abs((*citer)->GetZ()) > 10)
+				(*citer)->SetDirX(0);
+
+			if (abs(DepthMatrix[tempx][tempyv]) - abs((*citer)->GetZ()) > 10)
+				(*citer)->SetDirY(0);
+		}*/
+
+		/*for (citer = ObjectCollisionList.begin(); citer != ObjectCollisionList.end(); ++citer)//experimental means of making tiles rise in all colliding object positions.
+		{
+			for (titer = TileList.begin(); titer != TileList.end(); ++titer)
+			{
+				if ((((*titer)->GetX() + (*titer)->GetBoundX() / 2) - ((*citer)->GetX() + (*citer)->GetBoundX() / 2) < 50) &&
+					(((*citer)->GetX() + (*citer)->GetBoundX() / 2) - ((*titer)->GetX() + (*titer)->GetBoundX() / 2) < 50) &&
+					(((*titer)->GetY() + (*titer)->GetBoundY() / 2) - ((*citer)->GetY() + (*citer)->GetBoundY() / 2) < 50) &&
+					(((*citer)->GetY() + (*citer)->GetBoundY() / 2) - ((*titer)->GetY() + (*titer)->GetBoundY() / 2) < 50)) {
+
+					(*titer)->RiseTo(2);//rising
+				}
+			}
+		}*/
+
+		for (iter = AllObjects.begin(); iter != AllObjects.end(); ++iter)
+		{
+			(*iter)->Update();
+		}
 	}
-
 }
 
 void Room::ObjectRender(double cameraXPos, double cameraYPos)
@@ -193,14 +197,26 @@ void Room::ObjectDeletion()
 }
 
 bool compare(Object *L1, Object *L2) {
+	
+	//primary condition, y position of base
+	if ((*L1).GetVerticality() == HORIZONTAL && (*L2).GetVerticality() == HORIZONTAL) {//HORIZONTAL involved because some objects are supposed to be horizontal, so cannot include the base to properly render
+		if ((*L1).GetY() < (*L2).GetY()) return true;
+		if ((*L2).GetY() < (*L1).GetY()) return false;
+	}
+	else if ((*L1).GetVerticality() == HORIZONTAL) {
+		if ((*L1).GetY() < (*L2).GetY() + (*L2).GetBoundY()) return true;
+		if ((*L2).GetY() + (*L2).GetBoundY() < (*L1).GetY()) return false;
+	}
+	else if ((*L2).GetVerticality() == HORIZONTAL) {
+		if ((*L1).GetY() + (*L1).GetBoundY() < (*L2).GetY()) return true;
+		if ((*L2).GetY() < (*L1).GetY() + (*L1).GetBoundY()) return false;
+	}
+	else {//two vertical objects being compared
+		if ((*L1).GetY() + (*L1).GetBoundY() < (*L2).GetY() + (*L2).GetBoundY()) return true;
+		if ((*L2).GetY() + (*L2).GetBoundY() < (*L1).GetY() + (*L1).GetBoundY()) return false;
+	}
 
-	//primary condition
-	if ((*L1).GetY() + (*L1).GetBoundY() < (*L2).GetY() + (*L2).GetBoundY()) return true;
-	if ((*L2).GetY() + (*L2).GetBoundY() < (*L1).GetY() + (*L1).GetBoundY()) return false;
-
-	//if ((*L1).GetLayer() < (*L2).GetLayer()) return true;
-	//if ((*L2).GetLayer() < (*L1).GetLayer()) return false;
-	//secondary condition
+	//secondary condition, depth
 	if ((*L1).GetZ() > (*L2).GetZ()) return true;
 	if ((*L2).GetZ() > (*L1).GetZ()) return false;
 

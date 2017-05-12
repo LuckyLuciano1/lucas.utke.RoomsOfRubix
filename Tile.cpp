@@ -1,11 +1,13 @@
 #include "Tile.h"
 Tile::Tile() {}
 
-void Tile::Init(ALLEGRO_BITMAP *TileImage, int layer, double x, double y, double z, int imageX, int imageY, double imageboundX, double imageboundY)
+void Tile::Init(ALLEGRO_BITMAP *TileImage, double x, double y, double z, int imageX, int imageY, double imageboundX, double imageboundY)
 {
-	Object::Init(layer, x, y, z, TILEW, TILEH, imageX, imageY, imageboundX, imageboundY, x, y, TILEW, TILEH);
+	Object::Init(x, y, z, TILEW, TILEH, imageX, imageY, imageboundX, imageboundY, x, y, TILEW, TILEH);
 
+	SetVerticality(HORIZONTAL);
 	SetAnimating(false);
+
 	Object::image = TileImage;
 	state = STABLE;
 	MaxHeight = 3;
@@ -28,7 +30,7 @@ void Tile::Render(double cameraXPos, double cameraYPos)
 
 	Object::Render(cameraXPos, cameraYPos);
 	//gradient above tile to vary terrain color
-	al_draw_tinted_scaled_rotated_bitmap_region(image, 800, 0, imageboundX, imageboundY, gradient, (boundX - (boundX / 25)) / 2, (boundY - (boundY/25)) / 2, x + (boundX/(25/2))+cameraXPos, y + z+(boundY/(25/2)) + cameraYPos, (boundX - (boundX / 25)) / imageboundX, (boundY - (boundY/25)) / imageboundY, angle, FlipHorizontal);
+	al_draw_tinted_scaled_rotated_bitmap_region(image, 800, 0, imageboundX, imageboundY, gradient, (boundX - (boundX / 25)) / 2, (boundY - (boundY/25)) / 2, x + (boundX/(50))+cameraXPos, y + z+(boundY/(50)) + cameraYPos, (boundX - (boundX / 25)) / imageboundX, (boundY - (boundY/25)) / imageboundY, angle, FlipHorizontal);
 }
 
 void Tile::Update()

@@ -15,9 +15,8 @@ private:
 	bool animating;
 
 protected:
-
+	int verticality;//basic grouping that object is in (TILE, UNIT, DECOR, etc.)
 	bool valid;//determines whether object should be deleted or not.
-	int layer;//determines what layer the object is on (changes rendering order and objects on different layers will not interact with one another)
 
 	double x;
 	double y;
@@ -61,7 +60,7 @@ public:
 
 	Object();
 	void virtual Destroy();
-	void Init(int layer, double x, double y, double z, double boundX, double boundY, int imageX, int imageY, double imageboundX, double imageboundY, int colX, int colY, int colboundX, int colboundY);
+	void Init(double x, double y, double z, double boundX, double boundY, int imageX, int imageY, double imageboundX, double imageboundY, int colX, int colY, int colboundX, int colboundY);
 
 	//==============================================
 	//CLASS MANAGEMENT
@@ -137,6 +136,6 @@ public:
 	bool GetAnimating() { return animating; }
 	void SetAnimating(bool animating) { Object::animating = animating; }
 
-	int GetLayer() { return layer; }
-
+	int GetVerticality() { return verticality; }
+	void SetVerticality(int verticality) { Object::verticality = verticality; }
 };

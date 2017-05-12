@@ -166,7 +166,7 @@ int main()
 	imagestorage->Init();
 
 	//creation of player and camera
-	player->Init(1, SCREENW / 2, SCREENH / 2, 5, 0, 0, 183, 381, imagestorage->GetPlayerImage());
+	player->Init(SCREENW / 2, SCREENH / 2, 0, 0, 0, 183, 381, imagestorage->GetPlayerImage());
 	camera->Init(player->GetX(), player->GetY());
 	map->Init(imagestorage->GetMapImage(), font18);
 
@@ -253,6 +253,7 @@ int main()
 
 	cout << "GAMELOOP BEGIN" << endl;
 	//game loop begin
+	cout << imagestorage->GetPlayerImage() << endl;
 	while (!doexit)
 	{
 
@@ -424,13 +425,27 @@ int main()
 				player->PlayerKeyboard(keys[UP], keys[DOWN], keys[LEFT], keys[RIGHT], keys[SHIFT]);
 				//number keys (temporary, for testing purposes- do not plan on incorporating into gameplay)
 
-				if (keys[F_MAP]) //trigger for displaying map
+				if (keys[F_MAP])//trigger for displaying map
 				{
-					if (DisplayMap)
-						DisplayMap = false;
-					else {
+					if (!DisplayMap) {//opening map/data screen
+						for (riter = rooms.begin(); riter != rooms.end(); ++riter)
+						{
+							if ((*riter)->GetID() == CurrentRoom)
+								(*riter)->Pause();//pausing current room
+						}
+						camera->Pause();
 						DisplayMap = true;
 						map->ResetLayers();
+						
+					}
+					else {//closing map/data screen
+						for (riter = rooms.begin(); riter != rooms.end(); ++riter)
+						{
+							if ((*riter)->GetID() == CurrentRoom)
+								(*riter)->Resume();//resuming current room
+						}
+						camera->Resume();
+						DisplayMap = false;
 					}
 					keys[F_MAP] = false;
 				}

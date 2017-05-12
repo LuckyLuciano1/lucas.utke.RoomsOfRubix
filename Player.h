@@ -22,7 +22,7 @@ private:
 	double MouseAngleRadians;//angle of mouse in radians. Used to track which direction the player faces (check flags)
 public:
 	Player();
-	void Init(int layer, double x, double y, double z, int imageX, int imageY, double imageboundX, double imageboundY, ALLEGRO_BITMAP *PlayerImage);
+	void Init(double x, double y, double z, int imageX, int imageY, double imageboundX, double imageboundY, ALLEGRO_BITMAP *PlayerImage);
 	void Update();
 
 	//==============================================
