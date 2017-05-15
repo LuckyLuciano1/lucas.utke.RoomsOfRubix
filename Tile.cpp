@@ -11,7 +11,7 @@ void Tile::Init(ALLEGRO_BITMAP *TileImage, double x, double y, double z, int ima
 	Object::image = TileImage;
 	state = STABLE;
 	MaxHeight = 3;
-	Vel = 10;
+	Vel = 3;
 	gradient = al_map_rgba_f(0, rand()%(255/16) + (255/16)*15, 0, .01);//temp
 }
 
@@ -25,7 +25,7 @@ void Tile::Render(double cameraXPos, double cameraYPos)
 				al_draw_tinted_scaled_rotated_bitmap_region(image, 200, 400, imageboundX, imageboundY, transparency, boundX / 2, boundY / 2, x + cameraXPos, y + z - a + cameraYPos, boundX / imageboundX, boundY / imageboundY, angle, FlipHorizontal);
 
 		}
-		al_draw_tinted_scaled_rotated_bitmap_region(image, 400, 400, imageboundX, imageboundY, al_map_rgba_f(255 / 2, 255 / 2, 255 / 2, .5), boundX / 2, 0, x + cameraXPos, y + z + boundY - (boundY / 2) + cameraYPos, boundX / imageboundX, (boundY - z) / imageboundY, angle, FlipHorizontal);
+		al_draw_tinted_scaled_rotated_bitmap_region(image, 400, 400, imageboundX, imageboundY, al_map_rgba_f(255 / 2, 255 / 2, 255 / 2, .7), boundX / 2, 0, x + cameraXPos, y + z + boundY - (boundY / 2) + cameraYPos, boundX / imageboundX, (boundY - z) / imageboundY, angle, FlipHorizontal);
 	}
 
 	Object::Render(cameraXPos, cameraYPos);

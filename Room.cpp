@@ -39,10 +39,10 @@ void Room::Init(char ID, int x, int y, int z, Player *player, ALLEGRO_BITMAP *Te
 	
 	int HYP = 0;
 	int RAD = 5;//area that tiles extend from 
-	for (int x = RAD*2; x <= LEVELW - RAD*2; x++) {
-		for (int y = RAD*2; y <= LEVELH - RAD*2; y++) {
+	for (int x = RAD; x <= LEVELW - RAD; x++) {
+		for (int y = RAD; y <= LEVELH - RAD; y++) {
 
-			if(rand()%200 == 1){//small chance of creating tile circle
+			if(rand()%20 == 1){//small chance of creating tile circle
 
 				LevelMatrix[x][y] = 0;//sets center as full tile
 
@@ -60,7 +60,7 @@ void Room::Init(char ID, int x, int y, int z, Player *player, ALLEGRO_BITMAP *Te
 				}
 
 			}
-
+						
 		}
 	}
 	
@@ -92,7 +92,7 @@ void Room::ObjectUpdate()
 	if (!paused) {
 	
 		counter2++;
-		if (counter2 == 2)
+		if (counter2 == 20)
 		{
 			counter2 = 0;
 			counter++;
@@ -117,8 +117,8 @@ void Room::ObjectUpdate()
 
 		for (citer = ObjectCollisionList.begin(); citer != ObjectCollisionList.end(); ++citer)//sets collidable objects depth to that of tiles underneath them.
 		{
-			int tempx = (*citer)->GetX() / TILEW;
-			int tempy = (*citer)->GetY() / TILEH;
+			int tempx = (*citer)->GetColX() / TILEW;
+			int tempy = ((*citer)->GetColY() + (*citer)->GetColBoundX()) / TILEH;
 			(*citer)->SetZ(DepthMatrix[tempx][tempy]);
 		}
 
