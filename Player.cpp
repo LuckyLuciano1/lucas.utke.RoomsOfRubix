@@ -7,8 +7,10 @@ Player::Player() {}
 
 void Player::Init(double x, double y, double z, int imageX, int imageY, double imageboundX, double imageboundY, ALLEGRO_BITMAP *PlayerImage)
 {
+	
 	Object::Init(x, y, z, imageboundX / 2.5, imageboundY / 2.5, imageX, imageY, imageboundX, imageboundY, x, y, imageboundX / 2.5, imageboundY / 2.5);
-
+	Object::imageboundX = 193;
+	Object::imageboundY = 361;
 	Object::image = PlayerImage;
 
 	MouseAngleRadians = 0;//temporary value
