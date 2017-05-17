@@ -5,6 +5,7 @@
 #include <math.h>
 #include <iostream>
 #include <algorithm>
+#include "Scarf.h"
 
 using namespace std;
 
@@ -25,6 +26,10 @@ void Room::Init(char ID, int x, int y, int z, Player *player, ALLEGRO_BITMAP *Te
 
 	AllObjects.push_back(player);
 	ObjectCollisionList.push_back(player);
+	
+
+	scarf->Init(player->GetX(), player->GetY(), 5, 20);
+	//AllObjects.push_back(scarf);
 
 	LevelMatrix[LEVELW][LEVELH] = {};
 	DepthMatrix[LEVELW][LEVELH] = {};
@@ -90,7 +95,7 @@ void Room::Init(char ID, int x, int y, int z, Player *player, ALLEGRO_BITMAP *Te
 void Room::ObjectUpdate()
 {
 	if (!paused) {
-	
+
 		counter2++;
 		if (counter2 == 20)
 		{

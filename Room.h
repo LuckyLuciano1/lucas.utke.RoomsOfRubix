@@ -29,6 +29,9 @@ private:
 	vector<Tile*> TileList;//list that keeps track of all tiles in room. Used for changes in height, receding/rising all tiles, etc.
 	vector<Tile*>::iterator titer;
 
+	Scarf *scarf = new Scarf();
+	//Player *player = new Player();
+
 	int LevelMatrix[LEVELW][LEVELH];//tracks type of tiles in map.
 	int DepthMatrix[LEVELW][LEVELH];//tracks depth of tiles in map.
 

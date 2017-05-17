@@ -5,6 +5,7 @@
 #include <allegro5/allegro_primitives.h>
 #include "Globals.h"
 #include "Object.h"
+#include "Scarf.h"
 #include <vector>
 using namespace std;
 
@@ -20,10 +21,14 @@ private:
 	};//list of all the various animations that the player has
 	int Action;//tracks which action is being performed by the main character
 	double MouseAngleRadians;//angle of mouse in radians. Used to track which direction the player faces (check flags)
+
+	Scarf *scarf = new Scarf();
+
 public:
 	Player();
 	void Init(double x, double y, double z, int imageX, int imageY, double imageboundX, double imageboundY, ALLEGRO_BITMAP *PlayerImage);
 	void Update();
+	void Render(double cameraXPos, double cameraYPos);
 
 	//==============================================
 	//MOVEMENT

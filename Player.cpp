@@ -1,4 +1,5 @@
 #include "Player.h"
+#include "Scarf.h"
 #define PI 3.14159265
 #define DEGREES(x) int((x)/360.0*0xFFFFFF)
 #define RADIANS(x) int((x)/2/M_PI*0xFFFFFF)
@@ -16,12 +17,20 @@ void Player::Init(double x, double y, double z, int imageX, int imageY, double i
 	MouseAngleRadians = 0;//temporary value
 	velX = 6;
 	velY = 6;
+
+	scarf->Init(x, y, 20, 5);//creating the scarf
 }
 
 void Player::Update()
 {
-	//cout << dirX << ", " << dirY << " - " << z << endl;
+	//scarf->Update(x, y+z);
 	Object::Update();
+}
+
+void Player::Render(double cameraXPos, double cameraYPos)
+{
+	scarf->Update(x + cameraXPos, y + z + cameraYPos);
+	Object::Render(cameraXPos, cameraYPos);
 }
 
 void Player::PlayerKeyboard(bool UP, bool DOWN, bool LEFT, bool RIGHT, bool SHIFT)
