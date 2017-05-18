@@ -5,7 +5,7 @@
 #include <allegro5/allegro_primitives.h>
 #include "Globals.h"
 #include "Object.h"
-#include "Scarf.h"
+#include "String.h"
 #include <vector>
 using namespace std;
 
@@ -22,7 +22,7 @@ private:
 	int Action;//tracks which action is being performed by the main character
 	double MouseAngleRadians;//angle of mouse in radians. Used to track which direction the player faces (check flags)
 
-	Scarf *scarf = new Scarf();
+	String *string = new String();
 
 public:
 	Player();

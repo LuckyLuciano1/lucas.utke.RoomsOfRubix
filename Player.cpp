@@ -1,5 +1,5 @@
 #include "Player.h"
-#include "Scarf.h"
+#include "String.h"
 #define PI 3.14159265
 #define DEGREES(x) int((x)/360.0*0xFFFFFF)
 #define RADIANS(x) int((x)/2/M_PI*0xFFFFFF)
@@ -8,7 +8,7 @@ Player::Player() {}
 
 void Player::Init(double x, double y, double z, int imageX, int imageY, double imageboundX, double imageboundY, ALLEGRO_BITMAP *PlayerImage)
 {
-	
+
 	Object::Init(x, y, z, imageboundX / 2.5, imageboundY / 2.5, imageX, imageY, imageboundX, imageboundY, x, y, imageboundX / 2.5, imageboundY / 2.5);
 	Object::imageboundX = 193;
 	Object::imageboundY = 361;
@@ -18,29 +18,28 @@ void Player::Init(double x, double y, double z, int imageX, int imageY, double i
 	velX = 6;
 	velY = 6;
 
-	scarf->Init(x, y, 174, 1);//creating the scarf
+	string->Init(x, y, 50, 1, 15, 15);//creating the scarf
 }
 
 void Player::Update()
 {
-	//scarf->Update(x, y+z);
 	Object::Update();
 }
 
 void Player::Render(double cameraXPos, double cameraYPos)
 {
-	scarf->Update(x + cameraXPos, y + z + cameraYPos, dirX, dirY);
+	string->Update(x, y + z, dirX, dirY, cameraXPos, cameraYPos);
 	Object::Render(cameraXPos, cameraYPos);
 }
 
 void Player::PlayerKeyboard(bool UP, bool DOWN, bool LEFT, bool RIGHT, bool SHIFT)
 {
 	/*if (MouseAngleRadians > 3 * PI / 2 ||//determine direction player is facing based on mouse angle
-		MouseAngleRadians < PI / 2) {
-		FlipHorizontal = false;
+	MouseAngleRadians < PI / 2) {
+	FlipHorizontal = false;
 	}
 	else {
-		FlipHorizontal = true;
+	FlipHorizontal = true;
 	}*/
 
 	if (UP) {//player movement

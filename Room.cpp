@@ -2,10 +2,11 @@
 #include "Room.h"
 #include "Player.h"
 #include "Tile.h"
+#include "Banner.h"
 #include <math.h>
 #include <iostream>
 #include <algorithm>
-#include "Scarf.h"
+#include "String.h"
 
 using namespace std;
 
@@ -26,10 +27,6 @@ void Room::Init(char ID, int x, int y, int z, Player *player, ALLEGRO_BITMAP *Te
 
 	AllObjects.push_back(player);
 	ObjectCollisionList.push_back(player);
-	
-
-	scarf->Init(player->GetX(), player->GetY(), 5, 20);
-	//AllObjects.push_back(scarf);
 
 	LevelMatrix[LEVELW][LEVELH] = {};
 	DepthMatrix[LEVELW][LEVELH] = {};
@@ -78,6 +75,18 @@ void Room::Init(char ID, int x, int y, int z, Player *player, ALLEGRO_BITMAP *Te
 		}
 	}
 
+	for (int x = 1; x <= LEVELW - 1; x++) {
+		for (int y = 1; y <= LEVELH - 1; y++) {
+			if (LevelMatrix[x][y] == 0) 
+			{
+				Banner *banner = new Banner();
+				banner->Init(TerrainImage, x*TILEH, (y*TILEW) - 200, 0, 1000, 0, 200, 600);
+				AllObjects.push_back(banner);
+				ObjectCollisionList.push_back(banner);
+			}
+		}
+	}
+
 	/*for (int x = 0; x <= LEVELW; x++) {
 		for (int y = 0; y <= LEVELH; y++) {
 			LevelMatrix[x][LEVELH] = 0;
@@ -96,7 +105,7 @@ void Room::ObjectUpdate()
 {
 	if (!paused) {
 
-		counter2++;
+		/*counter2++;
 		if (counter2 == 20)
 		{
 			counter2 = 0;
@@ -110,7 +119,7 @@ void Room::ObjectUpdate()
 		}
 		if (counter >= LEVELW)
 			counter = 0;
-		
+		*/
 		for (titer = TileList.begin(); titer != TileList.end(); ++titer)//tracks depth of all tiles
 		{
 			int tempx = (*titer)->GetX() / TILEW;
