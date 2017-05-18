@@ -23,8 +23,14 @@ private:
 	int JointID;//tracks what number the joint is on the scarf
 
 	int ScarfJointSpacing;
+	int ScarfJointNum;
+
+	double WindCounter;//number used in sin() equation
+	double WindSway;//degree to which scarf sways
+	double WindSpeed;//speed at which scarf sways
+
 public:
 	ScarfJoint();
-	void Init(int JointID, double JointXPos, double JointYPos, double Vel, int ScarfJointSpacing);
-	void MoveTo(double x, double y);
+	void Init(int JointID, double JointXPos, double JointYPos, double Vel, int ScarfJointSpacing, int ScarfJointNum);
+	void MoveTo(double x, double y, double dirX, double dirY);
 };

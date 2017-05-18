@@ -18,7 +18,7 @@ void Player::Init(double x, double y, double z, int imageX, int imageY, double i
 	velX = 6;
 	velY = 6;
 
-	scarf->Init(x, y, 20, 5);//creating the scarf
+	scarf->Init(x, y, 174, 1);//creating the scarf
 }
 
 void Player::Update()
@@ -29,7 +29,7 @@ void Player::Update()
 
 void Player::Render(double cameraXPos, double cameraYPos)
 {
-	scarf->Update(x + cameraXPos, y + z + cameraYPos);
+	scarf->Update(x + cameraXPos, y + z + cameraYPos, dirX, dirY);
 	Object::Render(cameraXPos, cameraYPos);
 }
 
