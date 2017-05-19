@@ -245,9 +245,6 @@ void Room::ObjectDeletion()
 }
 
 bool compare(Object *L1, Object *L2) {
-	//third condition, x pos.
-	if ((*L1).GetX() < (*L2).GetX()) return true;
-	if ((*L2).GetX() < (*L1).GetX()) return false;
 
 	//primary condition, y position of base
 	if ((*L1).GetVerticality() == HORIZONTAL && (*L2).GetVerticality() == HORIZONTAL) {//HORIZONTAL involved because some objects are supposed to be horizontal, so cannot include the base to properly render
@@ -266,7 +263,6 @@ bool compare(Object *L1, Object *L2) {
 		if ((*L1).GetY() + (*L1).GetBoundY() < (*L2).GetY() + (*L2).GetBoundY()) return true;
 		if ((*L2).GetY() + (*L2).GetBoundY() < (*L1).GetY() + (*L1).GetBoundY()) return false;
 	}
-
 	//secondary condition, depth
 	if ((*L1).GetZ() > (*L2).GetZ()) return true;
 	if ((*L2).GetZ() > (*L1).GetZ()) return false;
