@@ -26,26 +26,28 @@ void GrassJoint::Init(int JointID, double JointXPos, double JointYPos, double Ve
 	WindSway = 1;
 }
 
-void GrassJoint::Update(double x, double y, double dirX, double dirY, double SwayChange, double SpeedChange, double cameraXPos, double cameraYPos)
+void GrassJoint::Update(double x, double y, double z, double dirX, double dirY, double SwayChange, double SpeedChange, double cameraXPos, double cameraYPos)
 {
 
 	if (dirX == 0 && dirY == 0) {//setting up 'resting position' of Grass when player/object is in idle state
 		dirX = 0;
 		dirY = 1;
 	}
-	WindSway += SwayChange / 100;
+	if(WindSway + SwayChange/100 < 1.5 && WindSway + SwayChange / 100 > .5)
+		WindSway += SwayChange / 100;
+	if(WindSpeed + SpeedChange/100 < .08 && WindSpeed + SwayChange / 100 > .01)
 	WindSpeed += SpeedChange / 100;
 
 	//WindSway = sin(WindCounter + WindSpeed);//makes spirals
 
-	JointXDir = (((JointXPos + JointXDir) - (x)+(JointID*GrassJointSpacing)*dirX) / Vel) + WindSway*sin(WindCounter += WindSpeed) + WindSway/2;//Vel of Grass is dependent on distance from object
+	JointXDir = (((JointXPos + JointXDir) - (x)+(JointID*GrassJointSpacing)*dirX) / Vel) + WindSway*sin(WindCounter += WindSpeed) + WindSway/1.5;//Vel of Grass is dependent on distance from object
 	JointYDir = ((JointYPos + JointYDir) - ((y)+(JointID*GrassJointSpacing)*-dirY)) / Vel;
 
 	JointXPos -= JointXDir;
 	JointYPos -= JointYDir;
 
-
-	al_draw_filled_rectangle(JointXPos + cameraXPos, JointYPos + cameraYPos, (JointXPos + cameraXPos) + GrassJointW, (JointYPos + cameraYPos) + GrassJointH, al_map_rgb((175 - JointID), 23, 23));
+	
+	al_draw_filled_rectangle(JointXPos + cameraXPos, JointYPos + cameraYPos + z, (JointXPos + cameraXPos) + GrassJointW, (JointYPos + cameraYPos) + GrassJointH + z, al_map_rgb(120 + JointID*2, 150, 80));
 	//al_draw_filled_rectangle(JointXPos + cameraXPos, JointYPos + cameraYPos, (JointXPos + cameraXPos) + GrassJointW*WindSway*sin(WindCounter + WindSpeed), (JointYPos + cameraYPos) + GrassJointH*WindSway*sin(WindCounter + WindSpeed), al_map_rgb((JointID * 3 - 175), 23, 23));//varies color+size
 
 }

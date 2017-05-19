@@ -34,7 +34,7 @@ private:
 public:
 	GrassJoint();
 	void Init(int JointID, double JointXPos, double JointYPos, double Vel, int GrassJointSpacing, int GrassJointNum, int GrassJointW, int GrassJointH);
-	void Update(double x, double y, double dirX, double dirY, double SwayChange, double SpeedChange, double cameraXPos, double cameraYPos);
+	void Update(double x, double y, double z, double dirX, double dirY, double SwayChange, double SpeedChange, double cameraXPos, double cameraYPos);
 
 	double GetJointXPos() { return JointXPos; }
 	double GetJointYPos() { return JointYPos; }

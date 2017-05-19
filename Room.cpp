@@ -39,23 +39,23 @@ void Room::Init(char ID, int x, int y, int z, Player *player, ALLEGRO_BITMAP *Te
 	}
 
 	int count = 0;//temp
-	
+
 	int HYP = 0;
 	int RAD = 5;//area that tiles extend from 
-	for (int x = RAD; x <= LEVELW - RAD; x++) {
-		for (int y = RAD; y <= LEVELH - RAD; y++) {
+	for (int x = RAD; x < LEVELW - RAD; x++) {
+		for (int y = RAD; y < LEVELH - RAD; y++) {
 
-			if(rand()%20 == 1){//small chance of creating tile circle
+			if (rand() % 10 == 1) {//small chance of creating tile circle
 
 				LevelMatrix[x][y] = 0;//sets center as full tile
 
 				for (int a = -RAD; a <= RAD; a++) {//running through all coordinates within radius
-					for (int b = -RAD; b <= RAD; b++) {			
+					for (int b = -RAD; b <= RAD; b++) {
 
 						if ((sqrt((a*a) + (b*b))) < RAD) {//checking tiles with TILEAREA diameter circle.
 							if (!(a == 0 && b == 0)) {//a and b cannot both equal 0 for some reason.
 								HYP = abs(sqrt((a*a) + (b*b)));//finding hypotenuse created by a and b
-								LevelMatrix[x + a][y + b] = rand()%HYP+1;
+								LevelMatrix[x + a][y + b] = rand() % HYP + 1;
 							}
 						}
 
@@ -63,22 +63,22 @@ void Room::Init(char ID, int x, int y, int z, Player *player, ALLEGRO_BITMAP *Te
 				}
 
 			}
-						
-		}
-	}
-	
-	for (int x = 1; x <= LEVELW - 1; x++) {
-		for (int y = 1; y <= LEVELH - 1; y++) {
-				Tile *tile = new Tile();
-				tile->Init(TerrainImage, x*TILEW, y*TILEH, 0, 200*LevelMatrix[x][y], 200*(rand()%2), 200, 200);//position and dimensions/position of image
-				AllObjects.push_back(tile);
-				TileList.push_back(tile);
+
 		}
 	}
 
 	for (int x = 1; x <= LEVELW - 1; x++) {
 		for (int y = 1; y <= LEVELH - 1; y++) {
-			if (LevelMatrix[x][y] == 0) 
+			Tile *tile = new Tile();
+			tile->Init(TerrainImage, x*TILEW, y*TILEH, 0, 200 * LevelMatrix[x][y], 200 * (rand() % 2), 200, 200);//position and dimensions/position of image
+			AllObjects.push_back(tile);
+			TileList.push_back(tile);
+		}
+	}
+
+	for (int x = 1; x <= LEVELW - 1; x++) {
+		for (int y = 1; y <= LEVELH - 1; y++) {
+			if (LevelMatrix[x][y] == 0)
 			{
 				Banner *banner = new Banner();
 				banner->Init(TerrainImage, x*TILEH, (y*TILEW) - 200, 0, 1000, 0, 200, 600);
@@ -87,23 +87,44 @@ void Room::Init(char ID, int x, int y, int z, Player *player, ALLEGRO_BITMAP *Te
 			}
 		}
 	}
-	cout << ID << endl;
-		for (int a = 1; a <= 400; a++) {
-			int x = rand() % (LEVELW*TILEW - TILEW*2) + TILEW;
-			int y = rand() % (LEVELH*TILEH - TILEH*2) + TILEH;
-			Grass *grass = new Grass();
-				grass->Init(x, y, 10, 1, 5, 1);
-				GrassList.push_back(grass);
+
+	HYP = 0;
+	RAD = TILEW;
+	for (int a = 1; a <= LEVELW; a++) {//number of grass spots created
+		int x = rand() % (LEVELW*TILEW - RAD * 4) + RAD * 2;
+		int y = rand() % (LEVELH*TILEH - RAD * 4) + RAD * 2;
+
+		for (int a = -RAD; a <= RAD; a++) {//running through all coordinates within radius
+			for (int b = -RAD; b <= RAD; b++) {
+
+				if ((sqrt((a*a) + (b*b))) < RAD && rand() % (RAD) == 1) {//checking tiles with TILEAREA diameter circle.
+					if (!(a == 0 && b == 0)) {//a and b cannot both equal 0 for some reason.
+						HYP = abs(sqrt((a*a) + (b*b)));//finding hypotenuse created by a and b
+						if (rand() % (HYP) == 1) {
+							int random = rand() % (20) + (10);
+							Grass *grass = new Grass();
+							//if (x + a + random%TILEW != 0) {//making grass width not droop over tiles (rendering issue fix)
+							grass->Init(x + a, y + b, random, 1, random, 1);
+							AllObjects.push_back(grass);
+							DecorList.push_back(grass);
+							//}
+						}
+					}
+				}
+
+			}
 		}
-		//grass->Init(1, 1, 10, 1, 5, 1);
-		//GrassList.push_back(grass);
+
+	}
+
+
 	/*for (int x = 0; x <= LEVELW; x++) {
-		for (int y = 0; y <= LEVELH; y++) {
-			LevelMatrix[x][LEVELH] = 0;
-			LevelMatrix[x][0] = 0;
-			LevelMatrix[LEVELW][y] = 0;
-			LevelMatrix[0][y] = 0;
-		}
+	for (int y = 0; y <= LEVELH; y++) {
+	LevelMatrix[x][LEVELH] = 0;
+	LevelMatrix[x][0] = 0;
+	LevelMatrix[LEVELW][y] = 0;
+	LevelMatrix[0][y] = 0;
+	}
 	}*/
 }
 
@@ -115,7 +136,7 @@ void Room::ObjectUpdate()
 {
 	if (!paused) {
 
-		/*counter2++;
+		counter2++;
 		if (counter2 == 20)
 		{
 			counter2 = 0;
@@ -129,7 +150,7 @@ void Room::ObjectUpdate()
 		}
 		if (counter >= LEVELW)
 			counter = 0;
-		*/
+
 		for (titer = TileList.begin(); titer != TileList.end(); ++titer)//tracks depth of all tiles
 		{
 			int tempx = (*titer)->GetX() / TILEW;
@@ -145,33 +166,36 @@ void Room::ObjectUpdate()
 			int tempy = ((*citer)->GetColY() + (*citer)->GetColBoundX()) / TILEH;
 			(*citer)->SetZ(DepthMatrix[tempx][tempy]);
 		}
+		for (diter = DecorList.begin(); diter != DecorList.end(); ++diter)//sets decor depth to that of tiles underneath them.
+		{
+			int tempx = (*diter)->GetX() / TILEW;
+			int tempy = ((*diter)->GetY() + (*diter)->GetBoundX()) / TILEH;
+			(*diter)->SetZ(DepthMatrix[tempx][tempy]);
+		}
 
 		/*for (citer = ObjectCollisionList.begin(); citer != ObjectCollisionList.end(); ++citer)//stops collidable objects from passing over tiles of different depth.
 		{
-			int tempxv = ((*citer)->GetX() + (*citer)->GetVelX()*(*citer)->GetDirX()) / TILEW;
-			int tempyv = ((*citer)->GetY() + (*citer)->GetVelY()*(*citer)->GetDirY()) / TILEH;
-			int tempx = (*citer)->GetX() / TILEW;
-			int tempy = (*citer)->GetY() / TILEH;
-
-			if (abs(DepthMatrix[tempxv][tempy]) - abs((*citer)->GetZ()) > 10)
-				(*citer)->SetDirX(0);
-
-			if (abs(DepthMatrix[tempx][tempyv]) - abs((*citer)->GetZ()) > 10)
-				(*citer)->SetDirY(0);
+		int tempxv = ((*citer)->GetX() + (*citer)->GetVelX()*(*citer)->GetDirX()) / TILEW;
+		int tempyv = ((*citer)->GetY() + (*citer)->GetVelY()*(*citer)->GetDirY()) / TILEH;
+		int tempx = (*citer)->GetX() / TILEW;
+		int tempy = (*citer)->GetY() / TILEH;
+		if (abs(DepthMatrix[tempxv][tempy]) - abs((*citer)->GetZ()) > 10)
+		(*citer)->SetDirX(0);
+		if (abs(DepthMatrix[tempx][tempyv]) - abs((*citer)->GetZ()) > 10)
+		(*citer)->SetDirY(0);
 		}*/
 
 		/*for (citer = ObjectCollisionList.begin(); citer != ObjectCollisionList.end(); ++citer)//experimental means of making tiles rise in all colliding object positions.
 		{
-			for (titer = TileList.begin(); titer != TileList.end(); ++titer)
-			{
-				if ((((*titer)->GetX() + (*titer)->GetBoundX() / 2) - ((*citer)->GetX() + (*citer)->GetBoundX() / 2) < 50) &&
-					(((*citer)->GetX() + (*citer)->GetBoundX() / 2) - ((*titer)->GetX() + (*titer)->GetBoundX() / 2) < 50) &&
-					(((*titer)->GetY() + (*titer)->GetBoundY() / 2) - ((*citer)->GetY() + (*citer)->GetBoundY() / 2) < 50) &&
-					(((*citer)->GetY() + (*citer)->GetBoundY() / 2) - ((*titer)->GetY() + (*titer)->GetBoundY() / 2) < 50)) {
-
-					(*titer)->RiseTo(2);//rising
-				}
-			}
+		for (titer = TileList.begin(); titer != TileList.end(); ++titer)
+		{
+		if ((((*titer)->GetX() + (*titer)->GetBoundX() / 2) - ((*citer)->GetX() + (*citer)->GetBoundX() / 2) < 50) &&
+		(((*citer)->GetX() + (*citer)->GetBoundX() / 2) - ((*titer)->GetX() + (*titer)->GetBoundX() / 2) < 50) &&
+		(((*titer)->GetY() + (*titer)->GetBoundY() / 2) - ((*citer)->GetY() + (*citer)->GetBoundY() / 2) < 50) &&
+		(((*citer)->GetY() + (*citer)->GetBoundY() / 2) - ((*titer)->GetY() + (*titer)->GetBoundY() / 2) < 50)) {
+		(*titer)->RiseTo(2);//rising
+		}
+		}
 		}*/
 
 		for (iter = AllObjects.begin(); iter != AllObjects.end(); ++iter)
@@ -188,11 +212,6 @@ void Room::ObjectRender(double cameraXPos, double cameraYPos)
 	for (iter = AllObjects.begin(); iter != AllObjects.end(); ++iter)
 	{
 		(*iter)->Render(cameraXPos, cameraYPos);
-	}
-
-	for (giter = GrassList.begin(); giter != GrassList.end(); ++giter)
-	{
-		(*giter)->Update(cameraXPos, cameraYPos);
 	}
 }
 
@@ -226,7 +245,10 @@ void Room::ObjectDeletion()
 }
 
 bool compare(Object *L1, Object *L2) {
-	
+	//third condition, x pos.
+	if ((*L1).GetX() < (*L2).GetX()) return true;
+	if ((*L2).GetX() < (*L1).GetX()) return false;
+
 	//primary condition, y position of base
 	if ((*L1).GetVerticality() == HORIZONTAL && (*L2).GetVerticality() == HORIZONTAL) {//HORIZONTAL involved because some objects are supposed to be horizontal, so cannot include the base to properly render
 		if ((*L1).GetY() < (*L2).GetY()) return true;
@@ -248,6 +270,8 @@ bool compare(Object *L1, Object *L2) {
 	//secondary condition, depth
 	if ((*L1).GetZ() > (*L2).GetZ()) return true;
 	if ((*L2).GetZ() > (*L1).GetZ()) return false;
+
+
 
 	return false;
 }
@@ -892,4 +916,3 @@ void Room::OrangeCounterClockwise()
 	else
 		cout << "ERROR - ORANGECOUNTERCLOCKWISE" << endl;
 }
-

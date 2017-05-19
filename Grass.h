@@ -16,14 +16,14 @@ private:
 	//int GrassJointSpacing;
 	//int GrassJointW;
 	//int GrassJointH;
-	int ObjX;
-	int ObjY;
+
 	vector<GrassJoint *> JointList;//holds joints
 	vector<GrassJoint *>::iterator jiter;
 
 public:
 	Grass();
 	void Init(double x, double y, int GrassJointNum, int GrassJointSpacing, int GrassJointW, int GrassJointH);
-	void Update(double cameraXPos, double cameraYPos);
+	void Render(double cameraXPos, double cameraYPos);
+	void Update();
 	double GetLowestPoint();
 };

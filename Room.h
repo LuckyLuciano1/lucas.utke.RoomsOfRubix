@@ -31,8 +31,8 @@ private:
 	vector<Tile*> TileList;//list that keeps track of all tiles in room. Used for changes in height, receding/rising all tiles, etc.
 	vector<Tile*>::iterator titer;
 
-	vector<Grass*> GrassList;
-	vector<Grass*>::iterator giter;
+	vector<Object*> DecorList;//;list for decore objects (grass, and other things).
+	vector<Object*>::iterator diter;
 
 	//Player *player = new Player();
 	//Camera *camera = new Camera();
@@ -46,11 +46,11 @@ protected:
 	int x;//coordinate of room in 3D matrix. Used to identify what room should be connected to what.
 	int y;
 	int z;
-	
+
 	char XAdj;//tracks what other rooms this room is linked to (via ID). '/' mark means it is next to nothing on that plane.
 	char NegXAdj;
 	char YAdj;
-	char NegYAdj; 
+	char NegYAdj;
 	char ZAdj;
 	char NegZAdj;
 
@@ -63,7 +63,7 @@ public:
 	char GetID() { return ID; }
 	void SetID(char ID) { Room::ID = ID; }
 
-	
+
 	//==============================================
 	//OBJECT LIST MANAGEMENT
 	//==============================================
@@ -116,7 +116,7 @@ public:
 
 	void BlueClockwise();
 	void BlueCounterClockwise();
-	
+
 	void YellowClockwise();
 	void YellowCounterClockwise();
 
