@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "Tile.h"
 #include "String.h"
+#include "Grass.h"
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_image.h>
 #include <vector>
@@ -30,9 +31,12 @@ private:
 	vector<Tile*> TileList;//list that keeps track of all tiles in room. Used for changes in height, receding/rising all tiles, etc.
 	vector<Tile*>::iterator titer;
 
+	vector<Grass*> GrassList;
+	vector<Grass*>::iterator giter;
+
 	//Player *player = new Player();
 	//Camera *camera = new Camera();
-
+	//Grass *grass = new Grass();
 	int LevelMatrix[LEVELW][LEVELH];//tracks type of tiles in map.
 	int DepthMatrix[LEVELW][LEVELH];//tracks depth of tiles in map.
 

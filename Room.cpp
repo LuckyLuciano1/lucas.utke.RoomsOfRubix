@@ -3,6 +3,7 @@
 #include "Player.h"
 #include "Tile.h"
 #include "Banner.h"
+#include "Grass.h"
 #include <math.h>
 #include <iostream>
 #include <algorithm>
@@ -86,7 +87,16 @@ void Room::Init(char ID, int x, int y, int z, Player *player, ALLEGRO_BITMAP *Te
 			}
 		}
 	}
-
+	cout << ID << endl;
+		for (int a = 1; a <= 400; a++) {
+			int x = rand() % (LEVELW*TILEW - TILEW*2) + TILEW;
+			int y = rand() % (LEVELH*TILEH - TILEH*2) + TILEH;
+			Grass *grass = new Grass();
+				grass->Init(x, y, 10, 1, 5, 1);
+				GrassList.push_back(grass);
+		}
+		//grass->Init(1, 1, 10, 1, 5, 1);
+		//GrassList.push_back(grass);
 	/*for (int x = 0; x <= LEVELW; x++) {
 		for (int y = 0; y <= LEVELH; y++) {
 			LevelMatrix[x][LEVELH] = 0;
@@ -178,6 +188,11 @@ void Room::ObjectRender(double cameraXPos, double cameraYPos)
 	for (iter = AllObjects.begin(); iter != AllObjects.end(); ++iter)
 	{
 		(*iter)->Render(cameraXPos, cameraYPos);
+	}
+
+	for (giter = GrassList.begin(); giter != GrassList.end(); ++giter)
+	{
+		(*giter)->Update(cameraXPos, cameraYPos);
 	}
 }
 

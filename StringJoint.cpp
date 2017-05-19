@@ -38,7 +38,7 @@ void StringJoint::Update(double x, double y, double dirX, double dirY, double Sw
 
 	//WindSway = sin(WindCounter + WindSpeed);//makes spirals
 	
-	JointXDir = (((JointXPos + JointXDir) - (x)+(JointID*StringJointSpacing)*dirX) / Vel) + WindSway*sin(WindCounter += WindSpeed);//Vel of String is dependent on distance from object
+	JointXDir = (((JointXPos + JointXDir) - (x)+(JointID*StringJointSpacing)*dirX) / Vel) + WindSway*sin(WindCounter += WindSpeed) + WindSway / 2;//Vel of String is dependent on distance from object
 	JointYDir = ((JointYPos + JointYDir) - ((y)+(JointID*StringJointSpacing)*-dirY)) / Vel;
 
 	JointXPos -= JointXDir;
