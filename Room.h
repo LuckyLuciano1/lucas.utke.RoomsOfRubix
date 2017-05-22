@@ -9,6 +9,8 @@
 #include "Grass.h"
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_image.h>
+#include <allegro5/allegro_font.h>
+#include <allegro5/allegro_ttf.h>
 #include <vector>
 
 using namespace std;
@@ -34,6 +36,8 @@ private:
 	vector<Object*> DecorList;//;list for decore objects (grass, and other things).
 	vector<Object*>::iterator diter;
 
+	ALLEGRO_FONT *font18;
+
 	//Player *player = new Player();
 	//Camera *camera = new Camera();
 	//Grass *grass = new Grass();
@@ -58,7 +62,7 @@ public:
 
 	Room();
 	void virtual Destroy();
-	void Init(char ID, int x, int y, int z, Player *player, ALLEGRO_BITMAP *TerrainImage);
+	void Init(char ID, int x, int y, int z, Player *player, ALLEGRO_BITMAP *TerrainImage, ALLEGRO_FONT *font18);
 
 	char GetID() { return ID; }
 	void SetID(char ID) { Room::ID = ID; }

@@ -9,6 +9,9 @@
 #include <algorithm>
 #include "String.h"
 
+#include <allegro5/allegro_font.h>
+#include <allegro5/allegro_ttf.h>
+
 using namespace std;
 
 bool compare(Object *L1, Object *L2);//function for sorting values. not part of the room class, merely inhabits same file
@@ -17,12 +20,14 @@ Room::Room() {}
 
 void Room::Destroy() {}
 
-void Room::Init(char ID, int x, int y, int z, Player *player, ALLEGRO_BITMAP *TerrainImage)
+void Room::Init(char ID, int x, int y, int z, Player *player, ALLEGRO_BITMAP *TerrainImage, ALLEGRO_FONT *font18)
 {
 	Room::ID = ID;
 	Room::x = x;
 	Room::y = y;
 	Room::z = z;
+
+	Room::font18 = font18;
 
 	paused = false;
 
@@ -42,10 +47,10 @@ void Room::Init(char ID, int x, int y, int z, Player *player, ALLEGRO_BITMAP *Te
 
 	int HYP = 0;
 	int RAD = 5;//area that tiles extend from 
-	for (int x = RAD; x < LEVELW - RAD; x++) {
-		for (int y = RAD; y < LEVELH - RAD; y++) {
+	for (int x = RAD; x < LEVELW - RAD; x+=RAD) {
+		for (int y = RAD; y < LEVELH - RAD; y+=RAD) {
 
-			if (rand() % 10 == 1) {//small chance of creating tile circle
+			if (rand() % 2 == 1) {//small chance of creating tile circle
 
 				LevelMatrix[x][y] = 0;//sets center as full tile
 
@@ -67,8 +72,8 @@ void Room::Init(char ID, int x, int y, int z, Player *player, ALLEGRO_BITMAP *Te
 		}
 	}
 
-	for (int x = 1; x <= LEVELW - 1; x++) {
-		for (int y = 1; y <= LEVELH - 1; y++) {
+	for (int x = 0; x <= LEVELW - 1; x++) {
+		for (int y = 0; y <= LEVELH - 1; y++) {
 			Tile *tile = new Tile();
 			tile->Init(TerrainImage, x*TILEW, y*TILEH, 0, 200 * LevelMatrix[x][y], 200 * (rand() % 2), 200, 200);//position and dimensions/position of image
 			AllObjects.push_back(tile);
@@ -76,8 +81,8 @@ void Room::Init(char ID, int x, int y, int z, Player *player, ALLEGRO_BITMAP *Te
 		}
 	}
 
-	for (int x = 1; x <= LEVELW - 1; x++) {
-		for (int y = 1; y <= LEVELH - 1; y++) {
+	for (int x = 0; x <= LEVELW - 1; x++) {
+		for (int y = 0; y <= LEVELH - 1; y++) {
 			if (LevelMatrix[x][y] == 0)
 			{
 				Banner *banner = new Banner();
@@ -90,7 +95,7 @@ void Room::Init(char ID, int x, int y, int z, Player *player, ALLEGRO_BITMAP *Te
 
 	HYP = 0;
 	RAD = TILEW;
-	for (int a = 1; a <= LEVELW; a++) {//number of grass spots created
+	for (int a = 1; a <= LEVELW*2; a++) {//number of grass spots created
 		int x = rand() % (LEVELW*TILEW - RAD * 4) + RAD * 2;
 		int y = rand() % (LEVELH*TILEH - RAD * 4) + RAD * 2;
 
@@ -103,11 +108,9 @@ void Room::Init(char ID, int x, int y, int z, Player *player, ALLEGRO_BITMAP *Te
 						if (rand() % (HYP) == 1) {
 							int random = rand() % (20) + (10);
 							Grass *grass = new Grass();
-							//if (x + a + random%TILEW != 0) {//making grass width not droop over tiles (rendering issue fix)
-							grass->Init(x + a, y + b, random, 1, random, 1);
+							grass->Init(x + a, y + b, random*3/2, 1, random*3/4, 1);
 							AllObjects.push_back(grass);
 							DecorList.push_back(grass);
-							//}
 						}
 					}
 				}
@@ -116,8 +119,10 @@ void Room::Init(char ID, int x, int y, int z, Player *player, ALLEGRO_BITMAP *Te
 		}
 
 	}
-
-
+	/*for (titer = TileList.begin(); titer != TileList.end(); ++titer)//finds coordinate of specific tile
+	{
+		cout << (*titer)->GetX() << ", " << (*titer)->GetY() << " - "<<LevelMatrix[x / TILEW][y / TILEH] << endl;
+	}*/
 	/*for (int x = 0; x <= LEVELW; x++) {
 	for (int y = 0; y <= LEVELH; y++) {
 	LevelMatrix[x][LEVELH] = 0;
@@ -143,14 +148,14 @@ void Room::ObjectUpdate()
 			counter++;
 		}
 		for (titer = TileList.begin(); titer != TileList.end(); ++titer)//creates wave effect
-		{
-			if ((*titer)->GetX() == counter*TILEW && (*titer)->GetY() < counter * TILEH) {
-				(*titer)->RiseTo(2);
+		{	
+			if ((*titer)->GetX() == counter*TILEW && (*titer)->GetY() == TILEH * 3) {
+				(*titer)->RiseTo(1);
 			}
 		}
 		if (counter >= LEVELW)
 			counter = 0;
-
+		
 		for (titer = TileList.begin(); titer != TileList.end(); ++titer)//tracks depth of all tiles
 		{
 			int tempx = (*titer)->GetX() / TILEW;
@@ -163,14 +168,16 @@ void Room::ObjectUpdate()
 		for (citer = ObjectCollisionList.begin(); citer != ObjectCollisionList.end(); ++citer)//sets collidable objects depth to that of tiles underneath them.
 		{
 			int tempx = (*citer)->GetColX() / TILEW;
-			int tempy = ((*citer)->GetColY() + (*citer)->GetColBoundX()) / TILEH;
+			int tempy = ((*citer)->GetColY() + (*citer)->GetColBoundY()) / TILEH;
 			(*citer)->SetZ(DepthMatrix[tempx][tempy]);
 		}
 		for (diter = DecorList.begin(); diter != DecorList.end(); ++diter)//sets decor depth to that of tiles underneath them.
 		{
-			int tempx = (*diter)->GetX() / TILEW;
-			int tempy = ((*diter)->GetY() + (*diter)->GetBoundX()) / TILEH;
+			int tempx = (*diter)->GetColX() / TILEW;
+			int tempy = ((*diter)->GetColY() + (*diter)->GetColBoundY()) / TILEH;
 			(*diter)->SetZ(DepthMatrix[tempx][tempy]);
+			al_draw_textf(font18, al_map_rgb(255, 255, 255), (*diter)->GetColX(), (*diter)->GetColY() + (*diter)->GetColBoundY(), 0, "%i, ", (*diter)->GetColX());
+			al_draw_textf(font18, al_map_rgb(255, 255, 255), (*diter)->GetColX(), (*diter)->GetColY() + (*diter)->GetColBoundY(), 0, "%i", ((*diter)->GetColY() + (*diter)->GetColBoundY()));
 		}
 
 		/*for (citer = ObjectCollisionList.begin(); citer != ObjectCollisionList.end(); ++citer)//stops collidable objects from passing over tiles of different depth.
@@ -212,6 +219,11 @@ void Room::ObjectRender(double cameraXPos, double cameraYPos)
 	for (iter = AllObjects.begin(); iter != AllObjects.end(); ++iter)
 	{
 		(*iter)->Render(cameraXPos, cameraYPos);
+	}
+	for (diter = DecorList.begin(); diter != DecorList.end(); ++diter)//sets decor depth to that of tiles underneath them.
+	{
+		al_draw_textf(font18, al_map_rgb(255, 255, 255), (*diter)->GetColX() + cameraXPos, (*diter)->GetColY() + (*diter)->GetColBoundY() + cameraYPos, 0, "%i, ", ((*diter)->GetColX()+cameraXPos));
+		al_draw_textf(font18, al_map_rgb(255, 255, 255), (*diter)->GetColX() + cameraXPos, (*diter)->GetColY() + (*diter)->GetColBoundY() + cameraYPos, 0, "%i", ((*diter)->GetColY() + (*diter)->GetColBoundY()+cameraXPos));
 	}
 }
 
@@ -266,8 +278,6 @@ bool compare(Object *L1, Object *L2) {
 	//secondary condition, depth
 	if ((*L1).GetZ() > (*L2).GetZ()) return true;
 	if ((*L2).GetZ() > (*L1).GetZ()) return false;
-
-
 
 	return false;
 }

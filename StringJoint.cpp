@@ -20,7 +20,7 @@ void StringJoint::Init(int JointID, double JointXPos, double JointYPos, double V
 	StringJoint::StringJointH = StringJointH;
 
 	WindCounter = 0;//makes line
-	//WindCounter = JointID;//makes spiral cone
+					//WindCounter = JointID;//makes spiral cone
 
 	WindSpeed = .03;
 	WindSway = 1;

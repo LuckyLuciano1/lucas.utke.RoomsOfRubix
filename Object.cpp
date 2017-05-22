@@ -98,7 +98,7 @@ void Object::Update()
 
 void Object::Render(double cameraXPos, double cameraYPos)
 {
-	al_draw_tinted_scaled_rotated_bitmap_region(image, imageX, imageY, imageboundX, imageboundY, transparency, boundX/2, boundY/2, x + cameraXPos, y + z + cameraYPos, boundX/imageboundX, boundY/imageboundY, angle, FlipHorizontal);
+	al_draw_tinted_scaled_rotated_bitmap_region(image, imageX, imageY, imageboundX, imageboundY, transparency, 0, 0, x + cameraXPos, y + z + cameraYPos, boundX/imageboundX, boundY/imageboundY, angle, FlipHorizontal);
 	//cumulative drawing function that should be able to handle all possible drawing commands.
 }
 

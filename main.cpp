@@ -166,46 +166,46 @@ int main()
 	imagestorage->Init();
 
 	//creation of player and camera
-	player->Init(SCREENW / 2, SCREENH / 2, 0, 0, 0, 183, 381, imagestorage->GetPlayerImage());
-	camera->Init(player->GetX(), player->GetY());
+	player->Init(0, 0, 0, 0, 0, 183, 381, imagestorage->GetPlayerImage());
+	camera->Init(0, 0);
 	map->Init(imagestorage->GetMapImage(), font18);
 
 	//creation of all rooms. Init() involves/will involve creation of levels, objects, etc.
-	roomA->Init('A', 0, 0, 0, player, imagestorage->GetTerrainImage());
-	roomB->Init('B', 1, 0, 0, player, imagestorage->GetTerrainImage());
-	roomC->Init('C', 2, 0, 0, player, imagestorage->GetTerrainImage());
+	roomA->Init('A', 0, 0, 0, player, imagestorage->GetTerrainImage(), font18);
+	roomB->Init('B', 1, 0, 0, player, imagestorage->GetTerrainImage(), font18);
+	roomC->Init('C', 2, 0, 0, player, imagestorage->GetTerrainImage(), font18);
 
-	roomD->Init('D', 0, 0, 1, player, imagestorage->GetTerrainImage());
-	roomE->Init('E', 1, 0, 1, player, imagestorage->GetTerrainImage());
-	roomF->Init('F', 2, 0, 1, player, imagestorage->GetTerrainImage());
+	roomD->Init('D', 0, 0, 1, player, imagestorage->GetTerrainImage(), font18);
+	roomE->Init('E', 1, 0, 1, player, imagestorage->GetTerrainImage(), font18);
+	roomF->Init('F', 2, 0, 1, player, imagestorage->GetTerrainImage(), font18);
 
-	roomG->Init('G', 0, 0, 2, player, imagestorage->GetTerrainImage());
-	roomH->Init('H', 1, 0, 2, player, imagestorage->GetTerrainImage());
-	roomI->Init('I', 2, 0, 2, player, imagestorage->GetTerrainImage());
+	roomG->Init('G', 0, 0, 2, player, imagestorage->GetTerrainImage(), font18);
+	roomH->Init('H', 1, 0, 2, player, imagestorage->GetTerrainImage(), font18);
+	roomI->Init('I', 2, 0, 2, player, imagestorage->GetTerrainImage(), font18);
 
-	roomJ->Init('J', 0, 1, 0, player, imagestorage->GetTerrainImage());
-	roomK->Init('K', 1, 1, 0, player, imagestorage->GetTerrainImage());
-	roomL->Init('L', 2, 1, 0, player, imagestorage->GetTerrainImage());
+	roomJ->Init('J', 0, 1, 0, player, imagestorage->GetTerrainImage(), font18);
+	roomK->Init('K', 1, 1, 0, player, imagestorage->GetTerrainImage(), font18);
+	roomL->Init('L', 2, 1, 0, player, imagestorage->GetTerrainImage(), font18);
 
-	roomM->Init('M', 0, 1, 1, player, imagestorage->GetTerrainImage());
-	room_->Init('_', 1, 1, 1, player, imagestorage->GetTerrainImage());//center of cube
-	roomN->Init('N', 2, 1, 1, player, imagestorage->GetTerrainImage());
+	roomM->Init('M', 0, 1, 1, player, imagestorage->GetTerrainImage(), font18);
+	room_->Init('_', 1, 1, 1, player, imagestorage->GetTerrainImage(), font18);//center of cube
+	roomN->Init('N', 2, 1, 1, player, imagestorage->GetTerrainImage(), font18);
 
-	roomO->Init('O', 0, 1, 2, player, imagestorage->GetTerrainImage());
-	roomP->Init('P', 1, 1, 2, player, imagestorage->GetTerrainImage());
-	roomQ->Init('Q', 2, 1, 2, player, imagestorage->GetTerrainImage());
+	roomO->Init('O', 0, 1, 2, player, imagestorage->GetTerrainImage(), font18);
+	roomP->Init('P', 1, 1, 2, player, imagestorage->GetTerrainImage(), font18);
+	roomQ->Init('Q', 2, 1, 2, player, imagestorage->GetTerrainImage(), font18);
 
-	roomR->Init('R', 0, 2, 0, player, imagestorage->GetTerrainImage());
-	roomS->Init('S', 1, 2, 0, player, imagestorage->GetTerrainImage());
-	roomT->Init('T', 2, 2, 0, player, imagestorage->GetTerrainImage());
+	roomR->Init('R', 0, 2, 0, player, imagestorage->GetTerrainImage(), font18);
+	roomS->Init('S', 1, 2, 0, player, imagestorage->GetTerrainImage(), font18);
+	roomT->Init('T', 2, 2, 0, player, imagestorage->GetTerrainImage(), font18);
 
-	roomU->Init('U', 0, 2, 1, player, imagestorage->GetTerrainImage());
-	roomV->Init('V', 1, 2, 1, player, imagestorage->GetTerrainImage());
-	roomW->Init('W', 2, 2, 1, player, imagestorage->GetTerrainImage());
+	roomU->Init('U', 0, 2, 1, player, imagestorage->GetTerrainImage(), font18);
+	roomV->Init('V', 1, 2, 1, player, imagestorage->GetTerrainImage(), font18);
+	roomW->Init('W', 2, 2, 1, player, imagestorage->GetTerrainImage(), font18);
 
-	roomX->Init('X', 0, 2, 2, player, imagestorage->GetTerrainImage());
-	roomY->Init('Y', 1, 2, 2, player, imagestorage->GetTerrainImage());
-	roomZ->Init('Z', 2, 2, 2, player, imagestorage->GetTerrainImage());
+	roomX->Init('X', 0, 2, 2, player, imagestorage->GetTerrainImage(), font18);
+	roomY->Init('Y', 1, 2, 2, player, imagestorage->GetTerrainImage(), font18);
+	roomZ->Init('Z', 2, 2, 2, player, imagestorage->GetTerrainImage(), font18);
 
 	//adding all rooms to 'rooms' vector
 	rooms.push_back(roomA);
@@ -539,7 +539,7 @@ int main()
 				}
 				if (DisplayMap) {
 					map->Render(RoomMatrix, CurrentRoom);
-				}
+				} 
 			}
 			//FLIP BUFFERS========================
 			al_flip_display();
