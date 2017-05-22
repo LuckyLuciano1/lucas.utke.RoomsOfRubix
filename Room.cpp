@@ -171,14 +171,14 @@ void Room::ObjectUpdate()
 			int tempy = ((*citer)->GetColY() + (*citer)->GetColBoundY()) / TILEH;
 			(*citer)->SetZ(DepthMatrix[tempx][tempy]);
 		}
-		for (diter = DecorList.begin(); diter != DecorList.end(); ++diter)//sets decor depth to that of tiles underneath them.
+		/*for (diter = DecorList.begin(); diter != DecorList.end(); ++diter)//sets decor depth to that of tiles underneath them.
 		{
 			int tempx = (*diter)->GetColX() / TILEW;
 			int tempy = ((*diter)->GetColY() + (*diter)->GetColBoundY()) / TILEH;
 			(*diter)->SetZ(DepthMatrix[tempx][tempy]);
 			al_draw_textf(font18, al_map_rgb(255, 255, 255), (*diter)->GetColX(), (*diter)->GetColY() + (*diter)->GetColBoundY(), 0, "%i, ", (*diter)->GetColX());
 			al_draw_textf(font18, al_map_rgb(255, 255, 255), (*diter)->GetColX(), (*diter)->GetColY() + (*diter)->GetColBoundY(), 0, "%i", ((*diter)->GetColY() + (*diter)->GetColBoundY()));
-		}
+		}*/
 
 		/*for (citer = ObjectCollisionList.begin(); citer != ObjectCollisionList.end(); ++citer)//stops collidable objects from passing over tiles of different depth.
 		{
@@ -220,11 +220,11 @@ void Room::ObjectRender(double cameraXPos, double cameraYPos)
 	{
 		(*iter)->Render(cameraXPos, cameraYPos);
 	}
-	for (diter = DecorList.begin(); diter != DecorList.end(); ++diter)//sets decor depth to that of tiles underneath them.
+	/*for (diter = DecorList.begin(); diter != DecorList.end(); ++diter)
 	{
 		al_draw_textf(font18, al_map_rgb(255, 255, 255), (*diter)->GetColX() + cameraXPos, (*diter)->GetColY() + (*diter)->GetColBoundY() + cameraYPos, 0, "%i, ", ((*diter)->GetColX()+cameraXPos));
 		al_draw_textf(font18, al_map_rgb(255, 255, 255), (*diter)->GetColX() + cameraXPos, (*diter)->GetColY() + (*diter)->GetColBoundY() + cameraYPos, 0, "%i", ((*diter)->GetColY() + (*diter)->GetColBoundY()+cameraXPos));
-	}
+	}*/
 }
 
 void Room::ObjectCollision()

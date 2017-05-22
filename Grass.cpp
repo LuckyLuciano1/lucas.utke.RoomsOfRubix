@@ -45,7 +45,7 @@ void Grass::Render(double cameraXPos, double cameraYPos)
 		(*jiter)->Update(x, y, z, 0, 1, SwayChange, SpeedChange, cameraXPos, cameraYPos);
 	}
 	//cout << x << ", " << y << " : " << dirX << ", " << dirY << endl;
-	al_draw_filled_rectangle(colX+cameraXPos, colY+cameraYPos+z, colX+colboundX+cameraXPos, colY+colboundY+cameraYPos+z, al_map_rgb(255, 0, 0));
+	//al_draw_filled_rectangle(colX+cameraXPos, colY+cameraYPos+z, colX+colboundX+cameraXPos, colY+colboundY+cameraYPos+z, al_map_rgb(255, 0, 0));
 }
 void Grass::Update() {//placeholder for use in vector
 }

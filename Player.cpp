@@ -1,5 +1,7 @@
 #include "Player.h"
 #include "String.h"
+#include "PlayerCloak.h"
+
 #define PI 3.14159265
 #define DEGREES(x) int((x)/360.0*0xFFFFFF)
 #define RADIANS(x) int((x)/2/M_PI*0xFFFFFF)
@@ -10,8 +12,8 @@ void Player::Init(double x, double y, double z, int imageX, int imageY, double i
 {
 
 	Object::Init(x, y, z, imageboundX / 2.5, imageboundY / 2.5, imageX, imageY, imageboundX, imageboundY, x, y, imageboundX / 2.5, imageboundY / 2.5);
-	Object::imageboundX = 193;
-	Object::imageboundY = 361;
+	Object::imageboundX = 345;
+	Object::imageboundY = 239;
 	Object::image = PlayerImage;
 
 	MouseAngleRadians = 0;//temporary value
@@ -19,6 +21,7 @@ void Player::Init(double x, double y, double z, int imageX, int imageY, double i
 	velY = 6;
 
 	string->Init(x, y, 50, 1, 15, 15);//creating the scarf
+	playercloakpiece1->Init(x, y, 50, 1, 15, 15);
 }
 
 void Player::Update()
@@ -29,7 +32,9 @@ void Player::Update()
 void Player::Render(double cameraXPos, double cameraYPos)
 {
 	string->Update(x, y + z, dirX, dirY, cameraXPos, cameraYPos);
+	playercloakpiece1->Update(x, y + z, dirX, dirY, cameraXPos, cameraYPos);
 	Object::Render(cameraXPos, cameraYPos);
+	al_draw_rectangle(x + cameraXPos, y + z + cameraYPos, x + cameraXPos + boundX, y + z + cameraYPos + boundY, al_map_rgb(255, 255, 255), 2);
 }
 
 void Player::PlayerKeyboard(bool UP, bool DOWN, bool LEFT, bool RIGHT, bool SHIFT)

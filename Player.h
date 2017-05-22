@@ -6,6 +6,9 @@
 #include "Globals.h"
 #include "Object.h"
 #include "String.h"
+#include "PlayerCloak.h"
+
+
 #include <vector>
 using namespace std;
 
@@ -23,6 +26,7 @@ private:
 	double MouseAngleRadians;//angle of mouse in radians. Used to track which direction the player faces (check flags)
 
 	String *string = new String();
+	PlayerCloak *playercloakpiece1 = new PlayerCloak();
 
 public:
 	Player();
