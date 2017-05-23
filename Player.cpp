@@ -21,7 +21,7 @@ void Player::Init(double x, double y, double z, int imageX, int imageY, double i
 	velY = 6;
 
 	string->Init(x, y, 50, 1, 15, 15);//creating the scarf
-	playercloakpiece1->Init(x, y, 50, 1, 15, 15);
+	playercloakpiece1->Init(x, y, 50, 2, 15, 15);
 }
 
 void Player::Update()
@@ -33,7 +33,7 @@ void Player::Render(double cameraXPos, double cameraYPos)
 {
 	string->Update(x, y + z, dirX, dirY, cameraXPos, cameraYPos);
 	playercloakpiece1->Update(x, y + z, dirX, dirY, cameraXPos, cameraYPos);
-	Object::Render(cameraXPos, cameraYPos);
+	//Object::Render(cameraXPos, cameraYPos);
 	al_draw_rectangle(x + cameraXPos, y + z + cameraYPos, x + cameraXPos + boundX, y + z + cameraYPos + boundY, al_map_rgb(255, 255, 255), 2);
 }
 

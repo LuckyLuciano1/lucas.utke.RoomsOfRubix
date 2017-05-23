@@ -31,10 +31,6 @@ private:
 	double WindSway;//degree to which String sways
 	double WindSpeed;//speed at which String sways
 
-	double SetPointX;//point that joint is rubber banding from
-	double SetPointY;
-
-
 public:
 	PlayerCloakJoint();
 	void Init(int JointID, double JointXPos, double JointYPos, double Vel, int PlayerCloakJointSpacing, int PlayerCloakJointNum, int PlayerCloakJointW, int PlayerCloakJointH);
