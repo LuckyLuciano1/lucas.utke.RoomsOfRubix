@@ -15,8 +15,11 @@ private:
 	double JointXDir;
 	double JointYDir;
 
-	double JointXPos;
+	double JointXPos;//resting position of object
 	double JointYPos;
+
+	double curXPos;//current position of object
+	double curYPos;
 
 	double Vel;//speed at which String "rubber bands"
 

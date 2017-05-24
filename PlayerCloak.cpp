@@ -9,12 +9,12 @@ void PlayerCloak::Init(double x, double y, int PlayerCloakJointNum, int PlayerCl
 	for (int a = 2; a <= PlayerCloakJointNum; a++) {
 		if (a > PlayerCloakJointNum/2) {//second half
 			PlayerCloakJoint *joint = new PlayerCloakJoint();
-			joint->Init(a, x, y, a, PlayerCloakJointSpacing, PlayerCloakJointNum, (PlayerCloakJointNum - a), PlayerCloakJointH);//velocity is exponential, dependent on joint number
+			joint->Init(a, x - (PlayerCloakJointNum - a)/2, y, a, PlayerCloakJointSpacing, PlayerCloakJointNum, (PlayerCloakJointNum - a), PlayerCloakJointH);//velocity is exponential, dependent on joint number
 			JointList.push_back(joint);
 		}
 		else{//first half
 			PlayerCloakJoint *joint = new PlayerCloakJoint();
-			joint->Init(a, x, y, a, PlayerCloakJointSpacing, PlayerCloakJointNum, a, PlayerCloakJointH);//velocity is exponential, dependent on joint number
+			joint->Init(a, x - a, y, a, PlayerCloakJointSpacing, PlayerCloakJointNum, a, PlayerCloakJointH);//velocity is exponential, dependent on joint number
 			JointList.push_back(joint);
 		}
 

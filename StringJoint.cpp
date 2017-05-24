@@ -39,13 +39,13 @@ void StringJoint::Update(double x, double y, double dirX, double dirY, double Sw
 	//WindSway = sin(WindCounter + WindSpeed);//makes spirals
 
 	JointXDir = (((JointXPos + JointXDir) - (x)+(JointID*StringJointSpacing)*dirX) / Vel) + WindSway*sin(WindCounter += WindSpeed) + WindSway / 2;//Vel of String is dependent on distance from object
-	JointYDir = ((JointYPos + JointYDir) - ((y)+(JointID*StringJointSpacing)*-dirY)) / Vel;
+	JointYDir = (((JointYPos + JointYDir) - ((y)+(JointID*StringJointSpacing)*-dirY)) / Vel) + WindSway*sin(WindCounter += WindSpeed) + WindSway / 2;
 
 	JointXPos -= JointXDir;
 	JointYPos -= JointYDir;
 
 
-	al_draw_filled_rectangle(JointXPos + cameraXPos, JointYPos + cameraYPos, (JointXPos + cameraXPos) + StringJointW, (JointYPos + cameraYPos) + StringJointH, al_map_rgb((175 - JointID), 23, 23));
+	al_draw_filled_rectangle(JointXPos + cameraXPos, JointYPos + cameraYPos, (JointXPos + cameraXPos) + StringJointW, (JointYPos + cameraYPos) + StringJointH, al_map_rgb((193 - JointID), 39, 45));
 	//al_draw_filled_rectangle(JointXPos + cameraXPos, JointYPos + cameraYPos, (JointXPos + cameraXPos) + StringJointW*WindSway*sin(WindCounter + WindSpeed), (JointYPos + cameraYPos) + StringJointH*WindSway*sin(WindCounter + WindSpeed), al_map_rgb((JointID*WindSway*sin(WindCounter + WindSpeed) - 175), 23, 23));//varies color+size
 
 }
