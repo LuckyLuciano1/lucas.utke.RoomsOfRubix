@@ -18,8 +18,8 @@ private:
 	double JointXPos;//resting position of object
 	double JointYPos;
 
-	double curXPos;//current position of object
-	double curYPos;
+	double CurXPos;//current position of object
+	double CurYPos;
 
 	double Vel;//speed at which String "rubber bands"
 
@@ -27,6 +27,7 @@ private:
 
 	int PlayerCloakJointSpacing;
 	int PlayerCloakJointNum;
+
 	int PlayerCloakJointW;
 	int PlayerCloakJointH;
 
@@ -34,11 +35,12 @@ private:
 	double WindSway;//degree to which String sways
 	double WindSpeed;//speed at which String sways
 
+	int ColorR;//colors of Cloak. only accurately describes top of cloak.
+	int ColorG;
+	int ColorB;
+
 public:
 	PlayerCloakJoint();
-	void Init(int JointID, double JointXPos, double JointYPos, double Vel, int PlayerCloakJointSpacing, int PlayerCloakJointNum, int PlayerCloakJointW, int PlayerCloakJointH);
-	void Update(double x, double y, double dirX, double dirY, double cameraXPos, double cameraYPos);
-
-	double GetJointXPos() { return JointXPos; }
-	double GetJointYPos() { return JointYPos; }
+	void Init(int JointID, double JointXPos, double JointYPos, double Vel, int PlayerCloakJointSpacing, int PlayerCloakJointNum, int PlayerCloakJointW, int PlayerCloakJointH, int ColorR, int ColorG, int COlorB);
+	void Update(double z, double dirX, double dirY, double velX, double velY, double cameraXPos, double cameraYPos);
 };

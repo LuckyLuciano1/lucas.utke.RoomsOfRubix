@@ -20,8 +20,8 @@ void Player::Init(double x, double y, double z, int imageX, int imageY, double i
 	velX = 6;
 	velY = 6;
 
-	string->Init(x, y, 50, 1, 15, 15);//creating the scarf
-	playercloakpiece1->Init(x, y, 50, 2, 15, 15);
+	string->Init(x, y+z, 50, 1, 15, 15);//creating the scarf
+	playercloakpiece1->Init(x, y+z, 50, 30, 50, 29, 81, 75, 69);
 }
 
 void Player::Update()
@@ -31,12 +31,11 @@ void Player::Update()
 
 void Player::Render(double cameraXPos, double cameraYPos)
 {
-	
 	string->Update(x+boundX/2, y + z, dirX, dirY, cameraXPos, cameraYPos);
-	playercloakpiece1->Update(x+boundX/2, y + z, dirX, dirY, cameraXPos, cameraYPos);
+	playercloakpiece1->Update(z, dirX, dirY, velX, velY, cameraXPos, cameraYPos);
 	//Object::Render(cameraXPos, cameraYPos);
-	//al_draw_rectangle(x + cameraXPos, y + z + cameraYPos, x + cameraXPos + boundX, y + z + cameraYPos + boundY, al_map_rgb(255, 255, 255), 2);
-	al_draw_tinted_scaled_rotated_bitmap_region(image, 0, 0, 345, 239, al_map_rgba_f(1, 1, 1, 1), 0, 0, x + cameraXPos + boundX/2 - (345*.1)/2, y + z + cameraYPos, .1, .1, 0, 0);
+	al_draw_rectangle(x + cameraXPos, y + z + cameraYPos, x + cameraXPos + boundX, y + z + cameraYPos + boundY, al_map_rgb(255, 255, 255), 2);
+	al_draw_tinted_scaled_rotated_bitmap_region(image, 0, 0, 345, 239, al_map_rgba_f(1, 1, 1, 1), 0, 0, x + cameraXPos + boundX/2 - (345*.15)/2, y + z + cameraYPos, .15, .15, 0, 0);
 }
 
 void Player::PlayerKeyboard(bool UP, bool DOWN, bool LEFT, bool RIGHT, bool SHIFT)
