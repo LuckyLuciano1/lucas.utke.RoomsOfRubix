@@ -21,7 +21,7 @@ void Player::Init(double x, double y, double z, int imageX, int imageY, double i
 	velY = 6;
 
 	string->Init(x, y+z, 50, 1, 15, 15);//creating the scarf
-	playercloakpiece1->Init(x, y+z, 50, 30, 50, 29, 81, 75, 69);
+	playercloakpiece1->Init(x, y+z, 1500, 1, 150, 1, 81, 75, 69);
 }
 
 void Player::Update()

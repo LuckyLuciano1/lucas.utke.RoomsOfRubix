@@ -35,7 +35,7 @@ void PlayerCloakJoint::Update(double z, double dirX, double dirY, double velX, d
 	JointYPos += dirY*velY;
 
 	JointXDir = ((CurXPos)-(JointXPos)) / (Vel) + WindSway*sin(WindCounter += WindSpeed) + WindSway / 2;//determining direction based on current point compared to resting point
-	JointYDir = ((CurYPos)-(JointYPos));// / (Vel);// (Vel / 10.0);
+	JointYDir = ((CurYPos)-(JointYPos)) / (Vel);// (Vel / 10.0);
 
 	CurXPos -= JointXDir;//updating current position according to direction
 	CurYPos -= JointYDir;
