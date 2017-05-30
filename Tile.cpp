@@ -18,7 +18,7 @@ void Tile::Init(ALLEGRO_BITMAP *TileImage, double x, double y, double z, int ima
 
 void Tile::Render(double cameraXPos, double cameraYPos)
 {
-	if (z != 0) {
+		;	if (z != 0) {
 		for (int a = 0; a > (z - boundY); a -= boundY - 1) {
 			if (a == -boundY + 1) {
 				al_draw_tinted_scaled_rotated_bitmap_region(image, 0, 400, imageboundX, imageboundY, transparency, 0, 0, x + cameraXPos, y + z - a + cameraYPos, boundX / imageboundX, boundY / imageboundY, angle, FlipHorizontal);

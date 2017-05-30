@@ -35,12 +35,12 @@ void PlayerCloakJoint::Update(double z, double dirX, double dirY, double velX, d
 	JointYPos += dirY*velY;
 
 	JointXDir = ((CurXPos)-(JointXPos)) / (Vel) + WindSway*sin(WindCounter += WindSpeed) + WindSway / 2;//determining direction based on current point compared to resting point
-	JointYDir = ((CurYPos)-(JointYPos)) / (Vel);// (Vel / 10.0);
+	JointYDir = ((CurYPos)-(JointYPos));// (Vel / 10.0);
 
 	CurXPos -= JointXDir;//updating current position according to direction
 	CurYPos -= JointYDir;
 
-	al_draw_filled_rectangle((CurXPos + cameraXPos), (CurYPos + cameraYPos) + z, (CurXPos + cameraXPos) + PlayerCloakJointW, (CurYPos + cameraYPos) + PlayerCloakJointH + z, al_map_rgb((ColorR + JointID), ColorG, ColorB));
+	al_draw_filled_rectangle((CurXPos + cameraXPos), (CurYPos + cameraYPos) + z, (CurXPos + cameraXPos) + PlayerCloakJointW, (CurYPos + cameraYPos) + PlayerCloakJointH + z, al_map_rgb((ColorR+JointID/2), ColorG, ColorB));
 
 	//al_draw_filled_rectangle(JointXPos + JointXDir + cameraXPos, JointYPos + JointYDir + cameraYPos, (JointXPos + JointXDir + cameraXPos) + PlayerCloakJointW, (JointYPos + JointYDir + cameraYPos) + PlayerCloakJointH, al_map_rgb((170 + JointID), 100, 30));//orange hair
 	//al_draw_filled_rectangle(JointXPos - JointXDir + cameraXPos, JointYPos - JointYDir + cameraYPos, (JointXPos - JointXDir + cameraXPos) + PlayerCloakJointW, (JointYPos - JointYDir + cameraYPos) + PlayerCloakJointH, al_map_rgb((81 - JointID), 75, 69));//crimson scarf

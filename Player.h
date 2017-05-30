@@ -27,6 +27,8 @@ private:
 
 	String *string = new String();
 	PlayerCloak *playercloakpiece1 = new PlayerCloak();
+	PlayerCloak *playercloakpiece2 = new PlayerCloak();
+	PlayerCloak *playercloakpiece3 = new PlayerCloak();
 
 public:
 	Player();
