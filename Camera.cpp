@@ -36,8 +36,8 @@ void Camera::Follow (Object *object)
 		else
 			cameraYDir = 0;
 		*/
-		cameraXDir = ((cameraXPos + cameraXDir) + ((object->GetX() - (SCREENW / 2)) + object->GetDirX())) / 25;//velocity of camera is dependent on distance from object
-		cameraYDir = ((cameraYPos + cameraYDir) + ((object->GetY() - (SCREENH / 2)) + object->GetDirY())) / 25;
+		cameraXDir = ((cameraXPos + cameraXDir) + ((object->GetX() + (object->GetBoundX() / 2) - (SCREENW / 2)) + object->GetDirX())) / 25;//velocity of camera is dependent on distance from object
+		cameraYDir = ((cameraYPos + cameraYDir) + ((object->GetY() + (object->GetBoundY() / 2) - (SCREENH / 2)) + object->GetDirY())) / 25;
 
 		cameraXPos -= cameraXDir;
 		cameraYPos -= cameraYDir;

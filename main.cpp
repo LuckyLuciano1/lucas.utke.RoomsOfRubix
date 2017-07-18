@@ -18,7 +18,7 @@
 
 #include "Globals.h"
 #include "Player.h"
-#include "Room.h"
+#include "Level.h"
 #include "Camera.h"
 #include "Map.h"
 #include "ImageStorage.h"
@@ -29,11 +29,11 @@
 
 using namespace std;
 
-vector<Room *> rooms;
-vector<Room *>::iterator riter;
-vector<Room *>::iterator riter2;
+vector<Level *> levels;
+vector<Level *>::iterator riter;
+vector<Level *>::iterator riter2;
 
-void Transition(char RoomMatrix[3][3][3], int CurrentRoom);
+void Transition(char LevelMatrix[3][3][3], int CurrentLevel);
 
 bool keys[] = { false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false };
 
@@ -54,12 +54,12 @@ int main()
 	double MouseY = 0;
 	double MouseAngleRadians = 0;
 
-	char CurrentRoom = '_';
+	char CurrentLevel = '_';
 
 	bool DisplayMap = false;//tracks whether or not map needs to be displayed. Used in render section and activated by F_MAP key.
 
 	//matrix for storing coordinates. used to keep track of what's where.
-	char RoomMatrix[3][3][3] = {
+	char LevelMatrix[3][3][3] = {
 	'A','B','C',
 	'D','E','F',
 	'G','H','I',
@@ -82,34 +82,34 @@ int main()
 	ImageStorage *imagestorage = new ImageStorage();
 	Map *map = new Map();
 
-	//defining all the rooms
-	Room *roomA = new Room();
-	Room *roomB = new Room();
-	Room *roomC = new Room();
-	Room *roomD = new Room();
-	Room *roomE = new Room();
-	Room *roomF = new Room();
-	Room *roomG = new Room();
-	Room *roomH = new Room();
-	Room *roomI = new Room();
-	Room *roomJ = new Room();
-	Room *roomK = new Room();
-	Room *roomL = new Room();
-	Room *roomM = new Room();
-	Room *room_ = new Room();
-	Room *roomN = new Room();
-	Room *roomO = new Room();
-	Room *roomP = new Room();
-	Room *roomQ = new Room();
-	Room *roomR = new Room();
-	Room *roomS = new Room();
-	Room *roomT = new Room();
-	Room *roomU = new Room();
-	Room *roomV = new Room();
-	Room *roomW = new Room();
-	Room *roomX = new Room();
-	Room *roomY = new Room();
-	Room *roomZ = new Room();
+	//defining all the levels
+	Level *levelA = new Level();
+	Level *levelB = new Level();
+	Level *levelC = new Level();
+	Level *levelD = new Level();
+	Level *levelE = new Level();
+	Level *levelF = new Level();
+	Level *levelG = new Level();
+	Level *levelH = new Level();
+	Level *levelI = new Level();
+	Level *levelJ = new Level();
+	Level *levelK = new Level();
+	Level *levelL = new Level();
+	Level *levelM = new Level();
+	Level *level_ = new Level();
+	Level *levelN = new Level();
+	Level *levelO = new Level();
+	Level *levelP = new Level();
+	Level *levelQ = new Level();
+	Level *levelR = new Level();
+	Level *levelS = new Level();
+	Level *levelT = new Level();
+	Level *levelU = new Level();
+	Level *levelV = new Level();
+	Level *levelW = new Level();
+	Level *levelX = new Level();
+	Level *levelY = new Level();
+	Level *levelZ = new Level();
 
 	int state = PLAYING;
 
@@ -157,7 +157,7 @@ int main()
 	//==============================================
 	//insert font types, images, sounds, state images, etc
 	font18 = al_load_font("arial.ttf", 18, 0);
-	al_reserve_samples(15);
+	//al_reserve_samples(100);
 
 	//seeds RNG with computer clock
 	srand(time(NULL));
@@ -170,71 +170,71 @@ int main()
 	camera->Init(0, 0);
 	map->Init(imagestorage->GetMapImage(), font18);
 
-	//creation of all rooms. Init() involves/will involve creation of levels, objects, etc.
-	roomA->Init('A', 0, 0, 0, player, imagestorage->GetTerrainImage(), font18);
-	roomB->Init('B', 1, 0, 0, player, imagestorage->GetTerrainImage(), font18);
-	roomC->Init('C', 2, 0, 0, player, imagestorage->GetTerrainImage(), font18);
+	//creation of all levels. Init() involves/will involve creation of levels, objects, etc.
+	levelA->Init('A', 0, 0, 0, player, camera, imagestorage->GetTerrainImage(), font18);
+	levelB->Init('B', 1, 0, 0, player, camera, imagestorage->GetTerrainImage(), font18);
+	levelC->Init('C', 2, 0, 0, player, camera, imagestorage->GetTerrainImage(), font18);
 
-	roomD->Init('D', 0, 0, 1, player, imagestorage->GetTerrainImage(), font18);
-	roomE->Init('E', 1, 0, 1, player, imagestorage->GetTerrainImage(), font18);
-	roomF->Init('F', 2, 0, 1, player, imagestorage->GetTerrainImage(), font18);
+	levelD->Init('D', 0, 0, 1, player, camera, imagestorage->GetTerrainImage(), font18);
+	levelE->Init('E', 1, 0, 1, player, camera, imagestorage->GetTerrainImage(), font18);
+	levelF->Init('F', 2, 0, 1, player, camera, imagestorage->GetTerrainImage(), font18);
 
-	roomG->Init('G', 0, 0, 2, player, imagestorage->GetTerrainImage(), font18);
-	roomH->Init('H', 1, 0, 2, player, imagestorage->GetTerrainImage(), font18);
-	roomI->Init('I', 2, 0, 2, player, imagestorage->GetTerrainImage(), font18);
+	levelG->Init('G', 0, 0, 2, player, camera, imagestorage->GetTerrainImage(), font18);
+	levelH->Init('H', 1, 0, 2, player, camera, imagestorage->GetTerrainImage(), font18);
+	levelI->Init('I', 2, 0, 2, player, camera, imagestorage->GetTerrainImage(), font18);
 
-	roomJ->Init('J', 0, 1, 0, player, imagestorage->GetTerrainImage(), font18);
-	roomK->Init('K', 1, 1, 0, player, imagestorage->GetTerrainImage(), font18);
-	roomL->Init('L', 2, 1, 0, player, imagestorage->GetTerrainImage(), font18);
+	levelJ->Init('J', 0, 1, 0, player, camera, imagestorage->GetTerrainImage(), font18);
+	levelK->Init('K', 1, 1, 0, player, camera, imagestorage->GetTerrainImage(), font18);
+	levelL->Init('L', 2, 1, 0, player, camera, imagestorage->GetTerrainImage(), font18);
 
-	roomM->Init('M', 0, 1, 1, player, imagestorage->GetTerrainImage(), font18);
-	room_->Init('_', 1, 1, 1, player, imagestorage->GetTerrainImage(), font18);//center of cube
-	roomN->Init('N', 2, 1, 1, player, imagestorage->GetTerrainImage(), font18);
+	levelM->Init('M', 0, 1, 1, player, camera, imagestorage->GetTerrainImage(), font18);
+	level_->Init('_', 1, 1, 1, player, camera, imagestorage->GetTerrainImage(), font18);//center of cube
+	levelN->Init('N', 2, 1, 1, player, camera, imagestorage->GetTerrainImage(), font18);
 
-	roomO->Init('O', 0, 1, 2, player, imagestorage->GetTerrainImage(), font18);
-	roomP->Init('P', 1, 1, 2, player, imagestorage->GetTerrainImage(), font18);
-	roomQ->Init('Q', 2, 1, 2, player, imagestorage->GetTerrainImage(), font18);
+	levelO->Init('O', 0, 1, 2, player, camera, imagestorage->GetTerrainImage(), font18);
+	levelP->Init('P', 1, 1, 2, player, camera, imagestorage->GetTerrainImage(), font18);
+	levelQ->Init('Q', 2, 1, 2, player, camera, imagestorage->GetTerrainImage(), font18);
 
-	roomR->Init('R', 0, 2, 0, player, imagestorage->GetTerrainImage(), font18);
-	roomS->Init('S', 1, 2, 0, player, imagestorage->GetTerrainImage(), font18);
-	roomT->Init('T', 2, 2, 0, player, imagestorage->GetTerrainImage(), font18);
+	levelR->Init('R', 0, 2, 0, player, camera, imagestorage->GetTerrainImage(), font18);
+	levelS->Init('S', 1, 2, 0, player, camera, imagestorage->GetTerrainImage(), font18);
+	levelT->Init('T', 2, 2, 0, player, camera, imagestorage->GetTerrainImage(), font18);
 
-	roomU->Init('U', 0, 2, 1, player, imagestorage->GetTerrainImage(), font18);
-	roomV->Init('V', 1, 2, 1, player, imagestorage->GetTerrainImage(), font18);
-	roomW->Init('W', 2, 2, 1, player, imagestorage->GetTerrainImage(), font18);
+	levelU->Init('U', 0, 2, 1, player, camera, imagestorage->GetTerrainImage(), font18);
+	levelV->Init('V', 1, 2, 1, player, camera, imagestorage->GetTerrainImage(), font18);
+	levelW->Init('W', 2, 2, 1, player, camera, imagestorage->GetTerrainImage(), font18);
 
-	roomX->Init('X', 0, 2, 2, player, imagestorage->GetTerrainImage(), font18);
-	roomY->Init('Y', 1, 2, 2, player, imagestorage->GetTerrainImage(), font18);
-	roomZ->Init('Z', 2, 2, 2, player, imagestorage->GetTerrainImage(), font18);
+	levelX->Init('X', 0, 2, 2, player, camera, imagestorage->GetTerrainImage(), font18);
+	levelY->Init('Y', 1, 2, 2, player, camera, imagestorage->GetTerrainImage(), font18);
+	levelZ->Init('Z', 2, 2, 2, player, camera, imagestorage->GetTerrainImage(), font18);
 
-	//adding all rooms to 'rooms' vector
-	rooms.push_back(roomA);
-	rooms.push_back(roomB);
-	rooms.push_back(roomC);
-	rooms.push_back(roomD);
-	rooms.push_back(roomE);
-	rooms.push_back(roomF);
-	rooms.push_back(roomG);
-	rooms.push_back(roomH);
-	rooms.push_back(roomI);
-	rooms.push_back(roomJ);
-	rooms.push_back(roomK);
-	rooms.push_back(roomL);
-	rooms.push_back(roomM);
-	rooms.push_back(room_);
-	rooms.push_back(roomN);
-	rooms.push_back(roomO);
-	rooms.push_back(roomP);
-	rooms.push_back(roomQ);
-	rooms.push_back(roomR);
-	rooms.push_back(roomS);
-	rooms.push_back(roomT);
-	rooms.push_back(roomU);
-	rooms.push_back(roomV);
-	rooms.push_back(roomW);
-	rooms.push_back(roomX);
-	rooms.push_back(roomY);
-	rooms.push_back(roomZ);
+	//adding all levels to 'levels' vector
+	levels.push_back(levelA);
+	levels.push_back(levelB);
+	levels.push_back(levelC);
+	levels.push_back(levelD);
+	levels.push_back(levelE);
+	levels.push_back(levelF);
+	levels.push_back(levelG);
+	levels.push_back(levelH);
+	levels.push_back(levelI);
+	levels.push_back(levelJ);
+	levels.push_back(levelK);
+	levels.push_back(levelL);
+	levels.push_back(levelM);
+	levels.push_back(level_);
+	levels.push_back(levelN);
+	levels.push_back(levelO);
+	levels.push_back(levelP);
+	levels.push_back(levelQ);
+	levels.push_back(levelR);
+	levels.push_back(levelS);
+	levels.push_back(levelT);
+	levels.push_back(levelU);
+	levels.push_back(levelV);
+	levels.push_back(levelW);
+	levels.push_back(levelX);
+	levels.push_back(levelY);
+	levels.push_back(levelZ);
 
 	//==============================================
 	//TIMER INIT AND STARTUP
@@ -249,7 +249,7 @@ int main()
 	al_start_timer(timer);
 	gameTime = al_current_time();
 
-	Transition(RoomMatrix, CurrentRoom);//sets up all adjacent rooms
+	Transition(LevelMatrix, CurrentLevel);//sets up all adjacent levels
 
 	cout << "GAMELOOP BEGIN" << endl;
 	//game loop begin
@@ -428,10 +428,10 @@ int main()
 				if (keys[F_MAP])//trigger for displaying map
 				{
 					if (!DisplayMap) {//opening map/data screen
-						for (riter = rooms.begin(); riter != rooms.end(); ++riter)
+						for (riter = levels.begin(); riter != levels.end(); ++riter)
 						{
-							if ((*riter)->GetID() == CurrentRoom)
-								(*riter)->Pause();//pausing current room
+							if ((*riter)->GetID() == CurrentLevel)
+								(*riter)->Pause();//pausing current level
 						}
 						camera->Pause();
 						DisplayMap = true;
@@ -439,10 +439,10 @@ int main()
 						
 					}
 					else {//closing map/data screen
-						for (riter = rooms.begin(); riter != rooms.end(); ++riter)
+						for (riter = levels.begin(); riter != levels.end(); ++riter)
 						{
-							if ((*riter)->GetID() == CurrentRoom)
-								(*riter)->Resume();//resuming current room
+							if ((*riter)->GetID() == CurrentLevel)
+								(*riter)->Resume();//resuming current level
 						}
 						camera->Resume();
 						DisplayMap = false;
@@ -494,17 +494,17 @@ int main()
 				}
 
 				//collisions
-				for (riter = rooms.begin(); riter != rooms.end(); ++riter)
+				for (riter = levels.begin(); riter != levels.end(); ++riter)
 				{
-					if ((*riter)->GetID() == CurrentRoom)
+					if ((*riter)->GetID() == CurrentLevel)
 						(*riter)->ObjectCollision();
 				}
 
 				//update
 				camera->Follow(player);
-				for (riter = rooms.begin(); riter != rooms.end(); ++riter)
+				for (riter = levels.begin(); riter != levels.end(); ++riter)
 				{
-					if ((*riter)->GetID() == CurrentRoom)
+					if ((*riter)->GetID() == CurrentLevel)
 						(*riter)->ObjectUpdate();
 				}
 				if (DisplayMap) {
@@ -514,9 +514,9 @@ int main()
 			}
 			//=====================(PLAYING end)
 			//cull the dead
-			for (riter = rooms.begin(); riter != rooms.end(); ++riter)
+			for (riter = levels.begin(); riter != levels.end(); ++riter)
 			{
-				if ((*riter)->GetID() == CurrentRoom)
+				if ((*riter)->GetID() == CurrentLevel)
 					(*riter)->ObjectDeletion();
 			}
 		}
@@ -531,14 +531,14 @@ int main()
 
 			}
 			else if (state == PLAYING) {
-				for (riter = rooms.begin(); riter != rooms.end(); ++riter)
+				for (riter = levels.begin(); riter != levels.end(); ++riter)
 				{
-					//al_draw_textf(font18, al_map_rgb(255, 255, 255), 5, 5, 0, "ROOM: %c", CurrentRoom);
-					if ((*riter)->GetID() == CurrentRoom)
+					//al_draw_textf(font18, al_map_rgb(255, 255, 255), 5, 5, 0, "LEVEL: %c", CurrentLevel);
+					if ((*riter)->GetID() == CurrentLevel)
 						(*riter)->ObjectRender(camera->GetCameraXPos(), camera->GetCameraYPos());
 				}
 				if (DisplayMap) {
-					map->Render(RoomMatrix, CurrentRoom);
+					map->Render(LevelMatrix, CurrentLevel);
 				} 
 			}
 			//FLIP BUFFERS========================
@@ -558,15 +558,15 @@ int main()
 	return 0;
 }
 
-void Transition(char RoomMatrix[3][3][3], int CurrentRoom) {
+void Transition(char LevelMatrix[3][3][3], int CurrentLevel) {
 
 	//int shuffle = rand() % 12 + 1;
-	//Shuffling rooms like a Rubix Cube
-	//for (riter = rooms.begin(); riter != rooms.end(); ++riter)
+	//Shuffling levels like a Rubix Cube
+	//for (riter = levels.begin(); riter != levels.end(); ++riter)
 	//{
 	//	(*riter)->Shuffle(shuffle);
 	//}
-	//realigning RoomMatrix according to shuffle
+	//realigning LevelMatrix according to shuffle
 
 
 
@@ -574,10 +574,10 @@ void Transition(char RoomMatrix[3][3][3], int CurrentRoom) {
 			for (int x = 0; x < 3; x++) {
 				for (int y = 0; y < 3; y++) {
 					for (int z = 0; z < 3; z++) {
-				for (riter = rooms.begin(); riter != rooms.end(); ++riter)
+				for (riter = levels.begin(); riter != levels.end(); ++riter)
 				{
 					if ((*riter)->GetX() == x && (*riter)->GetY() == y && (*riter)->GetZ() == z)
-						RoomMatrix[x][y][z] = (*riter)->GetID();
+						LevelMatrix[x][y][z] = (*riter)->GetID();
 				}
 			}
 		}
@@ -591,35 +591,35 @@ void Transition(char RoomMatrix[3][3][3], int CurrentRoom) {
 			for (int x = 0; x < 3; x++) {
 				for (int y = 0; y < 3; y++) {
 					for (int z = 0; z < 3; z++) {
-				for (riter = rooms.begin(); riter != rooms.end(); ++riter) {
-					if (RoomMatrix[x][y][z] == (*riter)->GetID()) {
+				for (riter = levels.begin(); riter != levels.end(); ++riter) {
+					if (LevelMatrix[x][y][z] == (*riter)->GetID()) {
 						if (x + 1 < 3)
-							(*riter)->SetXAdj(RoomMatrix[x + 1][y][z]);
+							(*riter)->SetXAdj(LevelMatrix[x + 1][y][z]);
 						else
 							(*riter)->SetXAdj('/');
 
 						if (x - 1 > -1)
-							(*riter)->SetNegXAdj(RoomMatrix[x - 1][y][z]);
+							(*riter)->SetNegXAdj(LevelMatrix[x - 1][y][z]);
 						else
 							(*riter)->SetNegXAdj('/');
 
 						if (y + 1 < 3)
-							(*riter)->SetYAdj(RoomMatrix[x][y + 1][z]);
+							(*riter)->SetYAdj(LevelMatrix[x][y + 1][z]);
 						else
 							(*riter)->SetYAdj('/');
 
 						if (y - 1 > -1)
-							(*riter)->SetNegYAdj(RoomMatrix[x][y - 1][z]);
+							(*riter)->SetNegYAdj(LevelMatrix[x][y - 1][z]);
 						else
 							(*riter)->SetNegYAdj('/');
 
 						if (z + 1 < 3)
-							(*riter)->SetZAdj(RoomMatrix[x][y][z + 1]);
+							(*riter)->SetZAdj(LevelMatrix[x][y][z + 1]);
 						else
 							(*riter)->SetZAdj('/');
 
 						if (z - 1 > -1)
-							(*riter)->SetNegZAdj(RoomMatrix[x][y][z - 1]);
+							(*riter)->SetNegZAdj(LevelMatrix[x][y][z - 1]);
 						else
 							(*riter)->SetNegZAdj('/');
 					}
@@ -627,10 +627,10 @@ void Transition(char RoomMatrix[3][3][3], int CurrentRoom) {
 			}
 		}
 	}
-	for (riter = rooms.begin(); riter != rooms.end(); ++riter)
+	for (riter = levels.begin(); riter != levels.end(); ++riter)
 	{
-		if ((*riter)->GetID() == CurrentRoom) {
-			cout << "CURRENT ROOM: " << (*riter)->GetID() << endl << endl;
+		if ((*riter)->GetID() == CurrentLevel) {
+			cout << "CURRENT LEVEL: " << (*riter)->GetID() << endl << endl;
 			cout << "XAdj = " << (*riter)->GetXAdj() << endl;
 			cout << "NegXAdj = " << (*riter)->GetNegXAdj() << endl;
 			cout << "YAdj = " << (*riter)->GetYAdj() << endl;
@@ -645,7 +645,7 @@ void Transition(char RoomMatrix[3][3][3], int CurrentRoom) {
 	for (int y = 0; y < 3; y++) {
 		for (int z = 0; z < 3; z++) {
 			for (int x = 0; x < 3; x++) {
-				cout << RoomMatrix[x][y][z] << ", ";
+				cout << LevelMatrix[x][y][z] << ", ";
 			}
 			cout << endl;
 		}

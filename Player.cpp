@@ -33,14 +33,16 @@ void Player::Update()
 
 void Player::Render(double cameraXPos, double cameraYPos)
 {
-	string->Update(x+boundX/2, y + z, dirX, dirY, cameraXPos, cameraYPos);
+	//string->Update(x+boundX/2, y + z, dirX, dirY, cameraXPos, cameraYPos);
 	
-	playercloakpiece3->Update(z, dirX, dirY, velX, velY, cameraXPos, cameraYPos);
-	playercloakpiece2->Update(z, dirX, dirY, velX, velY, cameraXPos, cameraYPos);
-	playercloakpiece1->Update(z, dirX, dirY, velX, velY, cameraXPos, cameraYPos);
+	//playercloakpiece3->Update(z, dirX, dirY, velX, velY, cameraXPos, cameraYPos);
+	//playercloakpiece2->Update(z, dirX, dirY, velX, velY, cameraXPos, cameraYPos);
+	//playercloakpiece1->Update(z, dirX, dirY, velX, velY, cameraXPos, cameraYPos);
+	
 	//Object::Render(cameraXPos, cameraYPos);
-	//al_draw_rectangle(x + cameraXPos, y + z + cameraYPos, x + cameraXPos + boundX, y + z + cameraYPos + boundY, al_map_rgb(255, 255, 255), 2);
-	al_draw_tinted_scaled_rotated_bitmap_region(image, 0, 0, 345, 239, al_map_rgba_f(1, 1, 1, 1), 0, 0, x + cameraXPos + boundX/2 - (345*.15)/2, y + z + cameraYPos, .15, .15, 0, 0);
+	al_draw_rectangle(x + cameraXPos, y + z + cameraYPos, x + cameraXPos + boundX, y + z + cameraYPos + boundY, al_map_rgb(255, 255, 255), 2);
+	
+	//al_draw_tinted_scaled_rotated_bitmap_region(image, 0, 0, 345, 239, al_map_rgba_f(1, 1, 1, 1), 0, 0, x + cameraXPos + boundX/2 - (345*.15)/2, y + z + cameraYPos, .15, .15, 0, 0);
 }
 
 void Player::PlayerKeyboard(bool UP, bool DOWN, bool LEFT, bool RIGHT, bool SHIFT)

@@ -1,6 +1,6 @@
 #pragma once
 const int SCREENW = 1920, SCREENH = 1080;//console size
-const int LEVELW = 13, LEVELH = 13;//level size
+const int LEVELW = 13, LEVELH = 13;//level size (unused)
 const int TILEW = 100, TILEH = 100;//standard tile size for terrain
 const int FPS = 60;
 enum STATE { TITLE, PLAYING, LOST };
