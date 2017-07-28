@@ -13,14 +13,14 @@ IslandUnderside::IslandUnderside() {}
 
 void IslandUnderside::Destroy() {}
 
-void IslandUnderside::Init(double x, double y, double boundX, double boundY)
+void IslandUnderside::Init(double x, double y, double z, double boundX, double boundY)
 {
 	//in case these names make no sense:
 	//Girders are the vertical shafts descending from the island.
 	//Underside is the dark stone layer connecting the Struts and girders to the actual island
 	//Struts are the erratically placed bars running throught the girders, connecting them to each other, as well as the Island.
 
-	Object::Init(x, y, 0, boundX, boundY, 0, 0, 0, 0, 0, 0, 0, 0);
+	Object::Init(x, y, z);
 
 	int GirderBoundX = 50;//dimensions of girder
 	int GirderBoundY = 750;
@@ -99,13 +99,14 @@ void IslandUnderside::Init(double x, double y, double boundX, double boundY)
 
 	//Connections
 	*/
+
 	//Underside
-	for(int a = 0; a < UndersideSectionNum; a++) {
+	/*for(int a = 0; a < UndersideSectionNum; a++) {
 		int UndersideColor = rand() % UndersideColorRange + UndersideColorMinimum;
 		DecorBox *CliffWall = new DecorBox();
 		CliffWall->Init(x + (boundX/UndersideSectionNum)*a, y, 0, boundX/UndersideSectionNum, rand() % UndersideRange + UndersideMinimum, UndersideColor, UndersideColor, UndersideColor);
 		AllObjectsList.push_back(CliffWall);
-	}
+	}*/
 }
 
 //===========================================================================================================================================================================================================================

@@ -22,10 +22,18 @@ private:
 	vector<Island *> IslandList;//list that keeps track of all islands within each Level. Used for deciding which island to render, update, etc.
 	vector<Island *>::iterator iter;
 
+	vector<Object *> AllObjectsList;//stores objects currently onscreen that need to be rendered/updated
+	vector<Object *>::iterator oiter;
+
 	ALLEGRO_FONT *font18;
 
 	Player *player = new Player();
 	Camera *camera = new Camera();
+
+	int LevelMinX;//max and minimum bounds of level. used for both cloudstrips and camera rendering
+	int LevelMaxX;
+	int LevelMinY;
+	int LevelMaxY;
 
 	//int IslandMatrix[3][3];
 
@@ -47,7 +55,7 @@ public:
 
 	Level();
 	void virtual Destroy();
-	void Init(char ID, int x, int y, int z, Player *player, Camera *camera, ALLEGRO_BITMAP *TerrainImage, ALLEGRO_FONT *font18);
+	void Init(char ID, int x, int y, int z, Player *player, Camera *camera, ALLEGRO_FONT *font18);
 
 	char GetID() { return ID; }
 	void SetID(char ID) { Level::ID = ID; }
@@ -76,7 +84,7 @@ public:
 	void SetZ(int z) { Level::z = z; }
 
 	//==============================================
-	//ADJACENT Level ACCESS/MODIFICATION
+	//ADJACENT LEVEL ACCESS/MODIFICATION
 	//==============================================
 	char GetXAdj() { return XAdj; }
 	char GetNegXAdj() { return NegXAdj; }
@@ -114,4 +122,17 @@ public:
 
 	void OrangeClockwise();
 	void OrangeCounterClockwise();
+
+	//==============================================
+	//MISC
+	//==============================================
+	int GetLevelMaxX() { return LevelMaxX; }
+	void SetLevelMaxX(int LevelMaxX) { Level::LevelMaxX = LevelMaxX; }
+	int GetLevelMinX() { return LevelMinX; }
+	void SetLevelMinX(int LevelMinX) { Level::LevelMinX = LevelMinX; }
+
+	int GetLevelMaxY() { return LevelMaxY; }
+	void SetLevelMaxY(int LevelMaxY) { Level::LevelMaxY = LevelMaxY; }
+	int GetLevelMinY() { return LevelMinX; }
+	void SetLevelMinY(int LevelMinY) { Level::LevelMinY = LevelMinY; }
 };

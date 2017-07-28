@@ -13,7 +13,7 @@ private:
 	String *string = new String();
 public:
 	Banner();
-	void Init(ALLEGRO_BITMAP *BannerImage, double x, double y, double z, int imageX, int imageY, double imageboundX, double imageboundY);
+	void Init(double x, double y, double z);
 	void Render(double cameraXPos, double cameraYPos);
 	void Update();
 };

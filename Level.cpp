@@ -1,10 +1,8 @@
 #include "Globals.h"
 #include "Level.h"
 #include "Player.h"
-#include "Tile.h"
-#include "Banner.h"
-#include "Grass.h"
 #include "Camera.h"
+#include "CloudStrip.h"
 #include <math.h>
 #include <iostream>
 #include <algorithm>
@@ -19,7 +17,9 @@ Level::Level() {}
 
 void Level::Destroy() {}
 
-void Level::Init(char ID, int x, int y, int z, Player *player, Camera *camera, ALLEGRO_BITMAP *TerrainImage, ALLEGRO_FONT *font18)
+bool compare(Object *L1, Object *L2);//function for sorting values. not part of the Island class, merely inhabits same file
+
+void Level::Init(char ID, int x, int y, int z, Player *player, Camera *camera, ALLEGRO_FONT *font18)
 {
 	Level::ID = ID;
 	Level::x = x;
@@ -30,8 +30,16 @@ void Level::Init(char ID, int x, int y, int z, Player *player, Camera *camera, A
 
 	Level::camera = camera;
 	Level::player = player;
+	AllObjectsList.push_back(player);
+
+	LevelMinX = -SCREENW/2;//defaults to these numbers.
+	LevelMaxX = 750 * 5 + SCREENW/2;
+	LevelMinY = -SCREENH/2;
+	LevelMaxY = 750 * 5 + SCREENH/2;
 
 	paused = false;
+
+	/////////////////////////ISLAND GENERATION/////////////////////////////////
 
 	enum BRIDGETYPE { EMPTY, ISLAND, CONNECTED_ISLAND, VERT_BRIDGE, HORIZ_BRIDGE };
 	int IslandMatrix[5][5] = {
@@ -45,6 +53,8 @@ void Level::Init(char ID, int x, int y, int z, Player *player, Camera *camera, A
 	int CurrentX = 2 * (rand() % 3);//current position of Island being used to designate next bridge
 	int CurrentY = 2 * (rand() % 3);
 	bool PathEnd = false;
+
+	//player->SetX(CurrentX*);
 
 	bool PossiblePaths[4]{ true, true, true, true };//paths available for bridge. narrowed down based on location, then chosen based on for loop random number generator.
 	enum PATHTRANSLATION { UP, DOWN, LEFT, RIGHT };
@@ -120,7 +130,7 @@ void Level::Init(char ID, int x, int y, int z, Player *player, Camera *camera, A
 				IslandMatrix[CurrentX + 1][CurrentY] = HORIZ_BRIDGE;
 				IslandMatrix[CurrentX + 2][CurrentY] = CONNECTED_ISLAND;
 				CurrentX += 2;
-			}		
+			}
 		}
 		for (int a = 0; a < 4; a++)
 			PossiblePaths[a] = true;//resetting possible paths array for repeat of while loop
@@ -192,6 +202,7 @@ void Level::Init(char ID, int x, int y, int z, Player *player, Camera *camera, A
 			}
 		}
 	}
+
 	//Island creation
 	int PathFrequency = 30;
 	int PathWideness = 20;//range in which circle can be spawned at left or right
@@ -232,11 +243,26 @@ void Level::Init(char ID, int x, int y, int z, Player *player, Camera *camera, A
 			}
 		}
 	}
+	/*
+	//generating layer of clouds
+	int RadiusRange = 75;
+	int RadiusMin = 25;
+	int CloudZ = 750;
+	int CloudColorMin = 110;
+	int CloudColorRange = 110;
 
-	for (iter = IslandList.begin(); iter != IslandList.end(); ++iter)//setting islands to OnScreen (temp)
-	{
-		(*iter)->SetOnScreen(true);
-	}
+
+	for (int a = LevelMinY; a < LevelMaxY; a += RadiusMin + RadiusRange) {
+
+		int CloudColor = rand() % CloudColorRange + CloudColorMin;
+		double CloudVelX = (rand() % 2 + 1) / 2.0;
+
+		CloudStrip *Cloud = new CloudStrip();
+		Cloud->Init(LevelMinX, a - CloudZ, CloudZ, (-LevelMinX) + LevelMaxX, RadiusRange, RadiusMin, CloudVelX, CloudColor, CloudColor, CloudColor);
+		Cloud->SetLayer(CLOUDLINE);
+		AllObjectsList.push_back(Cloud);
+
+	}*/
 
 }
 
@@ -246,70 +272,114 @@ void Level::Init(char ID, int x, int y, int z, Player *player, Camera *camera, A
 
 void Level::ObjectUpdate()
 {
-	player->Update();
-	//cout << player->GetX() << ", " << player->GetY() << endl;
-	/*for (iter = IslandList.begin(); iter != IslandList.end(); ++iter)//checks whether islands are onscreen or not
-	{
-		double oX = camera->GetCameraXPos();
-		double oY = camera->GetCameraYPos();
-
-		double x = (*iter)->GetIslandX();
-		double y = (*iter)->GetIslandY();
-
-		int obX = SCREENW;
-		int obY = SCREENH;
-
-		double boundX = (*iter)->GetIslandBoundX();
-		double boundY = (*iter)->GetIslandBoundY();
-
-		//cout << "Island(s) ";
-
-		if (x + boundX > oX &&//basic collision equation
-			x < oX + obX &&
-			y + boundY > oY &&
-			y < oY + obY)
-			(*iter)->SetOnScreen(true);// , cout << (*iter)->GetID() << ", ";
-		else
-			(*iter)->SetOnScreen(false);
-		//cout << "are onscreen" << endl;
-	}*/
-
 	if (!paused) {
-		for (iter = IslandList.begin(); iter != IslandList.end(); ++iter)
+		for (oiter = AllObjectsList.begin(); oiter != AllObjectsList.end(); ++oiter)//Updates all objects within AllObjectsList
 		{
-			//cout << (*iter)->GetIslandX() << ", " << (*iter)->GetIslandY() << endl;
-			if ((*iter)->GetOnScreen())
-				(*iter)->ObjectUpdate();
+			(*oiter)->Update();
 		}
 	}
 }
 
 void Level::ObjectRender(double cameraXPos, double cameraYPos)
 {
-	player->Render(cameraXPos, cameraYPos);
-	for (iter = IslandList.begin(); iter != IslandList.end(); ++iter)
+	for (iter = IslandList.begin(); iter != IslandList.end(); ++iter)//checks whether islands are onscreen or not
 	{
-		if ((*iter)->GetOnScreen())
-			(*iter)->ObjectRender(cameraXPos, cameraYPos);
+		//al_draw_rectangle((*iter)->GetIslandX() + cameraXPos, (*iter)->GetIslandY() + cameraYPos, (*iter)->GetIslandX() + (*iter)->GetIslandBoundX() + cameraXPos, (*iter)->GetIslandY() + (*iter)->GetIslandBoundY() + cameraYPos, al_map_rgb(255, 255, 255), 2);
+		if ((*iter)->GetOnScreen() == false && //checking if previously offscreen island is now onscreen
+			(*iter)->GetIslandBoundX() + (*iter)->GetIslandX() + cameraXPos > 0 &&
+			(*iter)->GetIslandX() + cameraXPos < SCREENW &&
+			(*iter)->GetIslandBoundY() + (*iter)->GetIslandY() + cameraYPos > 0 &&
+			(*iter)->GetIslandY() + cameraYPos < SCREENH) {
+
+			(*iter)->SetOnScreen(true);
+
+			for (unsigned i = 0; i < ((*iter)->GetAllObjectsList()).size(); i++) {//adds newly onscreen island AllObjects list to Level AllObjects list.
+				AllObjectsList.push_back((*iter)->GetListValue(i));
+			}
+		}
+
+		if ((*iter)->GetOnScreen() == true && !(//checking if previously onscreen island is now offscreen
+			(*iter)->GetIslandBoundX() + (*iter)->GetIslandX() + cameraXPos > 0 &&
+			(*iter)->GetIslandX() + cameraXPos < SCREENW &&
+			(*iter)->GetIslandBoundY() + (*iter)->GetIslandY() + cameraYPos > 0 &&
+			(*iter)->GetIslandY() + cameraYPos < SCREENH)) {
+
+			(*iter)->SetOnScreen(false);
+
+			int counter = 0;
+			while (counter != ((*iter)->GetAllObjectsList()).size()) {//runs through class vector until all objects from island are deleted (doesnt work if the loop only runs once, for some reason).
+				for (unsigned i = 0; i < AllObjectsList.size(); i++) {
+					if ((AllObjectsList.at(i))->GetClusterID() == (*iter)->GetID()) {
+						counter++;
+						AllObjectsList.erase(AllObjectsList.begin() + i);
+					}
+				}
+			}
+		}
+	}
+	sort(AllObjectsList.begin(), AllObjectsList.end(), compare);//Sorts all objects within AllObjectsList
+
+	for (oiter = AllObjectsList.begin(); oiter != AllObjectsList.end(); ++oiter)//renders objects within AllObjectsList
+	{
+		(*oiter)->Render(cameraXPos, cameraYPos);
 	}
 }
 
 void Level::ObjectCollision()
 {
-	for (iter = IslandList.begin(); iter != IslandList.end(); ++iter)
+	/*for (iter = IslandList.begin(); iter != IslandList.end(); ++iter)
 	{
 		if ((*iter)->GetOnScreen())
 			(*iter)->ObjectCollision();
-	}
+	}*/
 }
 
 void Level::ObjectDeletion()
 {
-	for (iter = IslandList.begin(); iter != IslandList.end(); ++iter)
+	for (oiter = AllObjectsList.begin(); oiter != AllObjectsList.end();)
 	{
-		if ((*iter)->GetOnScreen())
-			(*iter)->ObjectDeletion();
+		if (!(*oiter)->GetValid())
+		{
+			delete (*oiter);
+			oiter = AllObjectsList.erase(oiter);
+		}
+		else
+			oiter++;
 	}
+}
+
+bool compare(Object *L1, Object *L2) {
+	//if ((*L1).GetSortable() == true && (*L2).GetSortable() == true) {
+		//secondary condition is layer
+		if ((*L1).GetLayer() < (*L2).GetLayer()) return true;
+		if ((*L2).GetLayer() < (*L1).GetLayer()) return false;
+
+		//primary condition, y position of base
+		if ((*L1).GetVerticality() == HORIZONTAL && (*L2).GetVerticality() == HORIZONTAL) {//HORIZONTAL involved because some objects are supposed to be horizontal, so cannot include the base to properly render
+			if ((*L1).GetY() < (*L2).GetY()) return true;
+			if ((*L2).GetY() < (*L1).GetY()) return false;
+		}
+		else if ((*L1).GetVerticality() == HORIZONTAL) {
+			if ((*L1).GetY() < (*L2).GetY() + (*L2).GetBoundY()) return true;
+			if ((*L2).GetY() + (*L2).GetBoundY() < (*L1).GetY()) return false;
+		}
+		else if ((*L2).GetVerticality() == HORIZONTAL) {
+			if ((*L1).GetY() + (*L1).GetBoundY() < (*L2).GetY()) return true;
+			if ((*L2).GetY() < (*L1).GetY() + (*L1).GetBoundY()) return false;
+		}
+		else {//two vertical objects being compared
+			if ((*L1).GetY() + (*L1).GetBoundY() < (*L2).GetY() + (*L2).GetBoundY()) return true;
+			if ((*L2).GetY() + (*L2).GetBoundY() < (*L1).GetY() + (*L1).GetBoundY()) return false;
+		}
+
+
+
+		//third condition is depth
+		if ((*L1).GetZ() > (*L2).GetZ()) return true;
+		if ((*L2).GetZ() > (*L1).GetZ()) return false;
+
+	//}
+	return false;
 }
 
 //===========================================================================================================================================================================================================================

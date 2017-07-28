@@ -59,6 +59,9 @@ public:
 	void ObjectCollision();
 	void ObjectDeletion();
 
+	vector<Object*> GetAllObjectsList() { return AllObjectsList; }
+	Object* GetListValue(int ListPos) { return AllObjectsList.at(ListPos); }
+
 	//==============================================
 	//MISC
 	//==============================================

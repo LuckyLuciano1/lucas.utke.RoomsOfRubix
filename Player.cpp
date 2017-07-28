@@ -8,13 +8,11 @@
 
 Player::Player() {}
 
-void Player::Init(double x, double y, double z, int imageX, int imageY, double imageboundX, double imageboundY, ALLEGRO_BITMAP *PlayerImage)
+void Player::Init(double x, double y, double z)
 {
 
-	Object::Init(x, y, z, imageboundX / 2.5, imageboundY / 2.5, imageX, imageY, imageboundX, imageboundY, x, y, imageboundX / 2.5, imageboundY / 2.5);
-	Object::imageboundX = 345;
-	Object::imageboundY = 239;
-	Object::image = PlayerImage;
+	Object::Init(x, y, z);
+	EnableSorting(25, 25);
 
 	MouseAngleRadians = 0;//temporary value
 	velX = 6;
@@ -47,14 +45,6 @@ void Player::Render(double cameraXPos, double cameraYPos)
 
 void Player::PlayerKeyboard(bool UP, bool DOWN, bool LEFT, bool RIGHT, bool SHIFT)
 {
-	/*if (MouseAngleRadians > 3 * PI / 2 ||//determine direction player is facing based on mouse angle
-	MouseAngleRadians < PI / 2) {
-	FlipHorizontal = false;
-	}
-	else {
-	FlipHorizontal = true;
-	}*/
-
 	if (UP) {//player movement
 		Action = MOVING;
 		dirY = -1;
@@ -74,13 +64,11 @@ void Player::PlayerKeyboard(bool UP, bool DOWN, bool LEFT, bool RIGHT, bool SHIF
 	if (LEFT) {
 		Action = MOVING;
 		dirX = -1;
-		FlipHorizontal = true;
 		AnimationHandler();
 	}
 	else if (RIGHT) {
 		Action = MOVING;
 		dirX = 1;
-		FlipHorizontal = false;
 		AnimationHandler();
 	}
 	else {
@@ -94,19 +82,12 @@ void Player::PlayerKeyboard(bool UP, bool DOWN, bool LEFT, bool RIGHT, bool SHIF
 void Player::AnimationHandler()
 {
 	if (Action == IDLE) {
-		curRow = 0;
-		maxFrame = 3;
+
 	}
 	else if (Action == MOVING) {
-		curRow = 1;
-		maxFrame = 3;
+
 	}
 	else if (Action == CHARGE) {
-		curRow = 2;
-		maxFrame = 3;
-	}
-	//sets curFrame based on maxFrame (otherwise, player will temporary disappear when it renders a position that is now greater than maxFrame)
-	if (curFrame >= maxFrame) {
-		curFrame = 0;
+
 	}
 }

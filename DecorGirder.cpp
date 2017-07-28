@@ -7,8 +7,8 @@ DecorGirder::DecorGirder() {}//DecorGirder is an object with no collision that r
 void DecorGirder::Init(double x, double y, double boundX, double boundY, int GirderSideWidth, int CrossSize, double CrossBoundX, double CrossBoundY, int CrossNum, int CrossR, int CrossG, int CrossB, int FrameR, int FrameG, int FrameB)
 {
 
-	Object::Init(x, y, z, boundX, boundY, 0, 0, 0, 0, 0, 0, 0, 0);
-
+	Object::Init(x, y, z);
+	EnableSorting(boundX, boundY);
 
 	DecorGirder::GirderSideWidth = GirderSideWidth;
 	DecorGirder::CrossSize = CrossSize;

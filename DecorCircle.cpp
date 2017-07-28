@@ -4,7 +4,7 @@ DecorCircle::DecorCircle() {}//DecorCircle is an object with no collision that r
 
 void DecorCircle::Init(double x, double y, double z, double Radius, int R, int G, int B, bool Shading)
 {
-	Object::Init(x, y, z, boundX, boundY, 0, 0, 0, 0, 0, 0, 0, 0);
+	Object::Init(x, y, z);
 
 	DecorCircle::R = R;//color of circle
 	DecorCircle::G = G;
@@ -12,6 +12,8 @@ void DecorCircle::Init(double x, double y, double z, double Radius, int R, int G
 
 	DecorCircle::Shading = Shading;
 	DecorCircle::Radius = Radius;
+
+	Object::EnableSorting(Radius*2, Radius*2);
 }
 
 void DecorCircle::Update()
@@ -21,7 +23,7 @@ void DecorCircle::Update()
 
 void DecorCircle ::Render(double cameraXPos, double cameraYPos)
 {
-	
+	//al_draw_rectangle(x - Radius + cameraXPos, y - Radius + cameraYPos, x + Radius + cameraXPos, y + Radius + cameraYPos, al_map_rgb(255, 255, 255), 1);
 
 	if (Shading) {
 		al_draw_filled_circle(x + cameraXPos, y + cameraYPos + z, Radius, al_map_rgb(R-20, G-20, B-20));

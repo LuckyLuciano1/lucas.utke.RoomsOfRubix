@@ -15,8 +15,7 @@ Map::Map() {};
 
 void Map::Destroy() {}
 
-void Map::Init(ALLEGRO_BITMAP *MapImage, ALLEGRO_FONT *font) {
-	Map::MapImage = MapImage;
+void Map::Init(ALLEGRO_FONT *font) {
 	Map::font = font;
 
 	TileGradient = al_map_rgba_f(1, 1, 1, 1);
@@ -44,7 +43,7 @@ void Map::Init(ALLEGRO_BITMAP *MapImage, ALLEGRO_FONT *font) {
 }
 
 void Map::Render(char(&RoomMatrix)[3][3][3], char CurrentRoom) {
-
+	/*
 	for (int z = 0; z < 3 * TileSpacing; z += TileSpacing) {
 		for (int x = 0; x < 3 * TileSpacing; x += TileSpacing) {
 			for (int y = 0; y < 3 * TileSpacing; y += TileSpacing) {
@@ -70,6 +69,7 @@ void Map::Render(char(&RoomMatrix)[3][3][3], char CurrentRoom) {
 			}
 		}
 	}
+	*/
 }
 
 void Map::Update() {

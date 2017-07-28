@@ -22,7 +22,7 @@ public:
 	void virtual Destroy();
 	void Init(double cameraXPos, double cameraYPos);
 
-	void Follow(Object *object);
+	void Follow(Object *object, int MinX, int MaxX, int MinY, int MaxY);//the mins and maxes are ways of stopping the camera from exceeding the boundaries of the level the player is currently on.
 	void MoveTo(double x, double y);
 
 	double GetCameraXPos() { return cameraXPos; }

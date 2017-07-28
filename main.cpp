@@ -21,7 +21,6 @@
 #include "Level.h"
 #include "Camera.h"
 #include "Map.h"
-#include "ImageStorage.h"
 
 #define PI 3.14159265
 #define DEGREES(x) int((x)/360.0*0xFFFFFF)
@@ -79,7 +78,6 @@ int main()
 
 	Player *player = new Player();
 	Camera *camera = new Camera();
-	ImageStorage *imagestorage = new ImageStorage();
 	Map *map = new Map();
 
 	//defining all the levels
@@ -135,7 +133,7 @@ int main()
 	//}
 	//else {
 	display = al_create_display(SCREENW - 100, SCREENH - 100);		//create our display object
-//}
+	//}
 
 	if (!display)//test display object
 		return -1;
@@ -163,49 +161,48 @@ int main()
 	srand(time(NULL));
 
 	//creation of all images
-	imagestorage->Init();
 
 	//creation of player and camera
-	player->Init(0, 0, 0, 0, 0, 183, 381, imagestorage->GetPlayerImage());
+	player->Init(0, 0, 0);
 	camera->Init(0, 0);
-	map->Init(imagestorage->GetMapImage(), font18);
+	map->Init(font18);
 
 	//creation of all levels. Init() involves/will involve creation of levels, objects, etc.
-	levelA->Init('A', 0, 0, 0, player, camera, imagestorage->GetTerrainImage(), font18);
-	levelB->Init('B', 1, 0, 0, player, camera, imagestorage->GetTerrainImage(), font18);
-	levelC->Init('C', 2, 0, 0, player, camera, imagestorage->GetTerrainImage(), font18);
+	levelA->Init('A', 0, 0, 0, player, camera, font18);
+	levelB->Init('B', 1, 0, 0, player, camera, font18);
+	levelC->Init('C', 2, 0, 0, player, camera, font18);
 
-	levelD->Init('D', 0, 0, 1, player, camera, imagestorage->GetTerrainImage(), font18);
-	levelE->Init('E', 1, 0, 1, player, camera, imagestorage->GetTerrainImage(), font18);
-	levelF->Init('F', 2, 0, 1, player, camera, imagestorage->GetTerrainImage(), font18);
+	levelD->Init('D', 0, 0, 1, player, camera, font18);
+	levelE->Init('E', 1, 0, 1, player, camera, font18);
+	levelF->Init('F', 2, 0, 1, player, camera, font18);
 
-	levelG->Init('G', 0, 0, 2, player, camera, imagestorage->GetTerrainImage(), font18);
-	levelH->Init('H', 1, 0, 2, player, camera, imagestorage->GetTerrainImage(), font18);
-	levelI->Init('I', 2, 0, 2, player, camera, imagestorage->GetTerrainImage(), font18);
+	levelG->Init('G', 0, 0, 2, player, camera, font18);
+	levelH->Init('H', 1, 0, 2, player, camera, font18);
+	levelI->Init('I', 2, 0, 2, player, camera, font18);
 
-	levelJ->Init('J', 0, 1, 0, player, camera, imagestorage->GetTerrainImage(), font18);
-	levelK->Init('K', 1, 1, 0, player, camera, imagestorage->GetTerrainImage(), font18);
-	levelL->Init('L', 2, 1, 0, player, camera, imagestorage->GetTerrainImage(), font18);
+	levelJ->Init('J', 0, 1, 0, player, camera, font18);
+	levelK->Init('K', 1, 1, 0, player, camera, font18);
+	levelL->Init('L', 2, 1, 0, player, camera, font18);
 
-	levelM->Init('M', 0, 1, 1, player, camera, imagestorage->GetTerrainImage(), font18);
-	level_->Init('_', 1, 1, 1, player, camera, imagestorage->GetTerrainImage(), font18);//center of cube
-	levelN->Init('N', 2, 1, 1, player, camera, imagestorage->GetTerrainImage(), font18);
+	levelM->Init('M', 0, 1, 1, player, camera, font18);
+	level_->Init('_', 1, 1, 1, player, camera, font18);//center of cube
+	levelN->Init('N', 2, 1, 1, player, camera, font18);
 
-	levelO->Init('O', 0, 1, 2, player, camera, imagestorage->GetTerrainImage(), font18);
-	levelP->Init('P', 1, 1, 2, player, camera, imagestorage->GetTerrainImage(), font18);
-	levelQ->Init('Q', 2, 1, 2, player, camera, imagestorage->GetTerrainImage(), font18);
+	levelO->Init('O', 0, 1, 2, player, camera, font18);
+	levelP->Init('P', 1, 1, 2, player, camera, font18);
+	levelQ->Init('Q', 2, 1, 2, player, camera, font18);
 
-	levelR->Init('R', 0, 2, 0, player, camera, imagestorage->GetTerrainImage(), font18);
-	levelS->Init('S', 1, 2, 0, player, camera, imagestorage->GetTerrainImage(), font18);
-	levelT->Init('T', 2, 2, 0, player, camera, imagestorage->GetTerrainImage(), font18);
+	levelR->Init('R', 0, 2, 0, player, camera, font18);
+	levelS->Init('S', 1, 2, 0, player, camera, font18);
+	levelT->Init('T', 2, 2, 0, player, camera, font18);
 
-	levelU->Init('U', 0, 2, 1, player, camera, imagestorage->GetTerrainImage(), font18);
-	levelV->Init('V', 1, 2, 1, player, camera, imagestorage->GetTerrainImage(), font18);
-	levelW->Init('W', 2, 2, 1, player, camera, imagestorage->GetTerrainImage(), font18);
+	levelU->Init('U', 0, 2, 1, player, camera, font18);
+	levelV->Init('V', 1, 2, 1, player, camera, font18);
+	levelW->Init('W', 2, 2, 1, player, camera, font18);
 
-	levelX->Init('X', 0, 2, 2, player, camera, imagestorage->GetTerrainImage(), font18);
-	levelY->Init('Y', 1, 2, 2, player, camera, imagestorage->GetTerrainImage(), font18);
-	levelZ->Init('Z', 2, 2, 2, player, camera, imagestorage->GetTerrainImage(), font18);
+	levelX->Init('X', 0, 2, 2, player, camera, font18);
+	levelY->Init('Y', 1, 2, 2, player, camera, font18);
+	levelZ->Init('Z', 2, 2, 2, player, camera, font18);
 
 	//adding all levels to 'levels' vector
 	levels.push_back(levelA);
@@ -253,7 +250,6 @@ int main()
 
 	cout << "GAMELOOP BEGIN" << endl;
 	//game loop begin
-	cout << imagestorage->GetPlayerImage() << endl;
 	while (!doexit)
 	{
 
@@ -501,11 +497,12 @@ int main()
 				}
 
 				//update
-				camera->Follow(player);
 				for (riter = levels.begin(); riter != levels.end(); ++riter)
 				{
-					if ((*riter)->GetID() == CurrentLevel)
+					if ((*riter)->GetID() == CurrentLevel) {
 						(*riter)->ObjectUpdate();
+						camera->Follow(player, (*riter)->GetLevelMinX(), (*riter)->GetLevelMaxX(), (*riter)->GetLevelMinY(), (*riter)->GetLevelMaxY());//camera requires bounds of level to function
+					}
 				}
 				if (DisplayMap) {
 					map->Update();

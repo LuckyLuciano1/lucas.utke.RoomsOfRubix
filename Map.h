@@ -14,7 +14,6 @@ using namespace std;
 class Map
 {
 private:
-	ALLEGRO_BITMAP *MapImage;
 	ALLEGRO_FONT *font;
 	ALLEGRO_COLOR TileGradient;
 
@@ -44,7 +43,7 @@ private:
 public:
 	Map();
 	void virtual Destroy();
-	void Init(ALLEGRO_BITMAP *MapImage, ALLEGRO_FONT *font);
+	void Init(ALLEGRO_FONT *font);
 	void Render(char (&RoomMatrix)[3][3][3], char CurrentRoom);
 	void Update();
 

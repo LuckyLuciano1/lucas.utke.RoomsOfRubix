@@ -9,14 +9,11 @@ using namespace std;
 
 class Object
 {
-private:
-
-	bool collision;//the collision of two objects.	
-	bool animating;
-
 protected:
+	bool sortable;//whether an object is capable of being sorted in a vector/list
 	int verticality;//basic grouping that object is in (TILE, UNIT, DECOR, etc.)
 	bool valid;//determines whether object should be deleted or not.
+	int Layer;//necessary for rendering/sorting within the Level class. Layer on which the object in question is.
 
 	double x;
 	double y;
@@ -30,37 +27,19 @@ protected:
 	double dirY;
 	double dirZ;
 
-	double angle;//angle of rotation of object.
-	ALLEGRO_COLOR transparency;//transparency of rendered image.
-
 	double boundX;//width and height of object within game.
 	double boundY;
 
-	int imageX;//position of image region being used.
-	int imageY;
-	double imageboundX;//width and height of image region being used.
-	double imageboundY;
-
-	int colX;//position and size of object that is collidable.
-	int colY;
-	int colboundX;
-	int colboundY;
-
-	int maxFrame;//number of frames to row currently being used.
-	int curFrame;//current frame the class is on.
-
-	int maxRow;//number of rows within image (should not change).
-	int curRow;//current row class is on.
-
-	bool FlipHorizontal;//tracks whether or not to flip image. Default faces left.
-
-	ALLEGRO_BITMAP *image;
+	int ClusterID;//bit complicated. essentially, levels are arranged by Island (and a few other things), and each are assigned a number to keep track of what's what. Objects require this number to be stored, to make it easier to remove objects from lists based on their respective island.
 
 public:
 
 	Object();
 	void virtual Destroy();
-	void Init(double x, double y, double z, double boundX, double boundY, int imageX, int imageY, double imageboundX, double imageboundY, int colX, int colY, int colboundX, int colboundY);
+	void Init(double x, double y, double z);
+
+	void EnableSorting(double boundX, double boundY) { Object::boundX = boundX, Object::boundY = boundY, Object::sortable = true; }
+	bool GetSortable() { return sortable; }
 
 	//==============================================
 	//CLASS MANAGEMENT
@@ -95,12 +74,6 @@ public:
 	void SetVelY(double velY) { Object::velY = velY; }
 	void SetVelZ(double velZ) { Object::velZ = velZ; }
 
-	double GetColX() { return colX; }
-	double GetColY() { return colY; }
-
-	void SetColX(double colx) { Object::colX = colX; }
-	void SetColY(double coly) { Object::colY = colY; }
-
 	//==============================================
 	//SIZE ACCESS
 	//==============================================
@@ -110,11 +83,6 @@ public:
 	void SetBoundX(double boundX) { Object::boundX = boundX; }
 	void SetBoundY(double boundY) { Object::boundY = boundY; }
 
-	int GetColBoundX() { return colboundX; }
-	int GetColBoundY() { return colboundY; }
-
-	void SetColBoundX(int colboundX) { Object::colboundX = colboundX; }
-	void SetColBoundY(int colboundY) { Object::colboundY = colboundY; }
 	//==============================================
 	//DELETION ACCESS/MODIFICATION
 	//==============================================
@@ -122,20 +90,14 @@ public:
 	void SetValid(bool valid) { Object::valid = valid; }
 
 	//==============================================
-	//COLLISION
-	//==============================================
-	//bool GetCollidable() { return collidable; }
-	//void SetCollidable(bool collidable) { Object::collidable = collidable; }
-
-	bool CollisionCheck(Object *otherObject);
-	void virtual Collided(Object *otherObject);
-
-	//==============================================
 	//OTHER
 	//==============================================
-	bool GetAnimating() { return animating; }
-	void SetAnimating(bool animating) { Object::animating = animating; }
-
-	int GetVerticality() { return verticality; }
+	int GetVerticality() { return verticality; }//for sorting purposes, so that objects are rendered in the correct order.
 	void SetVerticality(int verticality) { Object::verticality = verticality; }
+
+	int GetClusterID() { return ClusterID; }
+	void SetClusterID(int ClusterID) { Object::ClusterID = ClusterID; }
+
+	int GetLayer() { return Layer; }
+	void SetLayer(int Layer) { Object::Layer = Layer; }
 };

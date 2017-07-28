@@ -20,7 +20,7 @@ public:
 
 	IslandUnderside();
 	void virtual Destroy();
-	void Init(double x, double y, double boundX, double boundY);
+	void Init(double x, double y, double z, double boundX, double boundY);
 
 	//==============================================
 	//OBJECT LIST MANAGEMENT

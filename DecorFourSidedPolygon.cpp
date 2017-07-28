@@ -24,7 +24,7 @@ void DecorFourSidedPolygon::Init(double UpperLeftX, double UpperLeftY, double Lo
 		Object::y = LowerRightY;
 
 
-	Object::Init(x, y, z, boundX, boundY, 0, 0, 0, 0, 0, 0, 0, 0);
+	Object::Init(x, y, z);
 
 
 	DecorFourSidedPolygon::UpperLeftX = UpperLeftX;//values for the four points necessary

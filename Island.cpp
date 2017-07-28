@@ -1,18 +1,18 @@
 #include "Globals.h"
 #include "Island.h"
 #include "Player.h"
+#include "Grass.h"
 #include "DecorBox.h"
 #include "DecorCircle.h"
 #include "DecorFourSidedPolygon.h"
 #include "DecorGirder.h"
+#include "DecorPath.h"
 #include "IslandUnderside.h"
 #include <math.h>
 #include <iostream>
 #include <algorithm>
 
 using namespace std;
-
-bool compare(Object *L1, Object *L2);//function for sorting values. not part of the Island class, merely inhabits same file
 
 Island::Island() {}
 
@@ -27,13 +27,13 @@ void Island::Init(Player *player, int ID, double IslandX, double IslandY, int Is
 	Island::IslandBoundX = IslandBoundX;
 	Island::IslandBoundY = IslandBoundY;
 
-	//AllObjectsList.push_back(player);
 	bool OnScreen = false;
 	
 	//generating Underside of Island
 	IslandUnderside *islandunderside = new IslandUnderside();
-	islandunderside->Init(IslandX, IslandY + IslandBoundY, IslandBoundX, 750);
-	islandunderside->SetVerticality(HORIZONTAL);
+	islandunderside->Init(IslandX, IslandY + IslandBoundY, IslandBoundX, IslandBoundX, 750);
+	islandunderside->SetVerticality(VERTICAL);
+	islandunderside->SetLayer(CLOUDLINE);
 	AllObjectsList.push_back(islandunderside);
 
 	//generating standard rim of Island
@@ -58,8 +58,13 @@ void Island::Init(Player *player, int ID, double IslandX, double IslandY, int Is
 	Base->Init(IslandX, IslandY, 0, IslandBoundX, IslandBoundY, 196, 187, 54);
 
 	Border->SetVerticality(HORIZONTAL);
+	Border->SetLayer(FOUNDATION);
+
 	Underside->SetVerticality(HORIZONTAL);
+	Underside->SetLayer(FOUNDATION);
+
 	Base->SetVerticality(HORIZONTAL);
+	Base->SetLayer(BASE);
 
 	AllObjectsList.push_back(Border);
 	AllObjectsList.push_back(Underside);
@@ -97,8 +102,11 @@ void Island::Init(Player *player, int ID, double IslandX, double IslandY, int Is
 			DecorBox *ProtUnderside = new DecorBox();
 
 			ProtBase->Init(position + IslandX, IslandY + IslandBoundY + BorderSize, 0, BoundX, BoundY, BorderR, BorderG, BorderB);
-			//ProtBase->SetVerticality(HORIZONTAL);
+			ProtBase->SetVerticality(HORIZONTAL);
+			ProtBase->SetLayer(BASE);//cheating a little here. minor exception to layer system I created, and rather than create a whole new layer for one object, I figured I can just do this.
+
 			ProtUnderside->Init(position + IslandX, IslandY + IslandBoundY + BorderSize + BoundY, 0, BoundX, rand() % UndersideSizeRange + MinimumUndersideSize, UndersideR, UndersideG, UndersideB);
+			ProtUnderside->SetLayer(FOUNDATION);
 
 			AllObjectsList.push_back(ProtBase);
 			AllObjectsList.push_back(ProtUnderside);
@@ -118,8 +126,8 @@ void Island::Init(Player *player, int ID, double IslandX, double IslandY, int Is
 
 			DecorBox *ProtBase = new DecorBox();
 			ProtBase->Init(position + IslandX, IslandY - BorderSize - BoundY, 0, BoundX, BoundY, BorderR, BorderG, BorderB);
-			//ProtBase->SetVerticality(HORIZONTAL);
-
+			ProtBase->SetVerticality(HORIZONTAL);
+			ProtBase->SetLayer(FOUNDATION);
 			AllObjectsList.push_back(ProtBase);
 
 			AreaRemaining -= BoundX + position;
@@ -140,8 +148,10 @@ void Island::Init(Player *player, int ID, double IslandX, double IslandY, int Is
 			DecorBox *ProtUnderside = new DecorBox();
 
 			ProtBase->Init(IslandX - BorderSize - BoundX, position + IslandY, 0, BoundX, BoundY, BorderR, BorderG, BorderB);
-			//ProtBase->SetVerticality(HORIZONTAL);
+			ProtBase->SetVerticality(HORIZONTAL);
+			ProtBase->SetLayer(FOUNDATION);
 			ProtUnderside->Init(IslandX - BorderSize - BoundX, position + IslandY + BoundY, 0, BoundX, UndersideSize, UndersideR, UndersideG, UndersideB);
+			ProtUnderside->SetLayer(FOUNDATION);
 
 			AllObjectsList.push_back(ProtBase);
 			AllObjectsList.push_back(ProtUnderside);
@@ -164,8 +174,10 @@ void Island::Init(Player *player, int ID, double IslandX, double IslandY, int Is
 			DecorBox *ProtUnderside = new DecorBox();
 
 			ProtBase->Init(IslandX + IslandBoundX + BorderSize, position + IslandY, 0, BoundX, BoundY, BorderR, BorderG, BorderB);
-			//ProtBase->SetVerticality(HORIZONTAL);
+			ProtBase->SetVerticality(HORIZONTAL);
+			ProtBase->SetLayer(FOUNDATION);
 			ProtUnderside->Init(IslandX + IslandBoundX + BorderSize, position + IslandY + BoundY, 0, BoundX, UndersideSize, UndersideR, UndersideG, UndersideB);
+			ProtUnderside->SetLayer(FOUNDATION);
 
 			AllObjectsList.push_back(ProtBase);
 			AllObjectsList.push_back(ProtUnderside);
@@ -175,171 +187,60 @@ void Island::Init(Player *player, int ID, double IslandX, double IslandY, int Is
 	}
 	//insert later microenvironment creation here
 
-}
-
-//===========================================================================================================================================================================================================================
-//OBJECT LIST MANAGEMENT
-//===========================================================================================================================================================================================================================
-
-void Island::ObjectUpdate()
-{
-	for (iter = AllObjectsList.begin(); iter != AllObjectsList.end(); ++iter)
-	{
-		(*iter)->Update();
-	}
-}
-
-void Island::ObjectRender(double cameraXPos, double cameraYPos)
-{
-	//al_draw_filled_rectangle(IslandX+cameraXPos, IslandY+cameraYPos, IslandX + IslandBoundX+cameraXPos, IslandY + IslandBoundY+cameraYPos, al_map_rgb(174, 178, 95));//displaying area of island (for testing purposes)
-	sort(AllObjectsList.begin(), AllObjectsList.end(), compare);
-
-	for (iter = AllObjectsList.begin(); iter != AllObjectsList.end(); ++iter)
-	{
-		(*iter)->Render(cameraXPos, cameraYPos);
-	}
-}
-
-void Island::ObjectCollision()
-{
-	/*for (citer = ObjectCollisionList.begin(); citer != ObjectCollisionList.end(); ++citer)
-	{
-		for (citer2 = citer; citer2 != ObjectCollisionList.end(); ++citer2)
-		{
-			if ((*citer)->CollisionCheck((*citer2)))
-			{
-				(*citer)->Collided((*citer2));
-				(*citer2)->Collided((*citer));
+	//generating grass
+	for (int a = 0; a < IslandBoundX; a++) {
+			if (rand() % 600 == 1) {
+				Grass *grass = new Grass();
+				grass->Init(IslandX + rand()%IslandBoundX, IslandY + rand()%IslandBoundY, 0, 10, 1, 10, 10);
+				AllObjectsList.push_back(grass);
 			}
-		}
-	}*/
-}
+	}
 
-void Island::ObjectDeletion()
-{
-	for (iter = AllObjectsList.begin(); iter != AllObjectsList.end();)
+
+	for (iter = AllObjectsList.begin(); iter != AllObjectsList.end(); ++iter)//marks all created objects within island Init with island's ID, for level sorting purposes.
 	{
-		if (!(*iter)->GetValid())
-		{
-			delete (*iter);
-			iter = AllObjectsList.erase(iter);
-		}
-		else
-			iter++;
+		(*iter)->SetClusterID(ID);
 	}
 }
+
+//===========================================================================================================================================================================================================================
+//PATH CREATION
+//===========================================================================================================================================================================================================================
 
 void Island::CreateNorthPath(int PathFrequency, int PathWideness, int MinimumCircleSize, int CircleSizeRange, int MinimumCircleColor, int CircleColorRange, int CircleAmount) {
+	DecorPath *Path = new DecorPath();
+	Path->Init(IslandX, IslandY, IslandBoundX, IslandBoundY, PathFrequency, PathWideness, MinimumCircleSize, CircleSizeRange, MinimumCircleColor, CircleColorRange, CircleAmount, NORTH);
+	Path->SetVerticality(HORIZONTAL);
+	Path->SetClusterID(ID);
+	Path->EnableSorting(PathWideness * 2, IslandBoundY / 2);
 
-	int counter = PathFrequency - 1;
-	for (int a = 0; a < IslandBoundY / 2; a++) {
-		counter++;
-		if (counter == PathFrequency) {//chance of spawning a circle path
-			counter = 0;
-			for (int b = 0; b < CircleAmount; b++) {
-				int CircleRadius = rand() % CircleSizeRange + MinimumCircleSize;
-
-				if (IslandY + IslandBoundY / 2 - a - CircleRadius > IslandY) {//checking whether circle will beyond bounds of island
-					int CircleColor = rand() % CircleColorRange + MinimumCircleColor;
-
-					DecorCircle *PathPiece = new DecorCircle();
-					PathPiece->Init(IslandX + IslandBoundX / 2 + (rand() % PathWideness * 2 - PathWideness), IslandY + IslandBoundY / 2 - a, 0, CircleRadius, CircleColor, CircleColor, CircleColor, false);
-					AllObjectsList.push_back(PathPiece);
-					PathPiece->SetVerticality(HORIZONTAL);
-				}
-			}
-		}
-	}
+	AllObjectsList.push_back(Path);
 }
 void Island::CreateSouthPath(int PathFrequency, int PathWideness, int MinimumCircleSize, int CircleSizeRange, int MinimumCircleColor, int CircleColorRange, int CircleAmount) {
+	DecorPath *Path = new DecorPath();
+	Path->Init(IslandX, IslandY, IslandBoundX, IslandBoundY, PathFrequency, PathWideness, MinimumCircleSize, CircleSizeRange, MinimumCircleColor, CircleColorRange, CircleAmount, SOUTH);
+	Path->SetVerticality(HORIZONTAL);
+	Path->SetClusterID(ID);
+	Path->EnableSorting(PathWideness * 2, IslandBoundY / 2);
 
-	int counter = PathFrequency - 1;
-	for (int a = 0; a < IslandBoundY / 2; a++) {
-		counter++;
-		if (counter == PathFrequency) {
-			counter = 0;
-			for (int b = 0; b<CircleAmount; b++) {
-				int CircleRadius = rand() % CircleSizeRange + MinimumCircleSize;
+	AllObjectsList.push_back(Path);
+}
+void  Island::CreateEastPath(int PathFrequency, int PathWideness, int MinimumCircleSize, int CircleSizeRange, int MinimumCircleColor, int CircleColorRange, int CircleAmount) {
+	DecorPath *Path = new DecorPath();
+	Path->Init(IslandX, IslandY, IslandBoundX, IslandBoundY, PathFrequency, PathWideness, MinimumCircleSize, CircleSizeRange, MinimumCircleColor, CircleColorRange, CircleAmount, EAST);
+	Path->SetVerticality(HORIZONTAL);
+	Path->SetClusterID(ID);
+	Path->EnableSorting(IslandBoundX / 2, PathWideness * 2);
 
-				if (IslandY + IslandBoundY / 2 + a + CircleRadius < IslandY + IslandBoundY) {//checking whether circle will beyond bounds of island
-					int CircleColor = rand() % CircleColorRange + MinimumCircleColor;
-
-					DecorCircle *PathPiece = new DecorCircle();
-					PathPiece->Init(IslandX + IslandBoundX / 2 + (rand() % PathWideness * 2 - PathWideness), IslandY + IslandBoundY / 2 + a, 0, CircleRadius, CircleColor, CircleColor, CircleColor, false);
-					AllObjectsList.push_back(PathPiece);
-					PathPiece->SetVerticality(HORIZONTAL);
-				}
-			}
-		}
-	}
+	AllObjectsList.push_back(Path);
 }
 void  Island::CreateWestPath(int PathFrequency, int PathWideness, int MinimumCircleSize, int CircleSizeRange, int MinimumCircleColor, int CircleColorRange, int CircleAmount) {
 
-	int counter = PathFrequency - 1;
-	for (int a = 0; a < IslandBoundX / 2; a++) {
-		counter++;
-		if (counter == PathFrequency) {
-			counter = 0;
-			for (int b = 0; b<CircleAmount; b++) {
-				int CircleRadius = rand() % CircleSizeRange + MinimumCircleSize;
+	DecorPath *Path = new DecorPath();
+	Path->Init(IslandX, IslandY, IslandBoundX, IslandBoundY, PathFrequency, PathWideness, MinimumCircleSize, CircleSizeRange, MinimumCircleColor, CircleColorRange, CircleAmount, WEST);
+	Path->SetVerticality(HORIZONTAL);
+	Path->SetClusterID(ID);
+	Path->EnableSorting(IslandBoundX / 2, PathWideness * 2);
 
-				if (IslandX + IslandBoundX / 2 - a - CircleRadius > IslandX) {//checking whether circle will beyond bounds of island
-					int CircleColor = rand() % CircleColorRange + MinimumCircleColor;
-
-					DecorCircle *PathPiece = new DecorCircle();
-					PathPiece->Init(IslandX + IslandBoundX / 2 - a, IslandY + IslandBoundY / 2 + (rand() % PathWideness * 2 - PathWideness), 0, CircleRadius, CircleColor, CircleColor, CircleColor, false);
-					AllObjectsList.push_back(PathPiece);
-					PathPiece->SetVerticality(HORIZONTAL);
-				}
-			}
-		}
-	}
-}
-void  Island::CreateEastPath(int PathFrequency, int PathWideness, int MinimumCircleSize, int CircleSizeRange, int MinimumCircleColor, int CircleColorRange, int CircleAmount) {
-	
-	int counter = PathFrequency - 1;
-	for (int a = 0; a < IslandBoundX / 2; a++) {
-		counter++;
-		if (counter == PathFrequency) {
-			counter = 0;
-			for (int b = 0; b<CircleAmount; b++) {
-				int CircleRadius = rand() % CircleSizeRange + MinimumCircleSize;
-
-				if (IslandX + IslandBoundX / 2 + a + CircleRadius < IslandX + IslandBoundX) {//checking whether circle will beyond bounds of island
-					int CircleColor = rand() % CircleColorRange + MinimumCircleColor;
-
-					DecorCircle *PathPiece = new DecorCircle();
-					PathPiece->Init(IslandX + IslandBoundX / 2 + a, IslandY + IslandBoundY / 2 + (rand() % PathWideness * 2 - PathWideness), 0, CircleRadius, CircleColor, CircleColor, CircleColor, false);
-					AllObjectsList.push_back(PathPiece);
-					PathPiece->SetVerticality(HORIZONTAL);
-				}
-			}
-		}
-	}
-}
-
-bool compare(Object *L1, Object *L2) {
-
-	//primary condition, y position of base
-	if ((*L1).GetVerticality() == HORIZONTAL && (*L2).GetVerticality() == HORIZONTAL) {//HORIZONTAL involved because some objects are supposed to be horizontal, so cannot include the base to properly render
-		if ((*L1).GetY() < (*L2).GetY()) return true;
-		if ((*L2).GetY() < (*L1).GetY()) return false;
-	}
-	else if ((*L1).GetVerticality() == HORIZONTAL) {
-		if ((*L1).GetY() < (*L2).GetY() + (*L2).GetBoundY()) return true;
-		if ((*L2).GetY() + (*L2).GetBoundY() < (*L1).GetY()) return false;
-	}
-	else if ((*L2).GetVerticality() == HORIZONTAL) {
-		if ((*L1).GetY() + (*L1).GetBoundY() < (*L2).GetY()) return true;
-		if ((*L2).GetY() < (*L1).GetY() + (*L1).GetBoundY()) return false;
-	}
-	else {//two vertical objects being compared
-		if ((*L1).GetY() + (*L1).GetBoundY() < (*L2).GetY() + (*L2).GetBoundY()) return true;
-		if ((*L2).GetY() + (*L2).GetBoundY() < (*L1).GetY() + (*L1).GetBoundY()) return false;
-	}
-	//secondary condition, depth
-	if ((*L1).GetZ() > (*L2).GetZ()) return true;
-	if ((*L2).GetZ() > (*L1).GetZ()) return false;
-
-	return false;
+	AllObjectsList.push_back(Path);
 }

@@ -22,7 +22,7 @@ private:
 
 public:
 	Grass();
-	void Init(double x, double y, int GrassJointNum, int GrassJointSpacing, int GrassJointW, int GrassJointH);
+	void Init(double x, double y, double z, int GrassJointNum, int GrassJointSpacing, int GrassJointW, int GrassJointH);
 	void Render(double cameraXPos, double cameraYPos);
 	void Update();
 	double GetLowestPoint();

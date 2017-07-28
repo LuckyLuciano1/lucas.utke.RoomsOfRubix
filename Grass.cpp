@@ -3,13 +3,13 @@
 
 Grass::Grass() {}
 
-void Grass::Init(double x, double y, int GrassJointNum, int GrassJointSpacing, int GrassJointW, int GrassJointH)
+void Grass::Init(double x, double y, double z, int GrassJointNum, int GrassJointSpacing, int GrassJointW, int GrassJointH)
 {
 	//Grass::GrassJointNum = GrassJointNum;
 	//Grass::GrassJointSpacing = GrassJointSpacing;
 	//Grass::GrassJointW = GrassJointW;
 	//Grass::GrassJointH = GrassJointH;
-	Object::Init(x, y, 0, GrassJointW, GrassJointNum, 0, 0, 0, 0, x, y, 1, GrassJointH);//does not collide or use images
+	Object::Init(x, y, z);//does not collide or use images
 
 	double rounding = GrassJointW;
 

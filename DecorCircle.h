@@ -24,4 +24,7 @@ public:
 	void Render(double cameraXPos, double cameraYPos);
 
 	bool SetShading(bool Shading) { DecorCircle::Shading = Shading;  }
+	
+	void SetRadius(double Radius) { DecorCircle::Radius = Radius; }
+	double GetRadius() { return Radius; }
 };

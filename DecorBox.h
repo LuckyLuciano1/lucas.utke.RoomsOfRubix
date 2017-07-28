@@ -14,9 +14,17 @@ private:
 	int G;
 	int B;
 
+	bool Border;
+	int BorderThickness;//necessary variables for Border
+	int BorderR;
+	int BorderG;
+	int BorderB;
+
 public:
 	DecorBox();
 	void Init(double x, double y, double z, double boundX, double boundY, int R, int G, int B);
 	void Update();
 	void Render(double cameraXPos, double cameraYPos);
+
+	void EnableBorder(int Thickness, int R, int G, int B) { Border = true, BorderThickness = Thickness, BorderR = R, BorderG = G, BorderB = B; }
 };

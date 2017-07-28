@@ -22,7 +22,7 @@ void Camera::Init(double cameraXPos, double cameraYPos) {
 	Camera::cameraYPos = cameraYPos;
 }
 
-void Camera::Follow (Object *object)
+void Camera::Follow(Object *object, int MinX, int MaxX, int MinY, int MaxY)
 {
 	if (!paused) {
 		/*
@@ -36,11 +36,20 @@ void Camera::Follow (Object *object)
 		else
 			cameraYDir = 0;
 		*/
-		cameraXDir = ((cameraXPos + cameraXDir) + ((object->GetX() + (object->GetBoundX() / 2) - (SCREENW / 2)) + object->GetDirX())) / 25;//velocity of camera is dependent on distance from object
-		cameraYDir = ((cameraYPos + cameraYDir) + ((object->GetY() + (object->GetBoundY() / 2) - (SCREENH / 2)) + object->GetDirY())) / 25;
 
-		cameraXPos -= cameraXDir;
-		cameraYPos -= cameraYDir;
+		cameraXDir = -((cameraXPos + cameraXDir) + ((object->GetX() + (object->GetBoundX() / 2) - (SCREENW / 2)) + object->GetDirX())) / 25;//velocity of camera is dependent on distance from object
+		cameraYDir = -((cameraYPos + cameraYDir) + ((object->GetY() + (object->GetBoundY() / 2) - (SCREENH / 2)) + object->GetDirY())) / 25;
+		/*if (cameraXPos - cameraXDir > MaxX)//too far right
+			cout << "too far" << endl, cameraXDir = 0;
+		else if (cameraXPos - cameraXDir < MinX)//too far left
+			cout << "too far" << endl, cameraXDir = 0;
+		if (cameraYPos - cameraYDir > MaxY)//too far down
+			cout << "too far" << endl, cameraYDir = 0;
+		else if (cameraYPos - cameraYDir < MinY)//too far up
+			cout << "too far" << endl, cameraYDir = 0;*/
+
+		cameraXPos += cameraXDir;
+		cameraYPos += cameraYDir;
 	}
 }
 
