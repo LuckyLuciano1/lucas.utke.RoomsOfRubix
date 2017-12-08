@@ -3,59 +3,37 @@
 
 Grass::Grass() {}
 
-void Grass::Init(double x, double y, double z, int GrassJointNum, int GrassJointSpacing, int GrassJointW, int GrassJointH)
+void Grass::Init(double x, double y, double z, double boundX, double boundY, double StartR, double StartG, double StartB, double EndR, double EndG, double EndB)
 {
-	//Grass::GrassJointNum = GrassJointNum;
-	//Grass::GrassJointSpacing = GrassJointSpacing;
-	//Grass::GrassJointW = GrassJointW;
-	//Grass::GrassJointH = GrassJointH;
-	Object::Init(x, y, z);//does not collide or use images
+	Object::Init(x, y - boundY, z);//does not collide or use images
+	EnableSorting(boundX, -boundY);
 
-	double rounding = GrassJointW;
+	double R = (EndR - StartR) / boundY;
+	double G = (EndG - StartG) / boundY;
+	double B = (EndB - StartB) / boundY;
 
-	for (int a = 2; a <= GrassJointNum; a++) {
-		if (rounding-a*1.4  > 0) {
-			GrassJoint *joint = new GrassJoint();
-			joint->Init(a, x, y, (a), GrassJointSpacing, GrassJointNum, GrassJointW - a / 2 - (rounding-a*1.4), GrassJointH);//velocity is exponential, dependent on joint number
-			JointList.push_back(joint);
-		}
-		else {
-			GrassJoint *joint = new GrassJoint();
-			joint->Init(a, x, y, (a), GrassJointSpacing, GrassJointNum, GrassJointW - a / 2, GrassJointH);//velocity is exponential, dependent on joint number
-			JointList.push_back(joint);
-		}
+	double ChangeRatio = boundX / boundY;
+
+	int counter = rand() % 1000;
+	for (double a = 0; a < boundY; a++) {
+		GrassJoint *joint = new GrassJoint();
+		joint->Init(a, x + ChangeRatio*a/2, y - a, x + boundX - ChangeRatio*a/2, y - a, StartR + R*a, StartG + G*a, StartB + B*a, counter);
+		AllObjectsList.push_back(joint);
 	}
+
 }
 
 void Grass::Render(double cameraXPos, double cameraYPos)
 {
-	double SpeedChange = 0;
-	double SwayChange = 0;
-
-	if (rand() % 60 == 1) {
-		SpeedChange = rand() % 2 + 1;
-		if (rand() % 2 == 1)
-			SpeedChange *= -1;
-		SwayChange = (rand() % 5 + 1) / 1;
-		if (rand() % 2 == 1)
-			SwayChange *= -1;
-	}
-	for (jiter = JointList.begin(); jiter != JointList.end(); ++jiter)
+	for (iter = AllObjectsList.begin(); iter != AllObjectsList.end(); ++iter)
 	{
-		(*jiter)->Update(x, y, z, 0, 1, SwayChange, SpeedChange, cameraXPos, cameraYPos);
+		(*iter)->Render(cameraXPos, cameraYPos);
 	}
-	//cout << x << ", " << y << " : " << dirX << ", " << dirY << endl;
-	//al_draw_filled_rectangle(colX+cameraXPos, colY+cameraYPos+z, colX+colboundX+cameraXPos, colY+colboundY+cameraYPos+z, al_map_rgb(255, 0, 0));
-}
-void Grass::Update() {//placeholder for use in vector
 }
 
-double Grass::GetLowestPoint() {
-	int LowestPoint = 0;
-	for (jiter = JointList.begin(); jiter != JointList.end(); ++jiter)
+void Grass::Update() {
+	for (iter = AllObjectsList.begin(); iter != AllObjectsList.end(); ++iter)
 	{
-		if ((*jiter)->GetJointYPos() > LowestPoint)
-			LowestPoint = (*jiter)->GetJointYPos();
+		(*iter)->Update();
 	}
-	return LowestPoint;
 }

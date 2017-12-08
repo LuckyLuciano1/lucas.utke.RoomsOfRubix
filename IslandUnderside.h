@@ -16,18 +16,18 @@ class IslandUnderside : public Object
 private:
 	vector<Object*> AllObjectsList;//list that keeps track of all objects within each IslandUnderside. Used for render, updating, collision, etc.
 	vector<Object*>::iterator iter;
+
 public:
 
 	IslandUnderside();
 	void virtual Destroy();
-	void Init(double x, double y, double z, double boundX, double boundY);
+	void Init(double IslandX, double IslandY, double IslandBoundX, double IslandBoundY);
 
 	//==============================================
 	//OBJECT LIST MANAGEMENT
 	//==============================================
 	void Update();
 	void Render(double cameraXPos, double cameraYPos);
-	void ObjectCollision();
 	void ObjectDeletion();
 
 	//==============================================

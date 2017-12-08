@@ -17,13 +17,16 @@ protected:
 	double cameraYPos;
 
 	bool paused;
+
+	Object *Target = new Object;
+
 public:
 	Camera();
 	void virtual Destroy();
-	void Init(double cameraXPos, double cameraYPos);
+	void Init(double cameraXPos, double cameraYPos, Object *Target);
 
-	void Follow(Object *object, int MinX, int MaxX, int MinY, int MaxY);//the mins and maxes are ways of stopping the camera from exceeding the boundaries of the level the player is currently on.
-	void MoveTo(double x, double y);
+	void Update();//the mins and maxes are ways of stopping the camera from exceeding the boundaries of the level the player is currently on.
+	void SetTarget(Object *newTarget) { Target = newTarget; }
 
 	double GetCameraXPos() { return cameraXPos; }
 	double GetCameraYPos() { return cameraYPos; }

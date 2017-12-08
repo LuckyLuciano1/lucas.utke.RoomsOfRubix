@@ -17,56 +17,31 @@ Camera::Camera()
 
 void Camera::Destroy() {}
 
-void Camera::Init(double cameraXPos, double cameraYPos) {
+void Camera::Init(double cameraXPos, double cameraYPos, Object *Target) {
 	Camera::cameraXPos = cameraXPos;
 	Camera::cameraYPos = cameraYPos;
+	Camera::Target = Target;
 }
 
-void Camera::Follow(Object *object, int MinX, int MaxX, int MinY, int MaxY)
+void Camera::Update()
 {
 	if (!paused) {
-		/*
-		if ((cameraXPos - -(object->GetVelX())*(object->GetX() - (SCREENW / 2)) / 100) > 0 && (cameraXPos + SCREENW - -(object->GetVelX())*(object->GetX() - (SCREENW / 2)) / 100) < LEVELW*TILEW)//to stop camera from exceeding mapsize
-			cameraXDir = -(object->GetVelX())*(object->GetX() - (SCREENW / 2)) / 100;//velocity of camera is dependent on distance from object
-		else
-			cameraXDir = 0;
-
-		if ((cameraYPos - -(object->GetVelY())*(object->GetY() - (SCREENH / 2)) / 100) > 0 && (cameraYPos + SCREENW - -(object->GetVelY())*(object->GetY() - (SCREENH / 2)) / 100) < LEVELH*TILEH)
-			cameraYDir = -(object->GetVelY())*(object->GetY() - (SCREENH / 2)) / 100;
-		else
-			cameraYDir = 0;
-		*/
-
-		cameraXDir = -((cameraXPos + cameraXDir) + ((object->GetX() + (object->GetBoundX() / 2) - (SCREENW / 2)) + object->GetDirX())) / 25;//velocity of camera is dependent on distance from object
-		cameraYDir = -((cameraYPos + cameraYDir) + ((object->GetY() + (object->GetBoundY() / 2) - (SCREENH / 2)) + object->GetDirY())) / 25;
-		/*if (cameraXPos - cameraXDir > MaxX)//too far right
-			cout << "too far" << endl, cameraXDir = 0;
-		else if (cameraXPos - cameraXDir < MinX)//too far left
-			cout << "too far" << endl, cameraXDir = 0;
-		if (cameraYPos - cameraYDir > MaxY)//too far down
-			cout << "too far" << endl, cameraYDir = 0;
-		else if (cameraYPos - cameraYDir < MinY)//too far up
-			cout << "too far" << endl, cameraYDir = 0;*/
+		cameraXDir = -((cameraXPos + cameraXDir) + ((Target->GetX() + (Target->GetBoundX() / 2) - (SCREENW / 2)) + Target->GetDirX())) / 25;//velocity of camera is dependent on distance from Target
+		cameraYDir = -((cameraYPos + cameraYDir) + ((Target->GetY() + (Target->GetBoundY() / 2) - (SCREENH / 2)) + Target->GetDirY())) / 25;
 
 		cameraXPos += cameraXDir;
 		cameraYPos += cameraYDir;
 	}
-}
 
-void Camera::MoveTo(double x, double y)
-{
-	if (!paused) {
-		if ((cameraXPos - -(x - (SCREENW / 2)) / 100) > 0 && (cameraXPos + SCREENW - -(x - (SCREENW / 2)) / 100) < LEVELW*TILEW)//to stop camera from exceeding mapsize
-			cameraXDir = -(x - (SCREENW / 2)) / 100;//velocity of camera is dependent on distance from object
-		else
-			cameraXDir = 0;
+	/*old function for camera movement
+	if ((cameraXPos - -(object->GetVelX())*(object->GetX() - (SCREENW / 2)) / 100) > 0 && (cameraXPos + SCREENW - -(object->GetVelX())*(object->GetX() - (SCREENW / 2)) / 100) < LEVELW*TILEW)//to stop camera from exceeding mapsize
+	cameraXDir = -(object->GetVelX())*(object->GetX() - (SCREENW / 2)) / 100;//velocity of camera is dependent on distance from object
+	else
+	cameraXDir = 0;
 
-		if ((cameraYPos - -(y - (SCREENH / 2)) / 100) > 0 && (cameraYPos + SCREENW - -(y - (SCREENH / 2)) / 100) < LEVELH*TILEH)
-			cameraYDir = -(y - (SCREENH / 2)) / 100;
-		else
-			cameraYDir = 0;
-
-		cameraXPos -= cameraXDir;
-		cameraYPos -= cameraYDir;
-	}
+	if ((cameraYPos - -(object->GetVelY())*(object->GetY() - (SCREENH / 2)) / 100) > 0 && (cameraYPos + SCREENW - -(object->GetVelY())*(object->GetY() - (SCREENH / 2)) / 100) < LEVELH*TILEH)
+	cameraYDir = -(object->GetVelY())*(object->GetY() - (SCREENH / 2)) / 100;
+	else
+	cameraYDir = 0;
+	*/
 }

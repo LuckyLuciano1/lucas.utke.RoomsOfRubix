@@ -5,9 +5,7 @@
 #include <allegro5/allegro_primitives.h>
 #include "Globals.h"
 #include "Object.h"
-#include "String.h"
-#include "PlayerCloak.h"
-
+#include "Scarf.h"
 
 #include <vector>
 using namespace std;
@@ -25,10 +23,26 @@ private:
 	int Action;//tracks which action is being performed by the main character
 	double MouseAngleRadians;//angle of mouse in radians. Used to track which direction the player faces (check flags)
 
-	String *string = new String();
-	PlayerCloak *playercloakpiece1 = new PlayerCloak();
-	PlayerCloak *playercloakpiece2 = new PlayerCloak();
-	PlayerCloak *playercloakpiece3 = new PlayerCloak();
+	Scarf *scarf = new Scarf();
+
+	struct Point
+	{
+		float x, y, z, OrigX, OrigY;
+		float dirX, dirY;
+		int Vel;
+	};
+
+	struct Strand
+	{
+		Point PointArray[10];
+	};
+	const size_t StrandLength = 10;
+	int StrandLength_int = 10;	
+
+	Strand StrandArray[180];
+	int StrandNum = 180;
+
+	double counter;
 
 public:
 	Player();

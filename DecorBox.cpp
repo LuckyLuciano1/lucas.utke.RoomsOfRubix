@@ -28,5 +28,5 @@ void DecorBox::Render(double cameraXPos, double cameraYPos)
 	al_draw_filled_rectangle(x + cameraXPos, y + cameraYPos + z, x + boundX + cameraXPos, y + boundY + cameraYPos + z, al_map_rgb(R, G, B));//base
 	
 	if (Border)
-		al_draw_rectangle(x + (BorderThickness/2) + cameraXPos, y + (BorderThickness / 2) + cameraYPos + z, x + boundX - (BorderThickness / 2) + cameraXPos, y+boundY- (BorderThickness / 2) + cameraYPos, al_map_rgb(BorderR, BorderG, BorderB), BorderThickness);
+		al_draw_rectangle(x + (BorderThickness/2) + cameraXPos, y + (BorderThickness / 2) + cameraYPos + z, x + boundX - (BorderThickness / 2) + cameraXPos, y+boundY- (BorderThickness / 2) + cameraYPos + z, al_map_rgb(BorderR, BorderG, BorderB), BorderThickness);
 }

@@ -21,6 +21,9 @@ private:
 	int IslandBoundX;
 	int IslandBoundY;
 
+	int IslandTopBoundX;//size of the top of the island (used in microenvironment generation, collision, island detection, and much more)
+	int IslandTopBoundY;
+
 	bool OnScreen;//tracks whether island is on screen or not. if it is, Level class will use island lists in updating, rendering, etc.
 	int ID;//rudimentary means of tracking which Island is which in-level.
 
@@ -33,7 +36,7 @@ public:
 
 	Island();
 	void virtual Destroy();
-	void Init(Player *player, int ID, double IslandX, double IslandY, int IslandBoundX, int IslandBoundY);
+	void Init(int ID, double IslandX, double IslandY, int IslandBoundX, int IslandBoundY);
 
 	//==============================================
 	//POSITION/SCALE MANAGEMENT
@@ -46,19 +49,17 @@ public:
 
 	int GetIslandBoundX() { return IslandBoundX; }
 	int GetIslandBoundY() { return IslandBoundY; }
-
 	void SetIslandBoundX(int IslandBoundX) { Island::IslandBoundX = IslandBoundX; }
 	void SetIslandBoundY(int IslandBoundY) { Island::IslandBoundY = IslandBoundY; }
 
+	int GetIslandTopBoundX() { return IslandTopBoundX; }
+	int GetIslandTopBoundY() { return IslandTopBoundY; }
+	void SetIslandTopBoundX(int IslandTopBoundX) { Island::IslandTopBoundX = IslandTopBoundX; }
+	void SetIslandTopBoundY(int IslandTopBoundY) { Island::IslandTopBoundY = IslandTopBoundY; }
 
 	//==============================================
 	//OBJECT LIST MANAGEMENT
 	//==============================================
-	void ObjectUpdate();
-	void ObjectRender(double cameraXPos, double cameraYPos);
-	void ObjectCollision();
-	void ObjectDeletion();
-
 	vector<Object*> GetAllObjectsList() { return AllObjectsList; }
 	Object* GetListValue(int ListPos) { return AllObjectsList.at(ListPos); }
 
@@ -70,9 +71,4 @@ public:
 
 	int GetID() { return ID; }
 	void SetID(int ID) { Island::ID = ID; }
-
-	void CreateNorthPath(int PathFrequency, int PathWideness, int MinimumCircleSize, int CircleSizeRange, int MinimumCircleColor, int CircleColorRange, int CircleAmount);
-	void CreateSouthPath(int PathFrequency, int PathWideness, int MinimumCircleSize, int CircleSizeRange, int MinimumCircleColor, int CircleColorRange, int CircleAmount);
-	void CreateWestPath(int PathFrequency, int PathWideness, int MinimumCircleSize, int CircleSizeRange, int MinimumCircleColor, int CircleColorRange, int CircleAmount);
-	void CreateEastPath(int PathFrequency, int PathWideness, int MinimumCircleSize, int CircleSizeRange, int MinimumCircleColor, int CircleColorRange, int CircleAmount);
 };

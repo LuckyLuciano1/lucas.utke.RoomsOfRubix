@@ -10,6 +10,9 @@ Object::Object()
 	sortable = false;
 	Layer = DECOR;//defaults to decor because the majority of objects will be on the top layer of the level
 
+	Collidable = true;
+	MatrixCollidable = true;
+
 	x = 0;
 	y = 0;
 	z = 0;

@@ -10,6 +10,9 @@ using namespace std;
 class Object
 {
 protected:
+	bool Collidable;//whether an object is supposed to collide with other objects (for example, being hit grants the player a second or two immunity from colliding with enemy weapons).
+	bool MatrixCollidable;//whether an objects is supposed to collide with the CollisionMatrix within Level (for example, the player uses a grapple hook, passing through the collidable gap between islands).
+
 	bool sortable;//whether an object is capable of being sorted in a vector/list
 	int verticality;//basic grouping that object is in (TILE, UNIT, DECOR, etc.)
 	bool valid;//determines whether object should be deleted or not.
@@ -100,4 +103,10 @@ public:
 
 	int GetLayer() { return Layer; }
 	void SetLayer(int Layer) { Object::Layer = Layer; }
+
+	int GetCollidable() { return Collidable; }
+	void SetCollidable(int Collidable) { Object::Collidable = Collidable; }
+
+	int GetMatrixCollidable() { return MatrixCollidable; }
+	void SetMatrixCollidable(int MatrixCollidable) { Object::MatrixCollidable = MatrixCollidable; }
 };

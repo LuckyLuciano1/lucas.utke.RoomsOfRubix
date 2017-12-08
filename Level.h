@@ -25,6 +25,9 @@ private:
 	vector<Object *> AllObjectsList;//stores objects currently onscreen that need to be rendered/updated
 	vector<Object *>::iterator oiter;
 
+	vector<Object *> CollisionObjectsList;//stores objects (characters) that need to be restrained within Island dimensions (and CollisionMatrix)
+	vector<Object *>::iterator citer;
+
 	ALLEGRO_FONT *font18;
 
 	Player *player = new Player();
@@ -36,6 +39,12 @@ private:
 	int LevelMaxY;
 
 	//int IslandMatrix[3][3];
+	int SlotSize = 25;
+	int CollisionMatrixSize = 240;
+	double CollisionMatrix[240][240] = {};//used for containing player (and land enemies) within islands, as well as tracking sizes and locations of islands.
+
+	double StartingX;//position of start for player
+	double StartingY;
 
 protected:
 	char ID;//means of identifying what Level it is. Every letter in the alphabet, plus '_' (27 Levels, 26 letters).
@@ -135,4 +144,7 @@ public:
 	void SetLevelMaxY(int LevelMaxY) { Level::LevelMaxY = LevelMaxY; }
 	int GetLevelMinY() { return LevelMinX; }
 	void SetLevelMinY(int LevelMinY) { Level::LevelMinY = LevelMinY; }
+
+	double GetPlayerX() { return StartingX; }//temporary means of returning thelevel's starting player position to main
+	double GetPlayerY() { return StartingY; }
 };

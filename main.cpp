@@ -164,7 +164,7 @@ int main()
 
 	//creation of player and camera
 	player->Init(0, 0, 0);
-	camera->Init(0, 0);
+	camera->Init(0, 0, player);
 	map->Init(font18);
 
 	//creation of all levels. Init() involves/will involve creation of levels, objects, etc.
@@ -247,6 +247,19 @@ int main()
 	gameTime = al_current_time();
 
 	Transition(LevelMatrix, CurrentLevel);//sets up all adjacent levels
+
+
+	//temporary means of setting correct player position based upon collision matrix
+	for (riter = levels.begin(); riter != levels.end(); ++riter)
+	{
+		if ((*riter)->GetID() == CurrentLevel) {
+			player->SetX((*riter)->GetPlayerX());
+			player->SetY((*riter)->GetPlayerY());
+			//camera->SetCameraXPos((*riter)->GetPlayerX() - SCREENW/2);
+			//camera->SetCameraYPos((*riter)->GetPlayerY() - SCREENH/2);
+		}
+	}
+
 
 	cout << "GAMELOOP BEGIN" << endl;
 	//game loop begin
@@ -411,7 +424,7 @@ int main()
 				MouseAngleRadians = atan2(MouseY - (player->GetY() + player->GetBoundY() / 2), MouseX - (player->GetX() + player->GetBoundX() / 2)) * 180 / PI;
 				if (MouseAngleRadians < 0)
 					MouseAngleRadians *= -1;
-				else if (MouseAngleRadians > 0) {
+				else if (MouseAngleRadians > 0) {	
 					MouseAngleRadians = 360 - MouseAngleRadians;
 				}
 				MouseAngleRadians = MouseAngleRadians / 180 * PI;
@@ -501,7 +514,7 @@ int main()
 				{
 					if ((*riter)->GetID() == CurrentLevel) {
 						(*riter)->ObjectUpdate();
-						camera->Follow(player, (*riter)->GetLevelMinX(), (*riter)->GetLevelMaxX(), (*riter)->GetLevelMinY(), (*riter)->GetLevelMaxY());//camera requires bounds of level to function
+						camera->Update();//camera requires bounds of level to function
 					}
 				}
 				if (DisplayMap) {

@@ -12,18 +12,11 @@ using namespace std;
 class Grass : public Object
 {
 private:
-	//int GrassJointNum;
-	//int GrassJointSpacing;
-	//int GrassJointW;
-	//int GrassJointH;
-
-	vector<GrassJoint *> JointList;//holds joints
-	vector<GrassJoint *>::iterator jiter;
-
+	vector<GrassJoint *> AllObjectsList;//holds joints
+	vector<GrassJoint *>::iterator iter;
 public:
 	Grass();
-	void Init(double x, double y, double z, int GrassJointNum, int GrassJointSpacing, int GrassJointW, int GrassJointH);
+	void Init(double x, double y, double z, double boundX, double boundY, double StartR, double StartG, double StartB, double EndR, double EndG, double EndB);
 	void Render(double cameraXPos, double cameraYPos);
 	void Update();
-	double GetLowestPoint();
 };

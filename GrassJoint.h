@@ -12,30 +12,23 @@ using namespace std;
 class GrassJoint : public Object
 {
 private:
-	double JointXDir;
-	double JointYDir;
+	int JointID;//ID of line, used for calculating degree to which line sways in the wind 
+	
+	int BegX;//start and end of line
+	int BegY;
+	int EndX;
+	int EndY;
 
-	double JointXPos;
-	double JointYPos;
+	double R;//color of line
+	double G;
+	double B;
 
-	double Vel;//speed at which Grass "rubber bands"
-
-	int JointID;//tracks what number the joint is on the Grass
-
-	int GrassJointSpacing;
-	int GrassJointNum;
-	int GrassJointW;
-	int GrassJointH;
-
-	double WindCounter;//number used in sin() equation
-	double WindSway;//degree to which Grass sways
-	double WindSpeed;//speed at which Grass sways
+	int counter;
+	int WindDirection;
 
 public:
 	GrassJoint();
-	void Init(int JointID, double JointXPos, double JointYPos, double Vel, int GrassJointSpacing, int GrassJointNum, int GrassJointW, int GrassJointH);
-	void Update(double x, double y, double z, double dirX, double dirY, double SwayChange, double SpeedChange, double cameraXPos, double cameraYPos);
-
-	double GetJointXPos() { return JointXPos; }
-	double GetJointYPos() { return JointYPos; }
+	void Init(int JointID, double BegX, double BegY, double EndX, double EndY, double R, double G, double B, int counter);
+	void Update();
+	void Render(double cameraXPos, double cameraYPos);
 };

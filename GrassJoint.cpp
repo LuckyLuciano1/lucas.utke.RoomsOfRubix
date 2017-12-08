@@ -5,45 +5,33 @@
 
 GrassJoint::GrassJoint() {}
 
-void GrassJoint::Init(int JointID, double JointXPos, double JointYPos, double Vel, int GrassJointSpacing, int GrassJointNum, int GrassJointW, int GrassJointH)
+void GrassJoint::Init(int JointID, double BegX, double BegY, double EndX, double EndY, double R, double G, double B, int counter)
 {
-	GrassJoint::JointXPos = JointXPos;
-	GrassJoint::JointYPos = JointYPos;
-	JointXDir = 0;
-	JointYDir = 0;
-	GrassJoint::Vel = Vel;
 	GrassJoint::JointID = JointID;
+	GrassJoint::BegX = BegX;
+	GrassJoint::BegY = BegY;
+	GrassJoint::EndX = EndX;
+	GrassJoint::EndY = EndY;
 
-	GrassJoint::GrassJointSpacing = GrassJointSpacing;
-	GrassJoint::GrassJointNum = GrassJointNum;
-	GrassJoint::GrassJointW = GrassJointW;
-	GrassJoint::GrassJointH = GrassJointH;
 
-	WindCounter = 0;//makes line
-	WindSpeed = .03;
-	WindSway = 1;
+	GrassJoint::R = R;
+	GrassJoint::G = G;
+	GrassJoint::B = B;
+
+	GrassJoint::counter = counter;
+	WindDirection = -1;
 }
 
-void GrassJoint::Update(double x, double y, double z, double dirX, double dirY, double SwayChange, double SpeedChange, double cameraXPos, double cameraYPos)
+void GrassJoint::Update()
 {
+	counter++;
 
-	if (dirX == 0 && dirY == 0) {//setting up 'resting position' of Grass when player/object is in idle state
-		dirX = 0;
-		dirY = 1;
-	}
-	if (WindSway + SwayChange / 100 < 1.5 && WindSway + SwayChange / 100 > .5)
-		WindSway += SwayChange / 100;
-	if (WindSpeed + SpeedChange / 100 < .08 && WindSpeed + SwayChange / 100 > .01)
-		WindSpeed += SpeedChange / 100;
+	Object::Update();
+}
 
-	JointXDir = (((JointXPos + JointXDir) - (x)+(JointID*GrassJointSpacing)*dirX) / Vel) +WindSway*sin(WindCounter += WindSpeed) + WindSway;//Vel of Grass is dependent on distance from object
-	JointYDir = ((JointYPos + JointYDir) - ((y)+(JointID*GrassJointSpacing)*-dirY)) / Vel;
+void GrassJoint::Render(double cameraXPos, double cameraYPos)
+{
+	double XDisp = JointID*sin(counter / 100.0) + (JointID*WindDirection);
 
-	JointXPos -= JointXDir;
-	JointYPos -= JointYDir;
-
-	al_draw_line(JointXPos + cameraXPos - GrassJointW, JointYPos + cameraYPos + z, (JointXPos + cameraXPos)+GrassJointW, (JointYPos+cameraYPos)+GrassJointH + z, al_map_rgb(120 + JointID * 2, 150, 80), 1);
-	//al_draw_filled_rectangle(JointXPos + cameraXPos - GrassJointW, JointYPos + cameraYPos + z, (JointXPos + cameraXPos) + GrassJointW, (JointYPos + cameraYPos) + GrassJointH + z, al_map_rgb(120 + JointID * 2, 150, 80));
-	//al_draw_filled_rectangle(JointXPos + cameraXPos, JointYPos + cameraYPos, (JointXPos + cameraXPos) + GrassJointW*WindSway*sin(WindCounter + WindSpeed), (JointYPos + cameraYPos) + GrassJointH*WindSway*sin(WindCounter + WindSpeed), al_map_rgb((JointID * 3 - 175), 23, 23));//varies color+size
-
+	al_draw_line(BegX + XDisp + cameraXPos, BegY + cameraYPos, EndX + XDisp + cameraXPos, EndY + cameraYPos, al_map_rgb(R, G, B), 1);
 }

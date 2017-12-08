@@ -13,100 +13,68 @@ IslandUnderside::IslandUnderside() {}
 
 void IslandUnderside::Destroy() {}
 
-void IslandUnderside::Init(double x, double y, double z, double boundX, double boundY)
+void IslandUnderside::Init(double IslandX, double IslandY, double IslandBoundX, double IslandBoundY)
 {
-	//in case these names make no sense:
-	//Girders are the vertical shafts descending from the island.
-	//Underside is the dark stone layer connecting the Struts and girders to the actual island
-	//Struts are the erratically placed bars running throught the girders, connecting them to each other, as well as the Island.
+	int UndersideDepth = 600;//height/depth of tower that island is atop
+	int BrickHeight = 30;//these are the same values/variable names used in the Island class within Init(). no reason to pass them over as parameters, though, as I don't plan on changing the values.
+	Object::Init(IslandX, IslandY+IslandBoundY - UndersideDepth - BrickHeight, UndersideDepth);
+	EnableSorting(IslandBoundX, UndersideDepth + BrickHeight);
 
-	Object::Init(x, y, z);
+	int BorderSize = 5;
 
-	int GirderBoundX = 50;//dimensions of girder
-	int GirderBoundY = 750;
-	int GirderSideWidth = 12;
-	int GirderCrossSize = 18;//thickness of crosses and Horizontal bars on Girder
-	int GirderCrossNum = 2;//number of crosses created before a horizontal bar is used, and the pattern repeats
+	
+	int BrickNum = IslandBoundX/BrickHeight - 1;//number of bricks that form each layer of tower
 
-	int GirderCrossBoundX = 25;
-	int GirderCrossBoundY = 65;
+	int BrickLength = BrickHeight*BrickNum;//longways of brick
 
-	int GirderPlacingMinimum = 60;//minimum distance from center
-	int GirderPlacingRange = 30;//range to max distance from center
-	int GirderDistanceFromCenter = rand() % GirderPlacingRange + GirderPlacingMinimum;
+	int CenteringX = (IslandBoundX - BrickLength) / 2;//little bit added on to center the "jenga" tower underneath the base
+	int CenteringY = (IslandBoundX - BrickLength) / 2;//(its a copy of above, but good for consistency's sake)
 
-	int UndersideSectionNum = 7;//number of stone sections on underside
-	int UndersideRange = 75;
-	int UndersideMinimum = 100;
-	int UndersideColorRange = 25;
-	int UndersideColorMinimum = 65;
+	bool counter = true;//tracking previous brick arrangement in order to swap properly
+	for (int z = UndersideDepth; z > BrickHeight; z -= BrickHeight) {
+		//CenteringX += (rand() % (BrickHeight * 2) - BrickHeight);
 
-	int GirderFrameR = 127;//deep brown-red
-	int GirderFrameG = 65;
-	int GirderFrameB = 48;
+		if (counter) {//front facing bricks
+			for (int x = 0; x < BrickNum*BrickHeight; x += BrickHeight) {
 
-	int StrutR = 165;//brown-grey. also used in girder cross.
-	int StrutG = 142;
-	int StrutB = 129;
+				int DispY = rand() % 40 - 20;
 
-	int PlateColorRange = 50;//colors of plates involved in connecting Struts to Girders and other Struts
-	int PlateColorMinimum = 105;
+				DecorBox *BrickTop = new DecorBox();
+				DecorBox *BrickFront = new DecorBox();
 
-	int PlateBoundMinimum = 25;//dimensions of plates
-	int PlateBoundRange = 15;
-	int PlateBoundX = rand() % PlateBoundRange + PlateBoundMinimum;
-	int PlateBoundY = rand() % PlateBoundRange + PlateBoundMinimum;
+				BrickTop->Init(IslandX + x + CenteringX, IslandY + CenteringY + DispY, z, BrickHeight, BrickLength, 163 - (z / (BrickHeight / 4)), 153 - (z / (BrickHeight / 4)), 149 - (z / (BrickHeight / 4)));
+				BrickFront->Init(IslandX + x + CenteringX, IslandY + BrickLength + CenteringY + DispY, z, BrickHeight, BrickHeight, 124 - (z / (BrickHeight / 4)), 119 - (z / (BrickHeight / 4)), 116 - (z / (BrickHeight / 4)));
 
-	//Girders
-	DecorGirder *LeftGirder = new DecorGirder();
-	DecorGirder *RightGirder = new DecorGirder();
+				BrickTop->EnableBorder(BorderSize, 137 - (z / (BrickHeight / 4)), 129 - (z / (BrickHeight / 4)), 126 - (z / (BrickHeight / 4)));
+				BrickFront->EnableBorder(BorderSize, 102 - (z / (BrickHeight / 4)), 96 - (z / (BrickHeight / 4)), 93 - (z / (BrickHeight / 4)));
 
-	LeftGirder->Init((x + boundX / 2) - GirderDistanceFromCenter - GirderBoundX, y, GirderBoundX, GirderBoundY, GirderSideWidth, GirderCrossSize, GirderCrossBoundX, GirderCrossBoundY, GirderCrossNum, StrutR, StrutG, StrutB, GirderFrameR, GirderFrameG, GirderFrameB);
-	RightGirder->Init((x + boundX / 2) + GirderDistanceFromCenter, y, GirderBoundX, GirderBoundY, GirderSideWidth, GirderCrossSize, GirderCrossBoundX, GirderCrossBoundY, GirderCrossNum, StrutR, StrutG, StrutB, GirderFrameR, GirderFrameG, GirderFrameB);
+				AllObjectsList.push_back(BrickTop);
+				AllObjectsList.push_back(BrickFront);
 
-	AllObjectsList.push_back(LeftGirder);
-	AllObjectsList.push_back(RightGirder);
+				counter = false;
+			}
+		}
+		else if (!counter) {//side facing bricks
+			for (int y = 0; y < BrickNum*BrickHeight; y += BrickHeight) {
 
-	//Supports	
-	//Underside to Left Girder	
-	/*
-	int StrutSizeW = rand()%10+10;//width of strut
+				int DispX = rand() % 40 - 20;
 
-	int int_boundX = boundX;//for rand() function purposes (requires conversion to int)
-	int LeftStrutX = rand() % (-(GirderDistanceFromCenter+GirderBoundX + StrutSizeW) + (int_boundX / 2)) + x;
-	int LeftStrutY = rand() % (GirderBoundY / 2) + (y + GirderBoundY / 10);
-	DecorFourSidedPolygon *LeftStrut = new DecorFourSidedPolygon();
-	LeftStrut->Init(
-		LeftStrutX, y,
-		LeftStrutX - StrutSizeW, y,		
-		(x + boundX / 2) - GirderDistanceFromCenter - GirderBoundX, LeftStrutY, 
-		(x + boundX / 2) - GirderDistanceFromCenter - GirderBoundX - StrutSizeW, LeftStrutY,		
-		StrutR, StrutG, StrutB);
-	AllObjectsList.push_back(LeftStrut);
+				DecorBox *BrickTop = new DecorBox();
+				DecorBox *BrickFront = new DecorBox();
 
-	//RightGirder to Underside
-	int RightStrutX = rand() % (int_boundX/2 - (GirderDistanceFromCenter+GirderBoundX + StrutSizeW)) + (x + (int_boundX / 2) + GirderDistanceFromCenter + GirderBoundX);
-	int RightStrutY = rand() % (GirderBoundY / 2) + (y+GirderBoundY/10);
-	DecorFourSidedPolygon *RightStrut = new DecorFourSidedPolygon();
-	RightStrut->Init(
-		(x + boundX / 2) + GirderDistanceFromCenter + GirderBoundX + StrutSizeW, RightStrutY,
-		(x + boundX / 2) + GirderDistanceFromCenter + GirderBoundX, RightStrutY,
-		
-		RightStrutX, y,
-		RightStrutX - StrutSizeW, y,		
-		StrutR, StrutG, StrutB);
-	AllObjectsList.push_back(RightStrut);
+				BrickTop->Init(IslandX + CenteringX + DispX, IslandY + y + CenteringY, z, BrickLength, BrickHeight, 163 - (z / (BrickHeight / 4)), 153 - (z / (BrickHeight / 4)), 149 - (z / (BrickHeight / 4)));
+				BrickFront->Init(IslandX + CenteringX + DispX, IslandY + y + CenteringY + BrickHeight, z, BrickLength, BrickHeight, 124 - (z / (BrickHeight / 4)), 119 - (z / (BrickHeight / 4)), 116 - (z / (BrickHeight / 4)));
 
-	//Connections
-	*/
+				BrickTop->EnableBorder(BorderSize, 137 - (z / (BrickHeight / 4)), 129 - (z / (BrickHeight / 4)), 126 - (z / (BrickHeight / 4)));
+				BrickFront->EnableBorder(BorderSize, 102 - (z / (BrickHeight / 4)), 96 - (z / (BrickHeight / 4)), 93 - (z / (BrickHeight / 4)));
 
-	//Underside
-	/*for(int a = 0; a < UndersideSectionNum; a++) {
-		int UndersideColor = rand() % UndersideColorRange + UndersideColorMinimum;
-		DecorBox *CliffWall = new DecorBox();
-		CliffWall->Init(x + (boundX/UndersideSectionNum)*a, y, 0, boundX/UndersideSectionNum, rand() % UndersideRange + UndersideMinimum, UndersideColor, UndersideColor, UndersideColor);
-		AllObjectsList.push_back(CliffWall);
-	}*/
+				AllObjectsList.push_back(BrickTop);
+				AllObjectsList.push_back(BrickFront);
+
+				counter = true;
+			}
+		}
+	}
 }
 
 //===========================================================================================================================================================================================================================
@@ -127,21 +95,6 @@ void IslandUnderside::Render(double cameraXPos, double cameraYPos)
 	{
 		(*iter)->Render(cameraXPos, cameraYPos);
 	}
-}
-
-void IslandUnderside::ObjectCollision()
-{
-	/*for (citer = ObjectCollisionList.begin(); citer != ObjectCollisionList.end(); ++citer)
-	{
-	for (citer2 = citer; citer2 != ObjectCollisionList.end(); ++citer2)
-	{
-	if ((*citer)->CollisionCheck((*citer2)))
-	{
-	(*citer)->Collided((*citer2));
-	(*citer2)->Collided((*citer));
-	}
-	}
-	}*/
 }
 
 void IslandUnderside::ObjectDeletion()
